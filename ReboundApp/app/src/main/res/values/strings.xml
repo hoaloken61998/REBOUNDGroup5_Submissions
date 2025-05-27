@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">ReboundLogin</string>
+    <string name="title_button_login_welcome">Login</string>
+    <string name="title_button_register_welcome">Register</string>
+    <string name="title_register_username">Username</string>
+    <string name="title_register_email">Email</string>
+    <string name="title_register_password">Password</string>
+    <string name="title_register_confirm_password">Confirm password</string>
+    <string name="title_or_register_with">Or Register with</string>
+    <string name="title_password_changed">Password Changed!</string>
+    <string name="title_notification_password_changed">Your password has been changed</string>
+    <string name="title_button_back_login">Back to Login</string>
+    <string name="title_complete_profile">Complete your profile</string>
+    <string name="title_subtitle_complete_profile">Don\'t worry, only you can see your personal data. No one else will be able to see it</string>
+    <string name="title_complete_profile_name">Name</string>
+    <string name="title_complete_profile_phone">Phone number</string>
+    <string name="title_button_complete_profile">Complete profile</string>
+    <string name="title_create_new_password">Create new password</string>
+    <string name="title_subtitle_create_new_password">Your new password must be unique from those previously used.</string>
+    <string name="tile_new_password_hint">New Password</string>
+    <string name="title_confirm_password_hint">Confirm Password</string>
+    <string name="title_reset_password">Reset Password</string>
+    <string name="title_forgot_password">Forgot Password?</string>
+    <string name="title_subtitle_forgot_password">Don\'t worry! It occurs. Please enter the email address linked with your account.</string>
+    <string name="title_forgot_password_email_hint">Enter your email</string>
+    <string name="title_button_send_code">Send Code</string>
+    <string name="bottom_text_login">Don\'t have an account? <b><font color="#867B4A">Register now</font></b></string>
+    <string name="bottom_text_forgot_password">Remember Password? <b><font color="#867B4A">Login</font></b></string>
+    <string name="title_login_email_hint">Enter your email</string>
+    <string name="title_login_password_hint">Enter your password</string>
+    <string name="title_login_forgot_password">Forgot Password?</string>
+    <string name="title_button_login">Login</string>
+    <string name="title_login_with">Or Login with</string>
+    <string name="title_OTP_verification">OTP Verification</string>
+    <string name="title_subtitle_otp_verification">Enter the verification code we just sent on your email address.</string>
+    <string name="title_button_verify">Verify</string>
+    <string name="bottom_text_otp_verification">Didn\'t received code? <b><font color="#867B4A">Resend</font></b></string>
+    <string name="title_profile">Profile</string>
+    <string name="title_your_profile">Your profile</string>
+    <string name="title_profile_payment_methods">Payment methods</string>
+    <string name="title_profile_my_orders">My orders</string>
+    <string name="title_profile_languages">Languages</string>
+    <string name="title_profile_settings">Settings</string>
+    <string name="title_profile_privacy_policy">Privacy policy</string>
+    <string name="title_button_log_out">Log out</string>
+    <string name="title_edit_profile">Edit profile</string>
+    <string name="title_edit_profile_username_hint">Username</string>
+    <string name="title_edit_profile_fullname_hint">Full Name</string>
+    <string name="title_edit_profile_email_hint">Email</string>
+    <string name="title_edit_profile_phone_hint">Phone Number</string>
+    <string name="title_edit_profile_password_hint">Password</string>
+    <string name="title_button_update">Update</string>
+    <string name="title_continue_guest_welcome"><u>Continue as a Guest</u></string>
+    <string name="bottom_text_register">Already have an account?  <b><font color="#867B4A">Login now</font></b></string>
+    <string name="title_register_cb_agree">I agree to the terms and conditions.</string>
+    <string name="title_profile_my_order">My Orders</string>
+    <string name="title_profile_language">Language</string>
+    <string name="title_profile_setting">Settings</string>
+</resources>
