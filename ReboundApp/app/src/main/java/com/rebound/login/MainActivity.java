@@ -20,9 +20,9 @@ import com.rebound.models.Customer.Customer;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView txtForgotPassword;
-    TextView txtBottomRegister;
-    ImageView imgBack;
+    TextView txtLoginForgotPassword;
+    TextView txtBottomLoginRegister;
+    ImageView imgBackLogin;
 
     EditText edtLoginEmail;
     EditText edtLoginPassword;
@@ -43,14 +43,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        txtForgotPassword.setOnClickListener(new View.OnClickListener() {
+        imgBackLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openForgotPasswordActivity();
             }
         });
 
-        txtBottomRegister.setOnClickListener(new View.OnClickListener() {
+        txtBottomLoginRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openRegisterActivity();
@@ -58,12 +58,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Add OnClickListener for imgBack
-        if (imgBack != null) { // Good practice to check for null, though addViews should initialize it
-            imgBack.setOnClickListener(new View.OnClickListener() {
+        if (imgBackLogin != null) { // Good practice to check for null, though addViews should initialize it
+            imgBackLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
                     startActivity(intent);
+                }
+            });
+
+            txtLoginForgotPassword.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openForgotPasswordActivity();
                 }
             });
         }
@@ -82,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void do_login(View view) {
-
         String email=edtLoginEmail.getText().toString();
         String pwd=edtLoginPassword.getText().toString();
         CustomerConnector cc=new CustomerConnector();
@@ -107,11 +113,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void addViews() {
-        txtForgotPassword = findViewById(R.id.txtForgotPassword);
-        txtBottomRegister = findViewById(R.id.txtBottomLoginRegister);
-        imgBack = findViewById(R.id.imgBack);
+        txtLoginForgotPassword = findViewById(R.id.txtLoginForgotPassword);
+        txtBottomLoginRegister = findViewById(R.id.txtBottomLoginRegister);
+        imgBackLogin = findViewById(R.id.imgBackLogin);
         edtLoginEmail = findViewById(R.id.edtLoginEmail);
-        edtLoginPassword = findViewById(R.id.edtEditProfilePassword);
+        edtLoginPassword = findViewById(R.id.edtLoginPassword);
     }
-
 }

@@ -13,16 +13,16 @@
         <activity        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-            android:name=".EditProfileActivity"
-            android:exported="false" />
-        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".CompleteProfileActivity"
+            android:name=".WelcomeActivity"
             android:exported="false" />
         <activity
-            android:name=".ChangePasswordActivity"
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CompleteProfileActivity"
             android:exported="false" />
         <activity
             android:name=".CreateNewPasswordActivity"
@@ -37,7 +37,7 @@
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".PasswordChangedActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

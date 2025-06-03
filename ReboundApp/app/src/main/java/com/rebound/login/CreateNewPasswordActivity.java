@@ -46,7 +46,7 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
     }
 
     public void do_reset_password(View view) {
-        Intent intent = new Intent(CreateNewPasswordActivity.this, ChangePasswordActivity.class);
+        Intent intent = new Intent(CreateNewPasswordActivity.this, PasswordChangedActivity.class);
         startActivity(intent);
     }
 }

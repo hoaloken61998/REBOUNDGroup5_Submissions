@@ -5,12 +5,12 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:padding="24dp">
+    android:background="@android:color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="20dp">
 
         <!-- Back Arrow -->
         <ImageView
@@ -23,7 +23,7 @@
 
         <!-- Title -->
         <TextView
-            android:id="@+id/tvTitle"
+            android:id="@+id/txtOPTVerificationTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -36,27 +36,27 @@
 
         <!-- Subtitle -->
         <TextView
-            android:id="@+id/tvSubtitleOTPVerification"
+            android:id="@+id/txtOTPVerificationSubtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="@string/title_subtitle_otp_verification"
+            android:text="@string/title_otp_verification_subtitle"
             android:textColor="#8391A1"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+            app:layout_constraintTop_toBottomOf="@id/txtOPTVerificationTitle" />
 
         <!-- OTP Boxes -->
         <LinearLayout
-            android:id="@+id/otpLayout"
+            android:id="@+id/layoutOPTCode"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:orientation="horizontal"
             android:gravity="center"
             android:weightSum="4"
-            app:layout_constraintTop_toBottomOf="@id/tvSubtitleOTPVerification"
+            app:layout_constraintTop_toBottomOf="@id/txtOTPVerificationSubtitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -132,16 +132,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/otpLayout" />
+            app:layout_constraintTop_toBottomOf="@id/layoutOPTCode" />
         <!-- Bottom Text -->
         <TextView
             android:id="@+id/txtResend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="280dp"
-            android:text="@string/bottom_text_otp_verification"
+            android:layout_marginTop="260dp"
+            android:text="@string/title_otp_verification_bottom_text"
             android:textColor="#1E1E1E"
-            android:textSize="14sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

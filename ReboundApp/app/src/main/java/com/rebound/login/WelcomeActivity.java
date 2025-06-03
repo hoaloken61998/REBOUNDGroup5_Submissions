@@ -13,8 +13,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    Button btnLogin;
-    Button btnRegister;
+    Button btnWelcomeLogin;
+    Button btnWelcomeRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +32,13 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        btnLogin.setOnClickListener(view -> {
+        btnWelcomeLogin.setOnClickListener(view -> {
             // Handle login button click
             // Start LoginActivity
             startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
         });
 
-        btnRegister.setOnClickListener(view -> {
+        btnWelcomeRegister.setOnClickListener(view -> {
             Intent intent = new Intent(WelcomeActivity.this, RegisterActivity.class);
             intent.putExtra("previous_activity", "welcome");
             startActivity(intent);
@@ -47,7 +47,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
 
     private void addViews() {
-        btnLogin = findViewById(R.id.btnLoginWelcome);
-        btnRegister = findViewById(R.id.btnRegisterWelcome);
+        btnWelcomeLogin = findViewById(R.id.btnWelcomeLogin);
+        btnWelcomeRegister = findViewById(R.id.btnWelcomeRegister);
     }
 }

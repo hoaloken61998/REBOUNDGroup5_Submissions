@@ -17,7 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     ImageView imgBackForgotPassword;
-    TextView txtBottomLogin;
+    TextView txtBottomForgotPasswordLogin;
     Button btnSendCode;
 
     @Override
@@ -44,7 +44,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
 
-        txtBottomLogin.setOnClickListener(new View.OnClickListener() {
+        txtBottomForgotPasswordLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openLoginActivity();
@@ -54,8 +54,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void addViews() {
-        imgBackForgotPassword = findViewById(R.id.imgBackForgetPassword);
-        txtBottomLogin = findViewById(R.id.txtBottomLogin);
+        imgBackForgotPassword = findViewById(R.id.imgBackForgotPassword);
+        txtBottomForgotPasswordLogin = findViewById(R.id.txtBottomForgotPasswordLogin);
         btnSendCode = findViewById(R.id.btnSendCode);
     }
 

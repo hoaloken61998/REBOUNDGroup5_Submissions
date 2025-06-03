@@ -2,39 +2,203 @@
     <string name="app_name">ReboundLogin</string>
     <string name="title_button_login_welcome">Login</string>
     <string name="title_button_register_welcome">Register</string>
+
+    <string name="title_notification_password_changed">Your password has been changed</string>
+
+    <string name="title_subtitle_complete_profile">Don\'t worry, only you can see your personal data. No one else will be able to see it</string>
+
+    <string name="tile_new_password_hint">New Password</string>
+    <string name="title_subtitle_forgot_password">Don\'t worry! It occurs. Please enter the email address linked with your account.</string>
+
+    <string name="title_button_send_code">Send Code</string>
+    <string name="bottom_text_login">Don\'t have an account? <b><font color="#867B4A">Register now</font></b></string>
+    <string name="bottom_text_forgot_password">Remember Password? <b><font color="#867B4A">Login</font></b></string>
+    <string name="title_subtitle_otp_verification">Enter the verification code we just sent on your email address.</string>
+    <string name="bottom_text_otp_verification">Didn\'t received code? <b><font color="#867B4A">Resend</font></b></string>
+    <string name="title_continue_guest_welcome"><u>Continue as a Guest</u></string>
+    <string name="bottom_text_register">Already have an account?  <b><font color="#867B4A">Login now</font></b></string>
+    <string name="title_checkout_info_add_shipping_address">Add shipping address</string>
+
+    <string name="title_add_shipping_address">Add shipping address</string>
+    <string name="title_add_shipping_name_hint">Name</string>
+    <string name="title_add_shipping_address_hint">Address</string>
+    <string name="title_add_shipping_city_hint">City</string>
+    <string name="title_add_shipping_district_hint">District</string>
+    <string name="title_add_shipping_ward_hint">Ward</string>
+    <string name="title_add_shipping_phone_number_hint">Phone number</string>
+    <string name="title_button_add_shipping_address">Add new address</string>
+
+    <string name="btn_close">Close</string>
+    <string name="title_payment_successful">PAYMENT SUCCESS</string>
+    <string name="title_payment_successful_message">Your payment was success</string>
+    <string name="title_payment_successful_order_id">Order ID    15263541</string>
+    <string name="title_payment_successful_rate_prompt">Rate your purchase</string>
+    <string name="btn_payment_successful_back_shop">Back to Shop</string>
+
+    <string name="title_order_id_label">Order ID:</string>
+
+    <string name="title_create_new_card_name_on_card_hint">Name On Card</string>
+    <string name="title_create_new_card_card_number_hint">Card Number</string>
+    <string name="title_create_new_card_exp_month_hint">Exp Month</string>
+    <string name="title_create_new_card_exp_year_hint">Exp Year</string>
+    <string name="title_create_new_card_cvv_hint">CVV</string>
+    <string name="title_button_create_new_card_add_card">Add card</string>
+
+
+    <string-array name="shipping_methods">
+        <item>Pickup at store</item>
+        <item>Standard Delivery</item>
+        <item>Express Delivery</item>
+    </string-array>
+
+    <string-array name="payment_methods">
+        <item>Cash</item>
+        <item>Credit Card</item>
+        <item>ZaloPay</item>
+    </string-array>
+
+    <string name="success">Success Icon</string>
+    <string name="title_reserved_successfully">RESERVED SUCCESSFULLY</string>
+    <string name="title_reservation_updated">Your reservation is updated!</string>
+
+    <!-- Appointment Info Labels -->
+    <string name="title_appointment_id_label">Appointment ID:</string>
+    <string name="title_appointment_date_label">Appointment Day:</string>
+    <string name="title_appointment_time_label">Appointment Time:</string>
+
+    <string name="btn_remind_me">Remind me</string>
+
+    <string name="title_search_hint">Search product</string>
+    <string name="title_button_search_filter">Filter options</string>
+    <string name="title_searched_recently">Searched Recently</string>
+    <string name="title_search_popular">Popular</string>
+
+    <string name="title_no_results">No Results Found</string>
+    <string name="title_no_results_description">It seems you entered incorrect product information. Please try again!</string>
+
+    <string name="title_my_cart">My Cart</string>
+    <string name="hint_promo_code">Promo Code</string>
+    <string name="btn_apply">Apply</string>
+    <string name="title_payment_summary">Payment Summary</string>
+    <string name="title_label_subtotal">Sub-Total</string>
+    <string name="title_label_delivery_fee">Delivery Fee</string>
+    <string name="title_label_discount">Discount</string>
+    <string name="title_label_total_cost">Total Cost</string>
+    <string name="btn_checkout">Proceed to Checkout</string>
+
+    <string name="title_checkout">Checkout</string>
+
+    <string name="product_name">Product Name</string>
+    <string name="title_notification">Notification</string>
+
+    <string name="title_no_notification">No notification!</string>
+    <string name="btn_go_to_store">Go to store</string>
+
+    <string name="title_schedule_rebound_branches">Rebound Branches</string>
+    <string name="title_button_schedule_hanoi">Hanoi</string>
+    <string name="title_button_schedule_ho_chi_minh">Ho Chi Minh</string>
+    <string name="title_schedule_branch1">Rebound Cao Ba Quat</string>
+    <string name="title_schedule_branch2">Rebound Tam Khuong</string>
+    <string name="title_schedule_branch1_address">34A Cao Ba Quat, Ba Dinh District</string>
+    <string name="title_schedule_branch2_address">77 Tam Khuong, Dong Da District</string>
+    <string name="title_schedule_branch_hours">09:30 - 21:30</string>
+    <string name="title_schedule_select_service">Select a service</string>
+
+    <string name="title_schedule_service1">First Piercing Experience</string>
+    <string name="title_schedule_service1_description">1–2 piercings\nPrice excluding jewellery</string>
+    <string name="title_schedule_service1_price">200.000 VND</string>
+    <string name="title_schedule_service1_duration">40 minutes</string>
+    <string name="title_button_schedule_selected">SELECTED</string>
+
+    <string name="title_schedule_select_appointment_time">Select your appointment time</string>
+    <string name="title_schedule_month_display">June 2025</string>
+    <string name="title_schedule_time_label">Time</string>
+    <string name="title_schedule_default_time">8:00 AM</string>
+    <string name="title_schedule_book_appointment">Book Appointment</string>
+
+
+    <string name="title_schedule_service2">The Quick And Simple Piercing Experience</string>
+    <string name="title_schedule_service2_description">Price excluding jewellery</string>
+    <string name="title_schedule_service2_price">200.000 VND</string>
+    <string name="title_schedule_service2_duration">30 minutes</string>
+
+    <string name="title_schedule_service3">The Extra Piercing Experience - 3-4 piercings</string>
+    <string name="title_schedule_service3_description">Price excluding jewellery</string>
+    <string name="title_schedule_service3_price">200.000 VND</string>
+    <string name="title_schedule_service3_duration">1 hour</string>
+
+    <string name="title_schedule_service4">Piercing Consulting\nStyling</string>
+    <string name="title_schedule_service4_price">Free service</string>
+    <string name="title_schedule_service4_duration">15 minutes</string>
+    <string name="title_schedule_service4_description">After Care Service</string>
+
+    <string name="title_ar_rotation">Rotation</string>
+    <string name="title_ar_add_to_cart">Add to Cart</string>
+    <string name="title_ar_camera">AR Camera</string>
+
+    <string name="title_ar_necklaces">Necklaces</string>
+    <string name="title_ar_earrings">Earrings</string>
+    <string name="title_ar_rings">Rings</string>
+    <string name="title_ar_body_piercing">Body Piercing</string>
+
+    <string name="title_news_main">News</string>
+    <string name="title_latest_news">Latest News</string>">
+
+    <string name="btn_book_appointment">Book Appointment</string>"
+
+
+
+
+    <string name="title_checkout_info_shipping_address">SHIPPING ADDRESS</string>
+    <string name="title_checkout_info_shipping_method">SHIPPING METHOD</string>
+    <string name="title_checkout_info_payment_method">PAYMENT METHOD</string>
+    <string name="title_checkout_info_total">TOTAL</string>
+    <string name="title_button_checkout_info">Checkout</string>
+
+    <string name="title_payment_method_card">Payment Method</string>
+
+    <string name="title_button_welcome_login">Login</string>
+    <string name="title_button_welcome_register">Register</string>
     <string name="title_register_username">Username</string>
     <string name="title_register_email">Email</string>
     <string name="title_register_password">Password</string>
     <string name="title_register_confirm_password">Confirm password</string>
     <string name="title_or_register_with">Or Register with</string>
+
     <string name="title_password_changed">Password Changed!</string>
-    <string name="title_notification_password_changed">Your password has been changed</string>
+    <string name="title_password_changed_notification">Your password has been changed</string>
     <string name="title_button_back_login">Back to Login</string>
+
     <string name="title_complete_profile">Complete your profile</string>
-    <string name="title_subtitle_complete_profile">Don\'t worry, only you can see your personal data. No one else will be able to see it</string>
+    <string name="title_complete_profile_subtitle">Don\'t worry, only you can see your personal data. No one else will be able to see it</string>
     <string name="title_complete_profile_name">Name</string>
     <string name="title_complete_profile_phone">Phone number</string>
     <string name="title_button_complete_profile">Complete profile</string>
     <string name="title_create_new_password">Create new password</string>
     <string name="title_subtitle_create_new_password">Your new password must be unique from those previously used.</string>
-    <string name="tile_new_password_hint">New Password</string>
+    <string name="title_new_password_hint">New Password</string>
     <string name="title_confirm_password_hint">Confirm Password</string>
     <string name="title_reset_password">Reset Password</string>
+
     <string name="title_forgot_password">Forgot Password?</string>
-    <string name="title_subtitle_forgot_password">Don\'t worry! It occurs. Please enter the email address linked with your account.</string>
+    <string name="title_forgot_password_subtitle">Don\'t worry! It occurs. Please enter the email address linked with your account.</string>
     <string name="title_forgot_password_email_hint">Enter your email</string>
-    <string name="title_button_send_code">Send Code</string>
-    <string name="bottom_text_login">Don\'t have an account? <b><font color="#867B4A">Register now</font></b></string>
-    <string name="bottom_text_forgot_password">Remember Password? <b><font color="#867B4A">Login</font></b></string>
+    <string name="title_button_forgot_password_send_code">Send Code</string>
+    <string name="title_login_bottom_text">Don\'t have an account? <b><font color="#867B4A">Register now</font></b></string>
+    <string name="title_forgot_password_bottom_text">Remember Password? <b><font color="#867B4A">Login</font></b></string>
+
     <string name="title_login_email_hint">Enter your email</string>
     <string name="title_login_password_hint">Enter your password</string>
+
     <string name="title_login_forgot_password">Forgot Password?</string>
     <string name="title_button_login">Login</string>
     <string name="title_login_with">Or Login with</string>
+
     <string name="title_OTP_verification">OTP Verification</string>
-    <string name="title_subtitle_otp_verification">Enter the verification code we just sent on your email address.</string>
+    <string name="title_otp_verification_subtitle">Enter the verification code we just sent on your email address.</string>
     <string name="title_button_verify">Verify</string>
-    <string name="bottom_text_otp_verification">Didn\'t received code? <b><font color="#867B4A">Resend</font></b></string>
+    <string name="title_otp_verification_bottom_text">Didn\'t received code? <b><font color="#867B4A">Resend</font></b></string>
+
     <string name="title_profile">Profile</string>
     <string name="title_your_profile">Your profile</string>
     <string name="title_profile_payment_methods">Payment methods</string>
@@ -50,10 +214,40 @@
     <string name="title_edit_profile_phone_hint">Phone Number</string>
     <string name="title_edit_profile_password_hint">Password</string>
     <string name="title_button_update">Update</string>
-    <string name="title_continue_guest_welcome"><u>Continue as a Guest</u></string>
-    <string name="bottom_text_register">Already have an account?  <b><font color="#867B4A">Login now</font></b></string>
+    <string name="title_welcome_continue_guest"><u>Continue as a Guest</u></string>
+    <string name="title_register_bottom_text">Already have an account?  <b><font color="#867B4A">Login now</font></b></string>
     <string name="title_register_cb_agree">I agree to the terms and conditions.</string>
     <string name="title_profile_my_order">My Orders</string>
     <string name="title_profile_language">Language</string>
     <string name="title_profile_setting">Settings</string>
+    <string name="title_login">Welcome back! Glad to see you, Again!</string>
+
+
+    <string name="title_register">Hello! Register to get started</string>
+    <string name="title_register_username_hint">Username</string>
+    <string name="title_register_email_hint">Email</string>
+    <string name="title_register_password_hint">Password</string>
+    <string name="title_register_confirm_password_hint">Confirm Password</string>
+
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+
+    <string name="title_log_out">Log out</string>
+    <string name="title_help_center">Help center</string>
+
+    <string name="title_button_checkout">Check out</string>
+    <string name="title_checkout_total">TOTAL</string>
+
+    <string name="title_main_page_necklaces">Necklaces</string>
+    <string name="title_main_page_earrings">Earrings</string>
+    <string name="title_main_page_rings">Rings</string>
+    <string name="title_main_page_body_piercing">Body Piercing</string>
+    <string name="title_main_page_piercing_placements">Piercing Placements</string>
+    <string name="title_main_page_latest_collection">Latest Collection</string>">
+    <string name="title_main_page_product_categories">Product Categories</string>
+
+    <string name="title_earrings">Earrings</string>
 </resources>

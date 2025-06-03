@@ -5,17 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:padding="24dp">
+    android:background="@android:color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="20dp">
 
         <!-- Back Arrow -->
 
         <ImageView
-            android:id="@+id/imgBackForgetPassword"
+            android:id="@+id/imgBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@mipmap/ic_back"
@@ -23,8 +23,10 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Title -->
+
+        <!-- Subtitle -->
         <TextView
-            android:id="@+id/tvTitle"
+            android:id="@+id/txtCompleteProfileTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -33,23 +35,20 @@
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imgBackForgetPassword" />
+            app:layout_constraintTop_toBottomOf="@id/imgBack" />
 
-        <!-- Subtitle -->
-
-        <!-- Avatar with edit icon -->
         <TextView
             android:id="@+id/tvSubtitleCompleteProfile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/title_subtitle_complete_profile"
+            android:text="@string/title_complete_profile_subtitle"
             android:textColor="#8391A1"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+            app:layout_constraintTop_toBottomOf="@id/txtCompleteProfileTitle" />
 
         <FrameLayout
             android:id="@+id/avatarContainer"
@@ -129,7 +128,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <Spinner
-                android:id="@+id/spGender"
+                android:id="@+id/spGenderCompleteProfile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
@@ -155,15 +154,13 @@
             android:id="@+id/btnCompleteProfile"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="50dp"
             android:text="@string/title_button_complete_profile"
             android:textColor="#FFFFFF"
             android:textSize="15sp"
             android:textStyle="bold"
-
             app:backgroundTint="#89784B"
             app:cornerRadius="100dp"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/spGenderWrapper" />

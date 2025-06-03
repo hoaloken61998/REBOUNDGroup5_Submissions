@@ -15,7 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class RegisterActivity extends AppCompatActivity {
 
     ImageView imgBackRegister;
-    TextView txtBottomLoginRegister;
+    TextView txtRegisterBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,20 +50,20 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         });
 
-        txtBottomLoginRegister.setOnClickListener(view -> {
+        txtRegisterBottom.setOnClickListener(view -> {
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             startActivity(intent);
         });
 
 
-        txtBottomLoginRegister.setOnClickListener(view -> {
+        txtRegisterBottom.setOnClickListener(view -> {
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             startActivity(intent);
         });
     }
 
     private void addViews() {
-        imgBackRegister = findViewById(R.id.imgBackForgetPassword);
-        txtBottomLoginRegister = findViewById(R.id.txtBottomLoginRegister);
+        imgBackRegister = findViewById(R.id.imgBackRegister);
+        txtRegisterBottom = findViewById(R.id.txtRegisterBottom);
     }
 }
