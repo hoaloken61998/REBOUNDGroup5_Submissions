@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <!-- Back + Title -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
+
+        <ImageView
+            android:id="@+id/imgHelpcenterButtonBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/ic_back" />
+
+        <TextView
+            android:id="@+id/txtHelpCenter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:text="@string/title_helpcenter_helpcenter"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <!-- Search Bar -->
+    <LinearLayout
+        android:id="@+id/searchbarHelpcenterSearch"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/search_background"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:elevation="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
+
+        <ImageView
+            android:id="@+id/imgHelpcenterButtonSearch"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/ic_search"
+            android:tint="#847c4a" />
+
+        <TextView
+            android:id="@+id/txtHelpcenterSearchText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_italic"
+            android:paddingStart="8dp"
+            android:text="@string/title_helpcenter_search"
+            android:textColor="#847c4a"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- Tabs -->
+    <LinearLayout
+        android:id="@+id/layoutHelpcenterFaqsandcontactus"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:background="@drawable/tab_background"
+        android:padding="2dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
+
+        <TextView
+            android:id="@+id/txtHelpcenterFaqsText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/tab_selected"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:text="@string/title_button_helpcenter_faqs"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtHelpcenterContactUs"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:text="@string/title_button_helpcenter_contactus"
+            android:textColor="#847c4a"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Content Area -->
+    <FrameLayout
+        android:id="@+id/layoutHelpcenterInfo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="14dp"/>
+</LinearLayout>

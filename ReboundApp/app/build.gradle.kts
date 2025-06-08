@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.rebound.login"
+    namespace = "com.rebound"
     compileSdk = 35
 
     defaultConfig {
@@ -40,4 +40,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("com.tbuonomo:dotsindicator:4.2")
+
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
 }

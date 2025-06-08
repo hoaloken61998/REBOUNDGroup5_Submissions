@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.rebound.R;
 import com.rebound.connectors.CustomerConnector;
 import com.rebound.models.Customer.Customer;
 
