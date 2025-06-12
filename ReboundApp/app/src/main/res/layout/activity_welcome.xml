@@ -31,13 +31,12 @@
             android:layout_height="60dp"
             android:layout_marginTop="24dp"
             android:text="@string/title_button_welcome_login"
+            android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
-            android:textStyle="bold"
-
             app:backgroundTint="#89784B"
             app:cornerRadius="100dp"
-
+            style="@style/MyButtonStyle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/imgLogo" />
@@ -48,9 +47,10 @@
             android:layout_height="60dp"
             android:layout_marginTop="20dp"
             android:text="@string/title_button_welcome_register"
+            android:textStyle="bold"
+            style="@style/MyButtonStyle"
             android:textColor="#1E232C"
             android:textSize="15sp"
-            android:textStyle="bold"
             app:backgroundTint="#FFFFFF"
             app:cornerRadius="100dp"
             app:layout_constraintEnd_toEndOf="parent"

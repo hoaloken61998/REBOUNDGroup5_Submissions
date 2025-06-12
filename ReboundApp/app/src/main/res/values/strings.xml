@@ -68,7 +68,7 @@
 
     <string name="btn_remind_me">Remind me</string>
 
-    <string name="title_search_hint">Search product</string>
+    <string name="title_search_hint">Search</string>
     <string name="title_button_search_filter">Filter options</string>
     <string name="title_searched_recently">Searched Recently</string>
     <string name="title_search_popular">Popular</string>
@@ -145,8 +145,6 @@
     <string name="title_latest_news">Latest News</string>">
 
     <string name="btn_book_appointment">Book Appointment</string>"
-
-
 
 
     <string name="title_checkout_info_shipping_address">SHIPPING ADDRESS</string>
@@ -280,4 +278,10 @@
     <string name="title_navigation_schedule">Schedule</string>
     <string name="title_navigation_news">News</string>
     <string name="title_navigation_profile">Profile</string>
+
+    <string name="title_update_password">Update Password</string>
+    <string name="title_update_password_password_hint">Enter your password</string>
+    <string name="title_button_update_password_send">Send</string>
+    <string name="title_update_password_subtitle">Please enter the current password linked with your account.</string>
+    <string name="title_update_password_bottom_text">Not update anymore? <b><font color="#867B4A">Back</font></b></string>
 </resources>

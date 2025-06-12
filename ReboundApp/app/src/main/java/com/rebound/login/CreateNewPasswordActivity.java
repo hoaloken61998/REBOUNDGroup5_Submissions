@@ -16,7 +16,7 @@ import com.rebound.R;
 
 public class CreateNewPasswordActivity extends AppCompatActivity {
 
-    ImageView imgBackForgetPassword;
+    ImageView imgBackCreateNewPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        imgBackForgetPassword.setOnClickListener(new View.OnClickListener() {
+        imgBackCreateNewPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CreateNewPasswordActivity.this, ForgotPasswordActivity.class);
@@ -44,7 +44,7 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
     }
 
     private void addViews() {
-        imgBackForgetPassword = findViewById(R.id.imgBackForgetPassword);
+        imgBackCreateNewPassword = findViewById(R.id.imgBackCreateNewPassword);
     }
 
     public void do_reset_password(View view) {

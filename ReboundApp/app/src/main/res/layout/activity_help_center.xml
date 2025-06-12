@@ -17,7 +17,7 @@
         android:layout_marginEnd="20dp">
 
         <ImageView
-            android:id="@+id/imgHelpcenterButtonBack"
+            android:id="@+id/imgHelpCenterButtonBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@mipmap/ic_back" />
@@ -35,39 +35,21 @@
     </LinearLayout>
 
     <!-- Search Bar -->
-    <LinearLayout
-        android:id="@+id/searchbarHelpcenterSearch"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/search_background"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:elevation="4dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp">
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:elevation="20dp"
+       android:background="@drawable/bg_search">
 
-        <ImageView
-            android:id="@+id/imgHelpcenterButtonSearch"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@mipmap/ic_search"
-            android:tint="#847c4a" />
-
-        <TextView
-            android:id="@+id/txtHelpcenterSearchText"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_italic"
-            android:paddingStart="8dp"
-            android:text="@string/title_helpcenter_search"
-            android:textColor="#847c4a"
-            android:textSize="16sp" />
-    </LinearLayout>
+            android:iconifiedByDefault="false"
+            android:queryHint="@string/title_search_hint"
+            android:background="@android:color/transparent" />
+    </androidx.cardview.widget.CardView>
 
     <!-- Tabs -->
     <LinearLayout

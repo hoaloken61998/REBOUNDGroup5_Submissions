@@ -58,7 +58,7 @@
             android:paddingTop="24dp"
             android:paddingBottom="8dp" />
 
-        <com.diemthuy.shoppingcart.FlowLayout
+        <com.rebound.main.FlowLayout
             android:id="@+id/searchRecentContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -73,7 +73,7 @@
             android:paddingTop="24dp"
             android:paddingBottom="8dp" />
 
-        <com.diemthuy.shoppingcart.FlowLayout
+        <com.rebound.main.FlowLayout
             android:id="@+id/searchPopularContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

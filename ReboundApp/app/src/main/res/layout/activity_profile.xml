@@ -93,6 +93,7 @@
 
             <!-- Item 1 -->
             <LinearLayout
+                android:id="@+id/optionYourProfile"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
@@ -122,6 +123,7 @@
 
             <!-- Item 2 -->
             <LinearLayout
+                android:id="@+id/optionPaymentMethod"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
@@ -151,6 +153,7 @@
             </LinearLayout>
             <!-- Item 3 -->
             <LinearLayout
+                android:id="@+id/optionMyOrders"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
@@ -180,6 +183,7 @@
             </LinearLayout>
             <!-- Item 4 -->
             <LinearLayout
+                android:id="@+id/optionLanguage"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
@@ -210,6 +214,7 @@
 
             <!-- Item 5 -->
             <LinearLayout
+                android:id="@+id/optionPrivacyPolicy"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
@@ -240,6 +245,7 @@
 
             <!-- Item 6 -->
             <LinearLayout
+                android:id="@+id/optionHelpCenter"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
@@ -269,6 +275,7 @@
 
             <!-- Item 7 -->
             <LinearLayout
+                android:id="@+id/optionLogOut"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
@@ -282,6 +289,7 @@
                     android:src="@mipmap/ic_log_out"/>/>
 
                 <TextView
+
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -297,22 +305,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Log out button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLogout"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="32dp"
-            android:text="@string/title_button_log_out"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:backgroundTint="#89784B"
-            app:cornerRadius="100dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profileOptions" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

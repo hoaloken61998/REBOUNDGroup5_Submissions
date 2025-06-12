@@ -1,6 +1,7 @@
 package com.rebound.adapters;
 
-
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rebound.R;
+import com.rebound.main.ProductDetailActivity;
 import com.rebound.models.Cart.ProductItem;
 
 import java.util.List;
@@ -22,11 +24,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         this.list = list;
     }
 
+    public void updateList(List<ProductItem> newList) {
+        this.list = newList;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_earrings, parent, false);
+                .inflate(R.layout.item_product, parent, false);
         return new ViewHolder(view);
     }
 
@@ -37,6 +44,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.price.setText(item.price);
         holder.rating.setText(item.rating);
         holder.image.setImageResource(item.imageRes);
+
+        holder.itemView.setOnClickListener(v -> {
+            Context context = holder.itemView.getContext();
+            Intent intent = new Intent(context, ProductDetailActivity.class);
+            intent.putExtra("product", item); // Gửi object đã Serializable
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -57,5 +71,3 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         }
     }
 }
-
-

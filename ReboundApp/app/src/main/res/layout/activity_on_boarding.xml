@@ -5,7 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:background="@android:color/white">
 
     <!-- Skip Button -->
@@ -13,10 +12,10 @@
         android:id="@+id/txtOnBoardingButtonSkip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="20dp"
         android:text="@string/title_button_onboarding_skip"
         android:textColor="@android:color/black"
-        android:textSize="14sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,14 +33,15 @@
     <LinearLayout
         android:id="@+id/layoutOnboradingBottom"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_height="200dp"
         android:orientation="vertical"
         android:background="@drawable/rounded_top_corners"
         android:padding="40dp"
         android:layout_marginTop="8dp"
         android:elevation="4dp"
+
         android:clipToOutline="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/onboardingIndicatorNav"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -70,62 +70,67 @@
             android:maxLines="3"
             android:gravity="center"
             android:layout_marginBottom="16dp" />
+    </LinearLayout>
 
-        <!-- Indicator and navigation -->
+    <!-- ✅ Indicator & Arrows - ĐÃ TÁCH RA KHỎI layoutOnboradingBottom -->
+    <LinearLayout
+        android:id="@+id/onboardingIndicatorNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="#F7F6F2"
+        android:paddingBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Left Arrow -->
+        <ImageView
+            android:id="@+id/btnOnboardingBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/ic_back_arrow_on"
+            android:layout_marginEnd="16dp"
+            android:tint="#847c4a" />
+
+        <!-- Dots -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/dotLayout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="0dp">
+            android:gravity="center">
 
-            <!-- Left Arrow -->
-            <ImageView
-                android:id="@+id/btnOnboardingBack"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@mipmap/ic_back_arrow_on"
-                android:layout_marginEnd="16dp"
-                android:tint="#847c4a"/>
+            <View
+                android:id="@+id/dot1"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/dot_background" />
 
-            <!-- Dots -->
-            <LinearLayout
-                android:id="@+id/dotLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+            <View
+                android:id="@+id/dot2"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/dot_background" />
 
-                <View
-                    android:id="@+id/dot1"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_margin="4dp"
-                    android:background="@drawable/dot_background" />
-
-                <View
-                    android:id="@+id/dot2"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_margin="4dp"
-                    android:background="@drawable/dot_background" />
-
-                <View
-                    android:id="@+id/dot3"
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:layout_margin="4dp"
-                    android:background="@drawable/dot_background" />
-            </LinearLayout>
-
-            <!-- Right Arrow -->
-            <ImageView
-                android:id="@+id/btnOnboardingNext"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@mipmap/ic_arrow_right_on"
-                android:layout_marginStart="16dp"
-                android:tint="#847c4a"/>
+            <View
+                android:id="@+id/dot3"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/dot_background" />
         </LinearLayout>
+
+        <!-- Right Arrow -->
+        <ImageView
+            android:id="@+id/btnOnboardingNext"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@mipmap/ic_arrow_right_on"
+            android:layout_marginStart="16dp"
+            android:tint="#847c4a" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

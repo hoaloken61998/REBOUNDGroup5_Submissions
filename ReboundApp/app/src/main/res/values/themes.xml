@@ -7,7 +7,7 @@
         <!--  FAB sẽ dùng colorSecondary nếu không được ghi đè  -->
         <item name="colorSecondary">#FFFFFF</item>
         <item name="textAllCaps">false</item>
-        <!--  👈 THÊM DÒNG NÀY  -->
+        <item name="materialButtonStyle">@style/MyButtonStyle</item>
         <!--  Status bar  -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>

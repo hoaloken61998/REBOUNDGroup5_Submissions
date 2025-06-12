@@ -14,7 +14,7 @@
 
         <!-- Back Arrow -->
         <ImageView
-            android:id="@+id/imgBackForgetPassword"
+            android:id="@+id/imgBackOTPVerification"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@mipmap/ic_back"
@@ -32,7 +32,7 @@
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imgBackForgetPassword" />
+            app:layout_constraintTop_toBottomOf="@id/imgBackOTPVerification" />
 
         <!-- Subtitle -->
         <TextView
@@ -125,7 +125,6 @@
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"
-
             app:backgroundTint="#89784B"
             app:cornerRadius="100dp"
 

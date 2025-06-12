@@ -103,6 +103,33 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <LinearLayout
+            android:id="@+id/termsRegisterLayout"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edtRegisterConfirmPassword">
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/chkRegisterTerms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="italic"
+                app:buttonTint="@color/checkbox_color" />
+
+            <TextView
+                android:id="@+id/txtRegisterTerms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_register_cb_agree"
+                android:textColor="#8391A1"
+                android:textSize="15sp"
+                android:textStyle="italic" />
+        </LinearLayout>
+
         <!-- Register Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegister"
@@ -117,7 +144,7 @@
             app:cornerRadius="100dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/edtRegisterConfirmPassword" />
+            app:layout_constraintTop_toBottomOf="@id/termsRegisterLayout" />
 
         <!-- Or Register with -->
         <LinearLayout

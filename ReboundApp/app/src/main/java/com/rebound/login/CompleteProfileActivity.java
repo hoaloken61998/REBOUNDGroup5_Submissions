@@ -1,27 +1,37 @@
 package com.rebound.login;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
-
+import com.rebound.main.MainPageActivity;
+import com.rebound.main.OnBoardingActivity;
 
 public class CompleteProfileActivity extends AppCompatActivity {
+
+    MaterialButton btnCompleteProfile;
+    ImageView imgBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_complete_profile);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        btnCompleteProfile = findViewById(R.id.btnCompleteProfile);
+        imgBack = findViewById(R.id.imgBack);
+
+        btnCompleteProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(CompleteProfileActivity.this, OnBoardingActivity.class);
+            startActivity(intent);
+            finish(); // Optional: kết thúc màn hình hiện tại
+        });
+
+        imgBack.setOnClickListener(view -> {
+            finish(); // Quay lại màn hình trước
         });
     }
 }

@@ -31,6 +31,7 @@ public class HelpCenterActivity extends AppCompatActivity {
     private Typeface montserratRegular;
     private Typeface montserratBold;
     private Typeface montserratItalic;
+    ImageView imgHelpCenterButtonBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,21 +39,21 @@ public class HelpCenterActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_help_center);
 
+        addViews();
+        addEvents();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        LinearLayout searchBar = findViewById(R.id.searchbarHelpcenterSearch);
-
-        searchBar.setOnClickListener(v -> {
-            // Ví dụ mở activity tìm kiếm
-            // startActivity(new Intent(HelpCenterActivity.this, SearchActivity.class));
-
-            // Hoặc hiển thị log hoặc Toast tạm thời
-            Toast.makeText(HelpCenterActivity.this, "Search clicked", Toast.LENGTH_SHORT).show();
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
         });
+
 
         // ✅ Khởi tạo biến và layout sau khi setContentView
         TextView tabFaqs = findViewById(R.id.txtHelpcenterFaqsText);
@@ -100,6 +101,16 @@ public class HelpCenterActivity extends AppCompatActivity {
         montserratItalic  = ResourcesCompat.getFont(this, R.font.montserrat_italic);
         Map<String, List<FAQItem>> faqData = getFaqData();
         addFaqsToLayout(faqData);
+    }
+
+    private void addEvents() {
+        imgHelpCenterButtonBack.setOnClickListener(v -> {
+            finish(); // Quay lại ProfileActivity nếu đã được mở trước đó
+        });
+    }
+
+    private void addViews() {
+        imgHelpCenterButtonBack = findViewById(R.id.imgHelpCenterButtonBack);
     }
 
     private Map<String, List<FAQItem>> getFaqData() {

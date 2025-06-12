@@ -20,7 +20,7 @@ import com.rebound.R;
 
 public class OTPVerificationActivity extends AppCompatActivity {
 
-    ImageView imgBackForgetPassword;
+    ImageView imgBackOTPVerification;
 
     TextView txtResend;
 
@@ -40,7 +40,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-        imgBackForgetPassword.setOnClickListener(new View.OnClickListener() {
+        imgBackOTPVerification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(OTPVerificationActivity.this, ForgotPasswordActivity.class);
@@ -57,7 +57,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
     }
 
     private void addViews() {
-        imgBackForgetPassword = findViewById(R.id.imgBackForgetPassword);
+        imgBackOTPVerification = findViewById(R.id.imgBackOTPVerification);
         txtResend = findViewById(R.id.txtResend);
     }
 

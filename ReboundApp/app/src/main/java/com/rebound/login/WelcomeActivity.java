@@ -3,6 +3,7 @@ package com.rebound.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,12 +12,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.rebound.R;
+import com.rebound.main.MainPageActivity;
 
 
 public class WelcomeActivity extends AppCompatActivity {
 
     Button btnWelcomeLogin;
     Button btnWelcomeRegister;
+    TextView txtWelcomeGuest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +48,15 @@ public class WelcomeActivity extends AppCompatActivity {
             intent.putExtra("previous_activity", "welcome");
             startActivity(intent);
         });
+        txtWelcomeGuest.setOnClickListener(view -> {
+            Intent intent = new Intent(WelcomeActivity.this, MainPageActivity.class);
+            startActivity(intent);
+        });
     }
 
 
     private void addViews() {
+        txtWelcomeGuest = findViewById(R.id.txtWelcomeGuest);
         btnWelcomeLogin = findViewById(R.id.btnWelcomeLogin);
         btnWelcomeRegister = findViewById(R.id.btnWelcomeRegister);
     }

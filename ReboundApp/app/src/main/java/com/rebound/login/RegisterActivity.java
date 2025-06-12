@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,13 +12,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.rebound.R;
-
 
 public class RegisterActivity extends AppCompatActivity {
 
+    MaterialButton btnRegister;
     ImageView imgBackRegister;
     TextView txtRegisterBottom;
+    MaterialCheckBox chkRegisterTerms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +37,20 @@ public class RegisterActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Vô hiệu hóa nút đăng ký ban đầu
+        btnRegister.setEnabled(false);
+        btnRegister.setAlpha(0.5f);
+
+        // Lắng nghe checkbox
+        chkRegisterTerms.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            btnRegister.setEnabled(isChecked);
+            btnRegister.setAlpha(isChecked ? 1.0f : 0.5f);
+        });
     }
 
     private void addEvents() {
         imgBackRegister.setOnClickListener(view -> {
-            // Get the intent that started this activity
             Intent intent = getIntent();
             String previousActivity = intent.getStringExtra("previous_activity");
 
@@ -45,7 +58,6 @@ public class RegisterActivity extends AppCompatActivity {
                 Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
                 startActivity(mainIntent);
             } else {
-                // Default to WelcomeActivity if no previous activity specified
                 Intent welcomeIntent = new Intent(RegisterActivity.this, WelcomeActivity.class);
                 startActivity(welcomeIntent);
             }
@@ -57,15 +69,20 @@ public class RegisterActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
-        txtRegisterBottom.setOnClickListener(view -> {
-            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+        btnRegister.setOnClickListener(view -> {
+            if (!chkRegisterTerms.isChecked()) {
+                Toast.makeText(RegisterActivity.this, "Please agree to the terms to continue.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent intent = new Intent(RegisterActivity.this, CompleteProfileActivity.class);
             startActivity(intent);
         });
     }
 
     private void addViews() {
+        btnRegister = findViewById(R.id.btnRegister);
         imgBackRegister = findViewById(R.id.imgBackRegister);
         txtRegisterBottom = findViewById(R.id.txtRegisterBottom);
+        chkRegisterTerms = findViewById(R.id.chkRegisterTerms);
     }
 }

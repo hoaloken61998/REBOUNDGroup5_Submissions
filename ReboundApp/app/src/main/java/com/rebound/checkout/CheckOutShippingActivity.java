@@ -4,7 +4,7 @@ package com.rebound.checkout;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.rebound.R;
@@ -14,6 +14,7 @@ public class CheckOutShippingActivity extends AppCompatActivity {
 
 
     Spinner spinnerShipping, spinnerPayment;
+
 
 
     @Override
@@ -49,6 +50,14 @@ public class CheckOutShippingActivity extends AppCompatActivity {
         // (Tuỳ chọn) Lấy lựa chọn người dùng
         String selectedShipping = spinnerShipping.getSelectedItem().toString();
         String selectedPayment = spinnerPayment.getSelectedItem().toString();
+
+        TextView txtTotal = findViewById(R.id.txtCheckOutInfoTotalAmount);
+
+        int totalAmount = getIntent().getIntExtra("totalAmount", 0);
+        String formattedTotal = String.format("%,d VND", totalAmount).replace(',', '.');
+        txtTotal.setText(formattedTotal);
+
+
     }
 }
 

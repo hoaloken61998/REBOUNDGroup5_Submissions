@@ -10,15 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rebound.R;
-import com.rebound.models.Cart.CartItem;
+import com.rebound.models.Cart.ProductItem;
 
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
-    private List<CartItem> cartList;
-    private Runnable updateTotal;
+    private final List<ProductItem> cartList;
+    private final Runnable updateTotal;
 
-    public CartAdapter(List<CartItem> cartList, Runnable updateTotal) {
+    public CartAdapter(List<ProductItem> cartList, Runnable updateTotal) {
         this.cartList = cartList;
         this.updateTotal = updateTotal;
     }
@@ -47,29 +47,43 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        CartItem item = cartList.get(position);
-        holder.name.setText(item.getName());
-        holder.variant.setText(item.getVariant());
-        holder.quantity.setText(String.valueOf(item.getQuantity()));
-        holder.price.setText(String.format("%,d", item.getTotalPrice()));
-        holder.image.setImageResource(item.getImageResId());
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        ProductItem item = cartList.get(position);
+
+        holder.name.setText(item.title);
+        holder.variant.setText(item.description); // Hiển thị mô tả/màu sắc
+        holder.quantity.setText(String.valueOf(item.quantity));
+
+        int unitPrice = extractPrice(item.price);
+        int totalPrice = unitPrice * item.quantity;
+        holder.price.setText(String.format("%,d VND", totalPrice).replace(',', '.'));
+        holder.image.setImageResource(item.imageRes);
 
         holder.btnPlus.setOnClickListener(v -> {
-            item.setQuantity(item.getQuantity() + 1);
+            item.quantity++;
             notifyItemChanged(position);
-            updateTotal.run();
+            if (updateTotal != null) updateTotal.run();
         });
 
         holder.btnMinus.setOnClickListener(v -> {
-            if (item.getQuantity() > 1) {
-                item.setQuantity(item.getQuantity() - 1);
+            if (item.quantity > 1) {
+                item.quantity--;
                 notifyItemChanged(position);
-                updateTotal.run();
+                if (updateTotal != null) updateTotal.run();
             }
         });
     }
 
     @Override
-    public int getItemCount() { return cartList.size(); }
+    public int getItemCount() {
+        return cartList.size();
+    }
+
+    private int extractPrice(String priceString) {
+        try {
+            return Integer.parseInt(priceString.replace(".", "").replace(" VND", "").trim());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }

@@ -101,15 +101,16 @@
 
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
-                    <ImageButton
-                        android:id="@+id/btnMainPageNecklaces"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@mipmap/ic_necklaces"
-                        android:background="?attr/selectableItemBackgroundBorderless"/>
+                <ImageButton
+                    android:id="@+id/btnMainPageNecklaces"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@mipmap/ic_necklaces" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -194,6 +195,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
+
         <!-- Banner image -->
         <FrameLayout
             android:layout_width="match_parent"
