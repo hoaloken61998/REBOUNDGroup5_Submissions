@@ -60,7 +60,7 @@ public class OnBoardingActivity extends AppCompatActivity {
                 currentIndex++;
                 updateContent(currentIndex);
             } else {
-                startActivity(new Intent(OnBoardingActivity.this, MainPageActivity.class));
+                startActivity(new Intent(OnBoardingActivity.this, NavBarActivity.class));
                 finish();
             }
         });
@@ -75,7 +75,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 
         // Skip
         txtOnBoardingButtonSkip.setOnClickListener(v -> {
-            startActivity(new Intent(OnBoardingActivity.this, MainPageActivity.class));
+            startActivity(new Intent(OnBoardingActivity.this, NavBarActivity.class));
             finish();
         });
     }

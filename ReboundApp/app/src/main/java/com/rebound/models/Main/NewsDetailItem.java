@@ -1,4 +1,3 @@
-
 package com.rebound.models.Main;
 
 public class NewsDetailItem {
@@ -7,7 +6,6 @@ public class NewsDetailItem {
     private String date;
     private int image;
 
-    // Constructor
     public NewsDetailItem(String title, String description, String date, int image) {
         this.title = title;
         this.description = description;
@@ -15,12 +13,11 @@ public class NewsDetailItem {
         this.image = image;
     }
 
-    // Getter
     public String getTitle() {
         return title;
     }
 
-    public String getDescription() {
+    public String getDescription() {  // nếu bạn đang dùng getContent(), thì đổi tên này lại
         return description;
     }
 
@@ -28,8 +25,12 @@ public class NewsDetailItem {
         return date;
     }
 
-    public int getImage() {
+    public int getImageResId() {  // để gọi từ NewsData
         return image;
     }
-}
 
+    // Nếu bạn đang gọi getContent(), thêm alias bên dưới
+    public String getContent() {
+        return description;
+    }
+}

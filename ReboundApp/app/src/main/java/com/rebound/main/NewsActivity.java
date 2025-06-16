@@ -22,27 +22,27 @@ public class NewsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
-
-        recyclerViewNews = findViewById(R.id.recyclerViewNews);
-        recyclerViewNews.setLayoutManager(new LinearLayoutManager(this));
-
-        List<NewsItem> dummyData = new ArrayList<>();
-        dummyData.add(new NewsItem(
-                "Pocket These Quick Tips for Cleaning Your Ear Piercings Without Worrying About Bumps",
-                "Are you passionate about ear piercings but afraid of infection or pus?",
-                "August 22, 2025",
-                R.mipmap.img_sample));
-        dummyData.add(new NewsItem(
-                "Pocket These Quick Tips for Cleaning Your Ear Piercings Without Worrying About Bumps",
-                "Are you passionate about ear piercings but afraid of infection or pus?",
-                "August 22, 2025",
-                R.mipmap.img_sample));
-        dummyData.add(new NewsItem(
-                "Pocket These Quick Tips for Cleaning Your Ear Piercings Without Worrying About Bumps",
-                "Are you passionate about ear piercings but afraid of infection or pus?",
-                "August 22, 2025",
-                R.mipmap.img_sample));
-        NewsAdapter adapter = new NewsAdapter(dummyData);
-        recyclerViewNews.setAdapter(adapter);
-    }
+//
+//        recyclerViewNews = findViewById(R.id.recyclerViewNews);
+//        recyclerViewNews.setLayoutManager(new LinearLayoutManager(this));
+//
+//        List<NewsItem> dummyData = new ArrayList<>();
+//        dummyData.add(new NewsItem(
+//                "Pocket These Quick Tips for Cleaning Your Ear Piercings Without Worrying About Bumps",
+//                "Are you passionate about ear piercings but afraid of infection or pus?",
+//                "August 22, 2025",
+//                R.mipmap.img_sample));
+//        dummyData.add(new NewsItem(
+//                "Pocket These Quick Tips for Cleaning Your Ear Piercings Without Worrying About Bumps",
+//                "Are you passionate about ear piercings but afraid of infection or pus?",
+//                "August 22, 2025",
+//                R.mipmap.img_sample));
+//        dummyData.add(new NewsItem(
+//                "Pocket These Quick Tips for Cleaning Your Ear Piercings Without Worrying About Bumps",
+//                "Are you passionate about ear piercings but afraid of infection or pus?",
+//                "August 22, 2025",
+//                R.mipmap.img_sample));
+//        NewsAdapter adapter = new NewsAdapter(requireContext(), dummyData);
+//        recyclerViewNews.setAdapter(adapter);
+  }
 }

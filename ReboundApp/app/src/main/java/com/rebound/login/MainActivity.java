@@ -1,26 +1,26 @@
 package com.rebound.login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.rebound.R;
 import com.rebound.connectors.CustomerConnector;
-import com.rebound.main.MainPageActivity;
+import com.rebound.main.NavBarActivity;
 import com.rebound.models.Customer.Customer;
-
+import com.rebound.utils.CartManager;
+import com.rebound.utils.SharedPrefManager;
 public class MainActivity extends AppCompatActivity {
 
     TextView txtLoginForgotPassword;
@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     MaterialButton btnLogin;
     MaterialCheckBox chkTerms;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
         addViews();
         addEvents();
+
+        CartManager.init(getApplicationContext());
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -88,23 +91,53 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        String email = edtLoginEmail.getText().toString();
-        String pwd = edtLoginPassword.getText().toString();
+        String email = edtLoginEmail.getText().toString().trim();
+        String pwd = edtLoginPassword.getText().toString().trim();
 
-        CustomerConnector cc = new CustomerConnector();
-        Customer cus = cc.login(email, pwd);
-
-        if (cus != null) {
-            Toast.makeText(this, "Login successful - welcome " + cus.getUsername() + "!", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(MainActivity.this, MainPageActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(this, "Login failed - please check your account again!", Toast.LENGTH_LONG).show();
+        if (email.isEmpty() || pwd.isEmpty()) {
+            Toast.makeText(this, "Please enter both Email and Password.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        edtLoginEmail.setText("");
-        edtLoginPassword.setText("");
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Invalid email format.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        CustomerConnector cc = new CustomerConnector(this);
+        Customer cus = cc.login(email, pwd);
+
+//        if (cus != null) {
+//            SharedPreferences.Editor authEditor = getSharedPreferences("auth", MODE_PRIVATE).edit();
+//            authEditor.putString("current_user", cus.getUsername());
+//            authEditor.apply();
+//
+//            SharedPrefManager.addCustomer(this, cus);
+//
+//            // Sửa ở đây
+//            SharedPrefManager.setCurrentCustomer(this, cus);
+//
+//            Intent intent = new Intent(MainActivity.this, NavBarActivity.class);
+//            startActivity(intent);
+//            finish();
+//        } else {
+//            Toast.makeText(this, "Email or password incorrect.", Toast.LENGTH_SHORT).show();
+//        }
+        if (cus != null) {
+            SharedPreferences.Editor authEditor = getSharedPreferences("auth", MODE_PRIVATE).edit();
+            authEditor.putString("current_user", cus.getUsername());
+            authEditor.apply();
+
+            SharedPrefManager.addCustomer(this, cus);
+            SharedPrefManager.setCurrentCustomer(this, cus);
+
+            // Thêm dòng này để gán cart theo user
+            CartManager.getInstance().setUserEmail(cus.getEmail());
+
+            Intent intent = new Intent(MainActivity.this, NavBarActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void addViews() {

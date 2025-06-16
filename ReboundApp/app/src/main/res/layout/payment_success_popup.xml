@@ -64,7 +64,7 @@
         android:textColor="#888888"
         android:textSize="15sp"
         android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/txtPaymentSuccessfulMessage"
+        app:layout_constraintTop_toBottomOf="@id/imgLinePayment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -102,20 +102,29 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
+            android:id="@+id/imgSad"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@mipmap/ic_sad" />
+            android:src="@mipmap/ic_sad"
+            android:clickable="true"
+            android:focusable="true" />
 
         <ImageView
+            android:id="@+id/imgNeutral"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginHorizontal="8dp"
-            android:src="@mipmap/ic_neutral" />
+            android:src="@mipmap/ic_neutral"
+            android:clickable="true"
+            android:focusable="true" />
 
         <ImageView
+            android:id="@+id/imgHappy"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@mipmap/ic_happy" />
+            android:src="@mipmap/ic_happy"
+            android:clickable="true"
+            android:focusable="true" />
     </LinearLayout>
 
 

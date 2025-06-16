@@ -2,6 +2,7 @@ package com.rebound.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
@@ -16,6 +17,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     LinearLayout optionHelpCenter;
     LinearLayout optionYourProfile;
+
+    ImageView imgBackProfile;
 
 
     @Override
@@ -37,6 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void addViews() {
         optionHelpCenter = findViewById(R.id.optionHelpCenter);
         optionYourProfile = findViewById(R.id.optionYourProfile);
+        imgBackProfile = findViewById(R.id.imgBackProfile);
 
     }
 
@@ -48,6 +52,10 @@ public class ProfileActivity extends AppCompatActivity {
         optionYourProfile.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
             startActivity(intent);
+        });
+
+        imgBackProfile.setOnClickListener(v -> {
+            finish();
         });
     }
 }

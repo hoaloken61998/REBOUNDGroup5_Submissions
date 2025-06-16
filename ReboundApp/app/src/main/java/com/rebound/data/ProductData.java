@@ -69,8 +69,18 @@ public class ProductData {
                 "103 SOLD",
                 "A breathtaking celestial diamond piece designed for timeless elegance and grace.",
                 R.mipmap.lastcollection3,
-                R.mipmap.lastcollection3
+                R.mipmap.lastcollection1
         ));
+
         return list;
+    }
+    public static List<ProductItem> getAllProducts() {
+        List<ProductItem> all = new ArrayList<>();
+        all.addAll(getNecklaceList());
+        all.addAll(getEarringList());
+        all.addAll(getRingList());
+        all.addAll(getBodyPiercingList());
+        all.addAll(getLastCollectionList());
+        return all;
     }
 }

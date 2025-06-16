@@ -45,8 +45,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((HeaderViewHolder) holder).headerNotification.setText(item.getTitle());
         } else if (holder instanceof NotificationViewHolder) {
             ((NotificationViewHolder) holder).txtNotification.setText(item.getTitle());
-            ((NotificationViewHolder) holder).txtNotificationMessage.setText(item.getMessage());
-            ((NotificationViewHolder) holder).txtNotificationTime.setText(item.getTime());
+            ((NotificationViewHolder) holder).txtNotificationMessage.setText(item.getContent());  // đổi từ getMessage()
+            ((NotificationViewHolder) holder).txtNotificationTime.setText(item.getTimeAgo());     // đổi từ getTime()
         }
     }
 

@@ -159,6 +159,31 @@
                 android:textSize="15sp"
                 android:layout_marginStart="4dp" />
         </LinearLayout>
+        <!-- Appointment Service Row -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/txtReservedSuccessfullyServiceLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_appointment_service_label"
+                android:textColor="#888888"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txtAppointmentServiceValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#888888"
+                android:textSize="15sp"
+                android:layout_marginStart="4dp" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Remind Me Button -->

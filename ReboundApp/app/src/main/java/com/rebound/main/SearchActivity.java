@@ -1,175 +1,145 @@
 package com.rebound.main;
 
-
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
-
+import android.widget.Toast;
+import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.internal.FlowLayout;
 import com.rebound.R;
+import com.rebound.adapters.LastCollectionAdapter;
+import com.rebound.data.ProductData;
+import com.rebound.models.Cart.ProductItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-
 
 public class SearchActivity extends AppCompatActivity {
 
-
     private SearchView searchView;
-    private FlowLayout searchRecentContainer, searchPopularContainer;
-
-
-    private final String PREF_NAME = "search_prefs";
-    private final String KEY_RECENT = "recent_keywords";
-    private final String KEY_POPULAR = "popular_keywords";
-
-
+    private LastCollectionAdapter adapter;
+    private RecyclerView recyclerView;
+    private List<ProductItem> allProducts;
+    private FlowLayout recentContainer, popularContainer;
     private SharedPreferences prefs;
-    private LinkedList<String> recentList = new LinkedList<>();
-    private HashMap<String, Integer> popularMap = new HashMap<>();
-
+    private static final String PREFS_NAME = "search_prefs";
+    private static final String KEYWORDS_KEY = "recent_keywords";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-
+        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         searchView = findViewById(R.id.searchView);
-        searchRecentContainer = findViewById(R.id.searchRecentContainer);
-        searchPopularContainer = findViewById(R.id.searchPopularContainer);
+        recyclerView = new RecyclerView(this);
+        allProducts = ProductData.getAllProducts();
 
+        // RecyclerView setup (nếu muốn hiển thị kết quả ngay bên dưới layout)
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new LastCollectionAdapter(new ArrayList<>());
+        recyclerView.setAdapter(adapter);
 
-        prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        loadData();
-        updateUI();
+        // Gắn vào layout (bạn có thể thay thế bằng FrameLayout hay ViewStub)
+        ((LinearLayout) findViewById(android.R.id.content)).addView(recyclerView);
 
+        // Gắn query từ intent (nếu có)
+        String query = getIntent().getStringExtra("query");
+        if (query != null && !query.trim().isEmpty()) {
+            searchView.setQuery(query, false);
+            performSearch(query);
+            saveSearchKeyword(query);
+        }
 
+        // Sự kiện khi nhập
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                handleSearch(query.trim());
-                searchView.clearFocus();
+                performSearch(query);
+                saveSearchKeyword(query);
                 return true;
             }
 
-
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                performSearch(newText);
+                return true;
             }
         });
+
+        // Back
+        ImageView imgBack = findViewById(R.id.imgBack);
+        imgBack.setOnClickListener(v -> finish());
+
+        // Load từ khóa
+        recentContainer = findViewById(R.id.searchRecentContainer);
+        popularContainer = findViewById(R.id.searchPopularContainer);
+        loadRecentKeywords();
+        loadPopularKeywords();
     }
 
-
-    private void handleSearch(String query) {
-        if (query.isEmpty()) return;
-
-
-        recentList.remove(query);
-        recentList.addFirst(query);
-        if (recentList.size() > 10) recentList.removeLast();
-
-
-        int count = popularMap.getOrDefault(query, 0);
-        popularMap.put(query, count + 1);
-
-
-        saveData();
-        updateUI();
-    }
-
-
-    private void updateUI() {
-        searchRecentContainer.removeAllViews();
-        for (String keyword : recentList) {
-            TextView chip = createChip(keyword);
-            searchRecentContainer.addView(chip);
+    private void performSearch(String keyword) {
+        List<ProductItem> filtered = new ArrayList<>();
+        for (ProductItem item : allProducts) {
+            if (item.getName().toLowerCase().contains(keyword.toLowerCase())) {
+                filtered.add(item);
+            }
         }
 
+        adapter.updateData(filtered);
 
-        List<Map.Entry<String, Integer>> sorted = new ArrayList<>(popularMap.entrySet());
-        sorted.sort((a, b) -> b.getValue() - a.getValue());
-
-
-        searchPopularContainer.removeAllViews();
-        for (int i = 0; i < Math.min(10, sorted.size()); i++) {
-            String keyword = sorted.get(i).getKey();
-            TextView chip = createChip(keyword);
-            searchPopularContainer.addView(chip);
+        if (filtered.isEmpty()) {
+            Toast.makeText(this, "No result found", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void saveSearchKeyword(String keyword) {
+        String existing = prefs.getString(KEYWORDS_KEY, "");
+        List<String> keywords = new ArrayList<>(Arrays.asList(existing.split(",")));
+        keywords.remove(keyword); // remove duplicates
+        keywords.add(0, keyword); // add latest first
+        if (keywords.size() > 10) keywords = keywords.subList(0, 10);
 
-    private TextView createChip(String text) {
-        TextView chip = new TextView(this);
-        chip.setText(text);
-        chip.setTextSize(14);
-        chip.setAllCaps(false);
-        chip.setBackgroundResource(R.drawable.bg_chip); // Bo tròn, nền nhẹ
-        chip.setTextColor(getResources().getColor(android.R.color.black));
-        chip.setPadding(48, 24, 48, 24);
-        chip.setGravity(Gravity.CENTER);
-
-
-        ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        lp.setMargins(16, 16, 16, 16);
-        chip.setLayoutParams(lp);
-        return chip;
+        String newRaw = String.join(",", keywords);
+        prefs.edit().putString(KEYWORDS_KEY, newRaw).apply();
+        loadRecentKeywords();
     }
 
-
-    private void saveData() {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(KEY_RECENT, String.join(",", recentList));
-
-
-        StringBuilder popularBuilder = new StringBuilder();
-        for (Map.Entry<String, Integer> entry : popularMap.entrySet()) {
-            popularBuilder.append(entry.getKey()).append(":").append(entry.getValue()).append(",");
-        }
-        editor.putString(KEY_POPULAR, popularBuilder.toString());
-
-
-        editor.apply();
-    }
-
-
-    private void loadData() {
-        recentList.clear();
-        popularMap.clear();
-
-
-        String recentRaw = prefs.getString(KEY_RECENT, "");
-        if (!recentRaw.isEmpty()) {
-            recentList.addAll(Arrays.asList(recentRaw.split(",")));
-        }
-
-
-        String popularRaw = prefs.getString(KEY_POPULAR, "");
-        String[] popularPairs = popularRaw.split(",");
-        for (String pair : popularPairs) {
-            String[] parts = pair.split(":");
-            if (parts.length == 2) {
-                try {
-                    popularMap.put(parts[0], Integer.parseInt(parts[1]));
-                } catch (NumberFormatException ignored) {}
+    private void loadRecentKeywords() {
+        String raw = prefs.getString(KEYWORDS_KEY, "");
+        recentContainer.removeAllViews();
+        if (!raw.isEmpty()) {
+            for (String kw : raw.split(",")) {
+                addKeywordChip(kw, recentContainer);
             }
         }
     }
+
+    private void loadPopularKeywords() {
+        List<String> popular = Arrays.asList("Necklace", "Gold", "Minimal", "Gem", "Earring");
+        for (String kw : popular) {
+            addKeywordChip(kw, popularContainer);
+        }
+    }
+
+    private void addKeywordChip(String keyword, FlowLayout container) {
+        TextView chip = new TextView(this);
+        chip.setText(keyword);
+        chip.setPadding(24, 12, 24, 12);
+        chip.setBackgroundResource(R.drawable.bg_keyword_chip); // drawable rounded background
+        chip.setTextSize(14);
+        chip.setTextColor(getResources().getColor(R.color.black));
+        chip.setOnClickListener(v -> {
+            searchView.setQuery(keyword, true);
+        });
+        container.addView(chip);
+    }
 }
-
-
-

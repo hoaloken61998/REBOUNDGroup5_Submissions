@@ -33,30 +33,30 @@ public class MainPageActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        // Gán sự kiện click cho các nút phân loại
-        findViewById(R.id.btnMainPageNecklaces).setOnClickListener(v -> openCategory("Necklaces"));
-        findViewById(R.id.btnMainPageEarrings).setOnClickListener(v -> openCategory("Earrings"));
-        findViewById(R.id.btnMainPageRings).setOnClickListener(v -> openCategory("Rings"));
-        findViewById(R.id.btnMainPageBodyPiercing).setOnClickListener(v -> openCategory("Body Piercing"));
-
-        // Khởi tạo RecyclerView cho "Latest Collection"
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewLastCollection);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        LastCollectionAdapter adapter = new LastCollectionAdapter(ProductData.getLastCollectionList());
-        recyclerView.setAdapter(adapter);
-
-        //Link shopping cart
-        ImageView imgCart = findViewById(R.id.imgMainPageShoppingCart);
-        imgCart.setOnClickListener(v -> {
-            Intent intent = new Intent(MainPageActivity.this, com.rebound.checkout.ShoppingCartActivity.class);
-            startActivity(intent);
-        });
-    }
-
-    private void openCategory(String category) {
-        Intent intent = new Intent(this, CategoryProductActivity.class);
-        intent.putExtra("category", category);
-        startActivity(intent);
-    }
-}
+//
+//        // Gán sự kiện click cho các nút phân loại
+//        findViewById(R.id.btnMainPageNecklaces).setOnClickListener(v -> openCategory("Necklaces"));
+//        findViewById(R.id.btnMainPageEarrings).setOnClickListener(v -> openCategory("Earrings"));
+//        findViewById(R.id.btnMainPageRings).setOnClickListener(v -> openCategory("Rings"));
+//        findViewById(R.id.btnMainPageBodyPiercing).setOnClickListener(v -> openCategory("Body Piercing"));
+//
+//        // Khởi tạo RecyclerView cho "Latest Collection"
+//        RecyclerView recyclerView = findViewById(R.id.recyclerViewLastCollection);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+//        LastCollectionAdapter adapter = new LastCollectionAdapter(ProductData.getLastCollectionList());
+//        recyclerView.setAdapter(adapter);
+//
+//        //Link shopping cart
+//        ImageView imgCart = findViewById(R.id.imgMainPageShoppingCart);
+//        imgCart.setOnClickListener(v -> {
+//            Intent intent = new Intent(MainPageActivity.this, com.rebound.checkout.ShoppingCartActivity.class);
+//            startActivity(intent);
+//        });
+//    }
+//
+//    private void openCategory(String category) {
+//        Intent intent = new Intent(this, CategoryProductActivity.class);
+//        intent.putExtra("category", category);
+//        startActivity(intent);
+//    }
+    }}

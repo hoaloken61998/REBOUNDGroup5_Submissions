@@ -24,7 +24,7 @@
             android:layout_marginTop="20dp">
 
             <ImageView
-                android:id="@+id/imgBack"
+                android:id="@+id/imgBackCheckOutShipping"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@mipmap/ic_back" />
@@ -50,6 +50,7 @@
             android:layout_marginTop="24dp" />
 
         <LinearLayout
+            android:id="@+id/layoutCheckOutShippingInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -67,7 +68,7 @@
 
                 <TextView
                     android:id="@+id/txtCheckOutInfoRecipientName"
-                    android:text="Giang Bao Tran"
+                    android:text=""
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:layout_width="match_parent"
@@ -77,7 +78,7 @@
 
                 <TextView
                     android:id="@+id/txtCheckOutInfoAddress"
-                    android:text="Tower B, Sky Garden 2, District 7, HCM City"
+                    android:text=""
                     android:textSize="14sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -86,7 +87,7 @@
 
                 <TextView
                     android:id="@+id/txtCheckOutInfoPhoneNumber"
-                    android:text="0101881988"
+                    android:text=""
                     android:textSize="14sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -164,7 +165,7 @@
                 android:src="@mipmap/ic_spinner" />
         </RelativeLayout>
 
-        <!-- Payment Method Spinner -->
+        <!-- Payment Method Label -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -172,31 +173,32 @@
             android:text="@string/title_checkout_info_payment_method"
             android:textColor="#888888"
             android:textSize="14sp" />
-        <RelativeLayout
+
+        <!-- Add Payment Method Button -->
+        <LinearLayout
+            android:id="@+id/layoutCheckOutShippingAddPayment"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:background="@drawable/input_field_bg"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:paddingHorizontal="16dp">
 
-            <Spinner
-                android:id="@+id/spinnerPayment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:entries="@array/payment_methods"
-                android:background="@android:color/transparent"
-                android:paddingEnd="32dp"
-                android:gravity="center_vertical" />
+            <TextView
+                android:id="@+id/txtCheckOutShippingPaymentMethod"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Create new card"
+                android:textColor="#555555"
+                android:textSize="15sp" />
 
             <ImageView
-                android:id="@+id/imgCheckOutInfoPaymentArrow"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
                 android:src="@mipmap/ic_spinner" />
-        </RelativeLayout>
+        </LinearLayout>
 
 
 
@@ -213,7 +215,8 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="-2dp"
                 android:text="@string/title_checkout_info_total"
-                android:textColor="#333333"
+                android:letterSpacing="0.2"
+                android:textColor="#837841"
                 android:textSize="14sp" />
 
             <TextView
@@ -223,12 +226,13 @@
                 android:layout_alignParentEnd="true"
                 android:text="4.535.000"
                 android:textColor="#E08A68"
+                android:textStyle="bold"
                 android:textSize="16sp" />
         </RelativeLayout>
 
         <!-- Checkout Button -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCheckout"
+            android:id="@+id/btnCheckoutShipping"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="50dp"

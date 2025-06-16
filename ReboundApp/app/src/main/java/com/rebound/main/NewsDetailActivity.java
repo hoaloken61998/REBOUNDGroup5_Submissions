@@ -12,7 +12,8 @@ import java.util.List;
 public class NewsDetailActivity extends AppCompatActivity {
 
     private TextView txtDetailNewsTitle, txtDescriptionDetailNews, txtDateDetailNews;
-    private ImageView imgDetailNews;
+    private ImageView imgDetailNews, imgBackNewsDetail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,18 +24,18 @@ public class NewsDetailActivity extends AppCompatActivity {
         txtDescriptionDetailNews = findViewById(R.id.txtDescriptionDetailNews);
         txtDateDetailNews = findViewById(R.id.txtDateDetailNews);
         imgDetailNews = findViewById(R.id.imgDetailNews);
+        imgBackNewsDetail = findViewById(R.id.imgBackNewsDetail);
 
-        List<NewsDetailItem> newsList = NewsData.getSampleNews();
-        if (!newsList.isEmpty()) {
-            NewsDetailItem firstNews = newsList.get(0);
+        String title = getIntent().getStringExtra("title");
+        String desc = getIntent().getStringExtra("desc");
+        String date = getIntent().getStringExtra("date");
+        int imageResId = getIntent().getIntExtra("imageResId", R.mipmap.ic_launcher); // fallback nếu null
 
-            txtDetailNewsTitle.setText(firstNews.getTitle());
-            txtDescriptionDetailNews.setText(firstNews.getDescription());
-            txtDateDetailNews.setText(firstNews.getDate());
+        txtDetailNewsTitle.setText(title);
+        txtDescriptionDetailNews.setText(desc);
+        txtDateDetailNews.setText(date);
+        imgBackNewsDetail.setOnClickListener(v -> finish());
 
-            Glide.with(this)
-                    .load(firstNews.getImage())
-                    .into(imgDetailNews);
-        }
+        Glide.with(this).load(imageResId).into(imgDetailNews);
     }
 }

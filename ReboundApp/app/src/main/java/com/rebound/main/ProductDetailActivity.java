@@ -16,6 +16,9 @@ import com.rebound.R;
 import com.rebound.utils.CartManager;
 import com.rebound.checkout.ShoppingCartActivity;
 import com.rebound.models.Cart.ProductItem;
+import com.rebound.utils.WishlistManager;
+import com.rebound.models.Customer.Customer;
+import com.rebound.utils.SharedPrefManager;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
@@ -25,6 +28,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView productTitle, soldText, ratingText, productDetailsContent;
     private TextView quantityValue, totalPriceValue;
     private ImageView btnDecrease, btnPlus;
+    private String selectedColor = "Silver";
 
     private int quantity = 1;
     private boolean isHearted = false;
@@ -107,9 +111,42 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
 
         // Yêu thích
-        heartIcon.setOnClickListener(v -> {
-            isHearted = !isHearted;
-            heartIcon.setImageResource(isHearted ? R.mipmap.ic_heart_black : R.mipmap.ic_heart);
+        heartIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Customer currentCustomer = SharedPrefManager.getCurrentCustomer(ProductDetailActivity.this);
+                if (currentCustomer == null) {
+                    Toast.makeText(ProductDetailActivity.this, "Please log in to add to your wishlist.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                isHearted = !isHearted;
+
+                if (isHearted) {
+                    heartIcon.setImageResource(R.drawable.ic_heart_filled);
+
+                    // Gán màu hiện tại cho biến variant
+                    String selectedVariant = isGoldSelected ? "Gold" : "Silver";
+                    ProductItem wishItem = new ProductItem(
+                            currentItem.title,
+                            currentItem.price,
+                            isGoldSelected ? currentItem.imageGoldRes : currentItem.imageSilverRes,
+                            currentItem.rating,
+                            currentItem.sold,
+                            currentItem.description,
+                            currentItem.imageGoldRes,
+                            currentItem.imageSilverRes
+                    );
+                    wishItem.setVariant(selectedVariant);
+
+                    // Thêm vào danh sách yêu thích
+                    WishlistManager.getInstance(ProductDetailActivity.this).addToWishlist(wishItem);
+                    Toast.makeText(ProductDetailActivity.this, "Added to wishlist", Toast.LENGTH_SHORT).show();
+                } else {
+                    heartIcon.setImageResource(R.mipmap.ic_heart);
+                    // (Tuỳ chọn: có thể thêm xóa khỏi wishlist ở đây)
+                }
+            }
         });
 
         // Tăng giảm số lượng
@@ -129,6 +166,16 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         // Thêm vào giỏ hàng
         btnAddToCart.setOnClickListener(v -> {
+            // Lấy username hiện tại từ SharedPreferences
+            Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
+            if (currentCustomer == null) {
+                Toast.makeText(this, "Please log in to add items to your cart", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            CartManager.getInstance().setUserEmail(currentCustomer.getEmail());
+
+
+            // Nếu không phải guest => thêm vào giỏ hàng
             if (currentItem != null) {
                 for (int i = 0; i < quantity; i++) {
                     ProductItem itemCopy = new ProductItem(
@@ -141,23 +188,17 @@ public class ProductDetailActivity extends AppCompatActivity {
                             currentItem.imageGoldRes,
                             currentItem.imageSilverRes
                     );
+
+// 🔹 Gán màu đã chọn cho variant
+                    itemCopy.setVariant(isGoldSelected ? "Gold" : "Silver");
                     CartManager.getInstance().addToCart(itemCopy);
                 }
 
-                Toast.makeText(this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Item added to cart", Toast.LENGTH_SHORT).show();
 
-                // Tuỳ chọn chuyển qua giỏ hàng
+                // Tùy chọn chuyển sang giỏ hàng
                 Intent cartIntent = new Intent(this, ShoppingCartActivity.class);
                 startActivity(cartIntent);
-            }
-        });
-
-        //Add to cart
-        btnAddToCart.setOnClickListener(v -> {
-            if (currentItem != null) {
-                currentItem.quantity = quantity;
-                CartManager.getInstance().addToCart(currentItem);
-                Toast.makeText(this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
             }
         });
     }

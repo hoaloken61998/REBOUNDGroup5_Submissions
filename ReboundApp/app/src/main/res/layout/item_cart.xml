@@ -63,11 +63,15 @@
 
                 <TextView
                     android:id="@+id/txtProductQuantity"
-                    android:text="1"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:textSize="16sp"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    />
 
                 <ImageView
                     android:id="@+id/btnPlus"

@@ -7,89 +7,64 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
     android:background="@android:color/white"
     tools:context=".main.NavBarActivity">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="20dp">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/layoutMainToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
-            android:contentInsetStart="0dp"
-            android:contentInsetLeft="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            android:theme="@style/ThemeOverlay.Material3.Toolbar.Surface">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <ImageView
-                    android:id="@+id/imgMainLogo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:src="@mipmap/ic_logo"/>
-            </RelativeLayout>
-        </androidx.appcompat.widget.Toolbar>
-
+        <!-- Phần chứa fragment -->
         <FrameLayout
             android:id="@+id/layoutMainFrame"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:fitsSystemWindows="true">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="56dp"
+            android:fitsSystemWindows="true"/>
 
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <!-- FloatingActionButton gắn vào BottomAppBar -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/imgMainButtonScan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="16dp"
+            android:src="@mipmap/ic_scan"
+            app:layout_anchor="@id/layoutMainBottomAppar"
+            app:layout_anchorGravity="center"
+            app:backgroundTint="#F7F6F2"
+            app:strokeColor="#847c4a"
+            app:strokeWidth="5dp"
+            app:tint="#847c4a"/>
+
+        <!-- BottomAppBar chứa BottomNavigationView -->
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/layoutMainBottomAppar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            app:fabAlignmentMode="center"
+            app:fabCradleMargin="4dp"
+            app:fabCradleRoundedCornerRadius="12dp"
+            app:fabCradleVerticalOffset="6dp">
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/layoutMainBottomNavigationView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                app:menu="@menu/bottom_menu"
+                app:itemIconTint="@color/bottom_nav_item_color"
+                app:itemTextColor="@color/bottom_nav_item_color"
+                app:labelVisibilityMode="labeled"
+                app:itemTextAppearanceActive="@style/BottomNavTextAppearance"
+                app:itemTextAppearanceInactive="@style/BottomNavTextAppearance"/>
+        </com.google.android.material.bottomappbar.BottomAppBar>
 
-                <com.google.android.material.bottomappbar.BottomAppBar
-                    android:id="@+id/layoutMainBottomAppar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="@color/white"
-                    app:fabAlignmentMode="center"
-                    app:fabCradleMargin="0dp"
-                    app:fabCradleRoundedCornerRadius="0dp"
-                    app:fabCradleVerticalOffset="0dp">
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-                    <com.google.android.material.bottomnavigation.BottomNavigationView
-                        android:id="@+id/layoutMainBottomNavigationView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        android:background="@android:color/transparent"
-                        app:itemIconTint="@color/bottom_nav_item_color"
-                        app:itemTextAppearanceActive="@style/BottomNavTextAppearance"
-                        app:itemTextAppearanceInactive="@style/BottomNavTextAppearance"
-                        app:itemTextColor="@color/bottom_nav_item_color"
-                        app:labelVisibilityMode="labeled"
-                        app:menu="@menu/bottom_menu"/>
-                </com.google.android.material.bottomappbar.BottomAppBar>
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/imgMainButtonScan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="#F7F6F2"
-                    android:src="@mipmap/ic_scan"
-                    app:layout_anchor="@id/layoutMainBottomAppar"
-                    app:maxImageSize="40dp"
-                    app:strokeColor="#847c4a"
-                    app:strokeWidth="5dp"
-                    app:tint="#847c4a"/>
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
-        </FrameLayout>
-    </LinearLayout>
-
+    <!-- Drawer Menu -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/layoutMainNavigationView"
         android:layout_width="wrap_content"

@@ -278,10 +278,15 @@
     <string name="title_navigation_schedule">Schedule</string>
     <string name="title_navigation_news">News</string>
     <string name="title_navigation_profile">Profile</string>
-
+    <string name="title_profile_wishlist">Wishlist</string>
+    <string name ="title_wishlist">My Wishlist</string>
     <string name="title_update_password">Update Password</string>
     <string name="title_update_password_password_hint">Enter your password</string>
     <string name="title_button_update_password_send">Send</string>
     <string name="title_update_password_subtitle">Please enter the current password linked with your account.</string>
     <string name="title_update_password_bottom_text">Not update anymore? <b><font color="#867B4A">Back</font></b></string>
+
+    <string name="title_appointment_service_label">Service: </string>
+
+
 </resources>

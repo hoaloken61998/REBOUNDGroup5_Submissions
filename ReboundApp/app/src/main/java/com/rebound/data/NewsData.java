@@ -1,7 +1,7 @@
 package com.rebound.data;
 import com.rebound.R;
 import com.rebound.models.Main.NewsDetailItem;
-
+import com.rebound.models.Main.NewsItem;
 import java.util.ArrayList;
 import java.util.List;
 public class NewsData {
@@ -35,7 +35,19 @@ public class NewsData {
                     R.mipmap.img_sample
         ));
 
-        // Bạn có thể thêm nhiều dữ liệu nữa nếu muốn
+
         return list;
+    }
+    public static List<NewsItem> convertToNewsItems(List<NewsDetailItem> detailList) {
+        List<NewsItem> items = new ArrayList<>();
+        for (NewsDetailItem detail : detailList) {
+            items.add(new NewsItem(
+                    detail.getTitle(),
+                    detail.getContent(),
+                    detail.getDate(),
+                    detail.getImageResId()
+            ));
+        }
+        return items;
     }
 }

@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
 
-    android:id="@+id/main"
-   >
+    android:id="@+id/main">
 
     <!-- Back and Title on the same row -->
     <FrameLayout

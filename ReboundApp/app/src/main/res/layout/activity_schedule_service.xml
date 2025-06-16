@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="false"
+    android:paddingBottom="80dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,9 +16,11 @@
         android:orientation="vertical"
         android:padding="20dp">
 
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
 
             <!-- Chuông bên phải -->
             <ImageView
@@ -24,6 +30,7 @@
                 android:layout_gravity="end|center_vertical"
                 android:src="@mipmap/ic_bell" />
 
+
             <!-- Logo ở giữa, đè lên chuông nếu trùng -->
             <ImageView
                 android:id="@+id/imgLogo"
@@ -32,6 +39,8 @@
                 android:layout_gravity="center"
                 android:src="@mipmap/ic_logo_small" />
         </FrameLayout>
+
+
 
 
         <!-- Title -->
@@ -44,12 +53,14 @@
             android:textStyle="bold"
             android:textColor="#000000" />
 
+
         <!-- Branch buttons -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="8dp">
+
 
             <Button
                 android:id="@+id/btnScheduleHanoi"
@@ -60,6 +71,7 @@
                 app:cornerRadius="5dp"
                 android:backgroundTint="#F2F0D4"
                 android:textColor="#FFFFFF" />
+
 
             <Button
                 android:id="@+id/btnScheduleHCM"
@@ -75,6 +87,7 @@
                 android:textColor="#22000000" />
         </LinearLayout>
 
+
         <!-- Branch images -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -82,14 +95,18 @@
             android:orientation="horizontal"
             android:layout_marginTop="16dp">
 
+
             <ImageView
+                android:id="@+id/imgBranch1"
                 android:layout_width="0dp"
                 android:layout_height="120dp"
                 android:layout_weight="1"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/branch1" />
 
+
             <ImageView
+                android:id="@+id/imgBranch2"
                 android:layout_width="0dp"
                 android:layout_height="120dp"
                 android:layout_weight="1"
@@ -98,6 +115,7 @@
                 android:src="@mipmap/branch2" />
         </LinearLayout>
 
+
         <!-- Branch info -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -105,11 +123,13 @@
             android:orientation="horizontal"
             android:layout_marginTop="12dp">
 
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
 
                 <TextView
                     android:id="@+id/txtScheduleBranch1"
@@ -120,6 +140,7 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -127,11 +148,13 @@
                     android:gravity="center_vertical"
                     android:layout_marginTop="4dp">
 
+
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:src="@mipmap/ic_address_schedule"
                         android:layout_marginEnd="6dp" />
+
 
                     <TextView
                         android:id="@+id/txtScheduleAddress1"
@@ -142,6 +165,7 @@
                         android:textColor="#000000" />
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -149,11 +173,13 @@
                     android:gravity="center_vertical"
                     android:layout_marginTop="4dp">
 
+
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:src="@mipmap/ic_clock"
                         android:layout_marginEnd="6dp" />
+
 
                     <TextView
                         android:id="@+id/txtScheduleTime1"
@@ -165,11 +191,13 @@
                 </LinearLayout>
             </LinearLayout>
 
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
 
                 <TextView
                     android:id="@+id/txtScheduleBranch2"
@@ -180,6 +208,7 @@
                     android:textSize="14sp"
                     android:textColor="#AB9E67" />
 
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -187,11 +216,13 @@
                     android:gravity="center_vertical"
                     android:layout_marginTop="4dp">
 
+
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:src="@mipmap/ic_address_schedule"
                         android:layout_marginEnd="6dp" />
+
 
                     <TextView
                         android:id="@+id/txtScheduleAddress2"
@@ -202,6 +233,7 @@
                         android:textColor="#000000" />
                 </LinearLayout>
 
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -209,11 +241,13 @@
                     android:gravity="center_vertical"
                     android:layout_marginTop="4dp">
 
+
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:src="@mipmap/ic_clock"
                         android:layout_marginEnd="6dp" />
+
 
                     <TextView
                         android:id="@+id/txtScheduleTime2"
@@ -226,6 +260,7 @@
             </LinearLayout>
         </LinearLayout>
 
+
         <!-- Services -->
         <TextView
             android:id="@+id/txtScheduleSelectService"
@@ -237,6 +272,7 @@
             android:layout_marginTop="10dp"
             android:textColor="#000000" />
 
+
         <!-- One service item -->
         <!-- Service 1 -->
         <LinearLayout
@@ -246,11 +282,13 @@
             android:layout_marginTop="12dp"
             android:paddingBottom="10dp">
 
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -258,6 +296,7 @@
                     android:text="@string/title_schedule_service1"
                     android:textSize="12sp"
                     android:textColor="#000000" />
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -272,11 +311,13 @@
                 android:layout_height="match_parent"
                 android:background="#CCCCCC" />
 
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="10dp">
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -285,12 +326,14 @@
                     android:textStyle="bold"
                     android:textSize="10sp" />
 
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_schedule_service1_duration"
                     android:textSize="10sp" />
             </LinearLayout>
+
 
             <Button
                 android:id="@+id/btnScheduleSelected1"
@@ -307,11 +350,13 @@
                 android:textColor="#000000"/>
         </LinearLayout>
 
+
         <!-- Horizontal Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#CCCCCC" />
+
 
         <!-- Service 2 -->
         <LinearLayout
@@ -321,11 +366,13 @@
             android:layout_marginTop="12dp"
             android:paddingBottom="10dp">
 
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -333,6 +380,7 @@
                     android:text="@string/title_schedule_service2"
                     android:textSize="12sp"
                     android:textColor="#000000" />
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -342,17 +390,20 @@
                     android:textColor="#555555" />
             </LinearLayout>
 
+
             <!-- Vertical Divider -->
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
                 android:background="#CCCCCC" />
 
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="10dp">
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -361,12 +412,14 @@
                     android:textStyle="bold"
                     android:textSize="10sp" />
 
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_schedule_service2_duration"
                     android:textSize="10sp" />
             </LinearLayout>
+
 
             <Button
                 android:id="@+id/btnScheduleSelected2"
@@ -383,11 +436,13 @@
                 android:textColor="#000000" />
         </LinearLayout>
 
+
         <!-- Horizontal Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#CCCCCC" />
+
 
         <!-- Service 3 -->
         <LinearLayout
@@ -396,7 +451,9 @@
             android:orientation="horizontal"
             android:layout_marginTop="12dp"
 
+
             android:paddingBottom="10dp">
+
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -404,12 +461,14 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_schedule_service3"
                     android:textSize="12sp"
                     android:textColor="#000000" />
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -419,17 +478,20 @@
                     android:textColor="#555555" />
             </LinearLayout>
 
+
             <!-- Vertical Divider -->
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
                 android:background="#CCCCCC" />
 
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="10dp">
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -438,12 +500,14 @@
                     android:textStyle="bold"
                     android:textSize="10sp" />
 
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_schedule_service3_duration"
                     android:textSize="10sp" />
             </LinearLayout>
+
 
             <Button
                 android:id="@+id/btnScheduleSelected3"
@@ -460,10 +524,12 @@
                 android:textColor="#000000" />
         </LinearLayout>
 
+
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#CCCCCC" />
+
 
         <!-- Service 4 -->
         <LinearLayout
@@ -473,11 +539,13 @@
             android:layout_marginTop="12dp"
             android:paddingBottom="10dp">
 
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -493,17 +561,20 @@
                     android:textColor="#555555" />
             </LinearLayout>
 
+
             <!-- Vertical Divider -->
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
                 android:background="#CCCCCC" />
 
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="15dp">
+
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -512,12 +583,14 @@
                     android:textSize="10sp"
                     android:textStyle="bold" />
 
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_schedule_service4_duration"
                     android:textSize="10sp" />
             </LinearLayout>
+
 
             <Button
                 android:id="@+id/btnScheduleSelected4"
@@ -539,6 +612,8 @@
             android:background="#CCCCCC" />
 
 
+
+
         <!-- Appointment Time Section -->
         <TextView
             android:id="@+id/txtScheduleSelectTime"
@@ -550,6 +625,7 @@
             android:layout_marginTop="10dp"
             android:textColor="#000000" />
 
+
         <!-- Calendar -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -560,6 +636,8 @@
             android:elevation="1dp"
             android:background="@drawable/bg_calendar"
             android:layout_marginBottom="1dp">
+
+
 
 
             <CalendarView
@@ -587,6 +665,7 @@
                 android:gravity="center_vertical"
                 android:elevation="1dp">
 
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -594,6 +673,7 @@
                     android:text="@string/title_schedule_time_label"
                     android:textSize="16sp"
                     android:textColor="#000000" />
+
 
                 <TextView
                     android:padding="10dp"
@@ -607,6 +687,8 @@
                     android:textColor="#000000" />
             </LinearLayout>
         </LinearLayout>
+
+
 
 
         <!-- Book Button -->
@@ -627,6 +709,7 @@
             app:strokeWidth="0.5dp"
             android:layout_gravity="center_horizontal"
             app:cornerRadius="10dp" />
+
 
     </LinearLayout>
 </ScrollView>
