@@ -1,4 +1,4 @@
-// không cần cái này nữa
+
 package com.rebound.checkout;
 
 import android.graphics.Color;

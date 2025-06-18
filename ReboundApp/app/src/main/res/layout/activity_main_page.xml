@@ -22,6 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@mipmap/ic_bell" />
 
             <!-- Logo -->
@@ -67,7 +68,7 @@
                     android:id="@+id/imgMainPageShoppingCart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     app:srcCompat="@mipmap/ic_shopping_cart" />
             </LinearLayout>
         </LinearLayout>

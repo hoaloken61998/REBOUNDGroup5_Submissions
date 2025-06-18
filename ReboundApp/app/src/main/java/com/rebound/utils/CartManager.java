@@ -27,7 +27,7 @@ public class CartManager {
 
     private CartManager(Context context) {
         sharedPreferences = context.getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        loadCart(); // load từ SharedPreferences vào list cartItems
+        loadCart();
     }
 
     public static void init(Context context) {
@@ -103,7 +103,4 @@ public class CartManager {
         this.userEmail = email;
         loadCart(); // Load lại cart của user này
     }
-
-
-
 }

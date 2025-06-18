@@ -7,6 +7,18 @@ import com.google.gson.Gson;
 import com.rebound.models.Customer.Customer;
 import com.rebound.models.Customer.ListCustomer;
 import com.rebound.models.Cart.ShippingAddress;
+import com.rebound.models.Reservation.Reservation;
+import com.rebound.models.Main.NotificationItem;
+import com.rebound.utils.NotificationStorage;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.rebound.models.Main.NotificationItem;
+
+
 
 public class SharedPrefManager {
 
@@ -204,6 +216,30 @@ public class SharedPrefManager {
     public static String getCardNumber(Context context, String email) {
         SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
         return prefs.getString(email + "_cardNumber", "");
+    }
+
+
+    // Reservation
+    private static final String KEY_RESERVATION = "reservation_";
+
+    public static void saveReservation(Context context, Reservation reservation) {
+        SharedPreferences prefs = context.getSharedPreferences("ReservationPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        String json = new Gson().toJson(reservation);
+        editor.putString(reservation.getEmail(), json);
+        editor.apply();
+    }
+
+    // Lấy đặt lịch theo email
+    public static Reservation getReservation(Context context, String email) {
+        SharedPreferences prefs = context.getSharedPreferences("ReservationPrefs", Context.MODE_PRIVATE);
+        String json = prefs.getString(email, null);
+
+        if (json != null) {
+            return new Gson().fromJson(json, Reservation.class);
+        }
+        return null;
     }
 
 }

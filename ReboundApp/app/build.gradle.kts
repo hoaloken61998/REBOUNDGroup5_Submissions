@@ -29,9 +29,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    packagingOptions {
-        exclude ("META-INF/NOTICE.md")
-        exclude ("META-INF/LICENSE.md")
+    packaging {
+        resources {
+            excludes += "META-INF/NOTICE.md"
+            excludes += "META-INF/LICENSE.md"
+        }
     }
 }
 
@@ -46,7 +48,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("com.tbuonomo:dotsindicator:4.2")
-
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")

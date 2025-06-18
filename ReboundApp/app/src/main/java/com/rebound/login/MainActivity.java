@@ -105,24 +105,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         CustomerConnector cc = new CustomerConnector(this);
-        Customer cus = cc.login(email, pwd);
+        StringBuilder error = new StringBuilder();
+        Customer cus = cc.login(email, pwd, error);
 
-//        if (cus != null) {
-//            SharedPreferences.Editor authEditor = getSharedPreferences("auth", MODE_PRIVATE).edit();
-//            authEditor.putString("current_user", cus.getUsername());
-//            authEditor.apply();
-//
-//            SharedPrefManager.addCustomer(this, cus);
-//
-//            // Sửa ở đây
-//            SharedPrefManager.setCurrentCustomer(this, cus);
-//
-//            Intent intent = new Intent(MainActivity.this, NavBarActivity.class);
-//            startActivity(intent);
-//            finish();
-//        } else {
-//            Toast.makeText(this, "Email or password incorrect.", Toast.LENGTH_SHORT).show();
-//        }
         if (cus != null) {
             SharedPreferences.Editor authEditor = getSharedPreferences("auth", MODE_PRIVATE).edit();
             authEditor.putString("current_user", cus.getUsername());
@@ -130,13 +115,13 @@ public class MainActivity extends AppCompatActivity {
 
             SharedPrefManager.addCustomer(this, cus);
             SharedPrefManager.setCurrentCustomer(this, cus);
-
-            // Thêm dòng này để gán cart theo user
             CartManager.getInstance().setUserEmail(cus.getEmail());
 
             Intent intent = new Intent(MainActivity.this, NavBarActivity.class);
             startActivity(intent);
             finish();
+        } else {
+            Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
         }
     }
 

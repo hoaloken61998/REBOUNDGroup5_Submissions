@@ -118,3 +118,4 @@ public class ShoppingCartActivity extends AppCompatActivity {
         return String.format("%,d", amount).replace(',', '.') + " VND";
     }
 }
+

@@ -34,4 +34,19 @@ public class CustomerConnector {
         }
         return null;
     }
+    public Customer login(String email, String pwd, StringBuilder errorMsg) {
+        for (Customer c : listCustomer.getCustomers()) {
+            if (c.getEmail().equalsIgnoreCase(email)) {
+                if (c.getPassword().equals(pwd)) {
+                    return c; // ✅ Thành công
+                } else {
+                    errorMsg.append("Incorrect password."); // ❌ Sai mật khẩu
+                    return null;
+                }
+            }
+        }
+
+        errorMsg.append("Account does not exist."); // ❌ Không tìm thấy email
+        return null;
+    }
 }

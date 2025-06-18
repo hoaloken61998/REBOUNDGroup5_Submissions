@@ -25,6 +25,7 @@
             <!-- Chuông bên phải -->
             <ImageView
                 android:id="@+id/imgBell"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
@@ -677,7 +678,7 @@
 
                 <TextView
                     android:padding="10dp"
-                    android:background="#FAFAFA"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:id="@+id/txtScheduleSelectedTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
