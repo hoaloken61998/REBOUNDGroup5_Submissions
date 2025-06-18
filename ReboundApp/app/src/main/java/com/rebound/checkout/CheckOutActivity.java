@@ -1,7 +1,11 @@
 package com.rebound.checkout;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.ImageView;
@@ -23,7 +27,6 @@ import com.rebound.models.Cart.ShippingAddress;
 import com.rebound.models.Main.NotificationItem;
 import com.rebound.utils.NotificationStorage;
 
-import android.app.NotificationChannel;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -134,7 +137,7 @@ public class CheckOutActivity extends AppCompatActivity {
 
         TextView txtOrderId = dialog.findViewById(R.id.txtPaymentSuccessfulOrderId);
         String generatedOrderId = generateOrderId();
-        txtOrderId.setText("Order ID: #" + generatedOrderId);
+        txtOrderId.setText("Order ID: " + generatedOrderId);
 
         ImageView imgClose = dialog.findViewById(R.id.imgClose);
         imgClose.setOnClickListener(v -> {
@@ -143,9 +146,24 @@ public class CheckOutActivity extends AppCompatActivity {
         });
 
         MaterialButton btnBackShop = dialog.findViewById(R.id.btnPaymentSuccessfulBackShop);
+
+// Trạng thái ban đầu: trắng, viền vàng, chữ đen
+        btnBackShop.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+        btnBackShop.setTextColor(Color.BLACK);
+        btnBackShop.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#BEB488")));
+        btnBackShop.setStrokeWidth(1);
+
+// Khi nhấn: đổi sang vàng, không viền, chữ trắng
         btnBackShop.setOnClickListener(v -> {
-            dialog.dismiss();
-            goToMain();
+            btnBackShop.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BEB488")));
+            btnBackShop.setTextColor(Color.WHITE);
+            btnBackShop.setStrokeWidth(0);
+
+            // Đợi 150ms cho thấy hiệu ứng màu rồi mới đi tiếp
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                dialog.dismiss();
+                goToMain();
+            }, 300);
         });
 
         ImageView imgSad = dialog.findViewById(R.id.imgSad);
@@ -173,7 +191,8 @@ public class CheckOutActivity extends AppCompatActivity {
     private String generateOrderId() {
         long timestamp = System.currentTimeMillis();
         int random = (int) (Math.random() * 1000);
-        return String.valueOf(timestamp).substring(6) + random;
+        String rawId = String.valueOf(timestamp).substring(6) + random;
+        return "ORD-" + rawId;
     }
 
     private void highlightSelected(ImageView selected, ImageView... others) {
@@ -218,9 +237,9 @@ public class CheckOutActivity extends AppCompatActivity {
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "order_channel")
-                .setSmallIcon(R.mipmap.ic_order) // đảm bảo có icon này
-                .setContentTitle("Đặt hàng thành công 🎉")
-                .setContentText("Cảm ơn bạn đã mua hàng tại Rebound. Đơn hàng đang được xử lý.")
+                .setSmallIcon(R.mipmap.ic_order) // make sure this icon exists
+                .setContentTitle("Order Placed Successfully!")
+                .setContentText("Thank you for shopping at Rebound. Your order is being processed.")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
@@ -230,11 +249,12 @@ public class CheckOutActivity extends AppCompatActivity {
         long now = System.currentTimeMillis();
         NotificationItem item = new NotificationItem(
                 NotificationItem.TYPE_NOTIFICATION,
-                "Đặt hàng thành công!",
-                "Đơn hàng của bạn đang được xử lý.",
-                "Just now", // Có thể format lại khi hiển thị
+                "Order Placed Successfully!",
+                "Your order is being processed.",
+                "Just now", // Can be formatted when displayed
                 now
         );
+
         Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
         if (currentCustomer != null) {
             NotificationStorage.saveNotification(this, currentCustomer.getEmail(), item);
@@ -242,3 +262,7 @@ public class CheckOutActivity extends AppCompatActivity {
     }
 
 }
+
+
+
+

@@ -1,8 +1,11 @@
 package com.rebound.main;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +16,10 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
+
+import java.util.UUID;
 
 public class ReservationDialog extends DialogFragment {
 
@@ -46,11 +52,33 @@ public class ReservationDialog extends DialogFragment {
             TextView txtDate = view.findViewById(R.id.txtAppointmentDateValue);
             TextView txtTime = view.findViewById(R.id.txtAppointmentTimeValue);
             TextView txtService = view.findViewById(R.id.txtAppointmentServiceValue);
+            TextView txtId = view.findViewById(R.id.txtAppointmentIdValue);
 
+            // ✅ Set dynamic content
             txtDate.setText("Date: " + selectedDate);
             txtTime.setText("Time: " + selectedTime);
             txtService.setText(selectedService.isEmpty() ? "Not selected" : selectedService);
+
+            // ✅ Generate random ID
+            String appointmentId = "RES-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase(); // Ví dụ: "3fa85f64"
+            txtId.setText(appointmentId);
         }
+
+        MaterialButton btnRemindMe = view.findViewById(R.id.btnReservedSuccessfullyRemindMe);
+        btnRemindMe.setOnClickListener(v -> {
+            btnRemindMe.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BEB488")));
+            btnRemindMe.setTextColor(Color.WHITE);
+            btnRemindMe.setStrokeWidth(0);
+
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                btnRemindMe.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+                btnRemindMe.setTextColor(Color.BLACK);
+                btnRemindMe.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#BEB488")));
+                btnRemindMe.setStrokeWidth(1);
+
+                dismiss();
+            }, 300);
+        });
 
         return view;
     }

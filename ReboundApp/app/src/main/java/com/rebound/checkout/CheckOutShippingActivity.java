@@ -139,3 +139,6 @@ public class CheckOutShippingActivity extends AppCompatActivity {
         android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show();
     }
 }
+
+
+
