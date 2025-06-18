@@ -117,6 +117,11 @@
             android:name=".main.NavBarActivity"
             android:exported="false" />
         <activity
+            android:name=".main.OrdersActivity"
+            android:exported="false" />
+        <activity android:name=".main.PrivacyPolicyActivity" android:exported="true" />
+        <activity android:name=".main.LanguageSelectorActivity" android:exported="true"/>
+        <activity
             android:name=".login.UpdatePasswordActivity"
             android:exported="true" />
         <activity
@@ -131,6 +136,11 @@
         <activity
             android:name=".login.MainActivity"
             android:exported="true" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>

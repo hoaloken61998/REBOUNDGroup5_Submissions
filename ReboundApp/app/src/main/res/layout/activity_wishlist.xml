@@ -19,10 +19,11 @@
             android:id="@+id/txtWishlistTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
             android:text="@string/title_wishlist"
-            android:textStyle="bold"
             android:textSize="20sp"
-            android:gravity="center" />
+            android:textStyle="bold" />
 
         <!-- Back button -->
         <ImageView

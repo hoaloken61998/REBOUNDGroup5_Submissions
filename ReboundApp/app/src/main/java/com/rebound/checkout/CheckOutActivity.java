@@ -20,7 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
 import com.rebound.adapters.CartAdapter;
+import com.rebound.models.Cart.ProductItem;
+import com.rebound.models.Orders.Order;
+import com.rebound.models.Orders.Product;
 import com.rebound.utils.CartManager;
+import com.rebound.utils.OrderManager;
 import com.rebound.utils.SharedPrefManager;
 import com.rebound.models.Customer.Customer;
 import com.rebound.models.Cart.ShippingAddress;
@@ -34,6 +38,9 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CheckOutActivity extends AppCompatActivity {
 
@@ -99,9 +106,25 @@ public class CheckOutActivity extends AppCompatActivity {
         updateTotalFromIntent();
 
         btnCheckout.setOnClickListener(v -> {
+            Customer current = SharedPrefManager.getCurrentCustomer(this);
+            if (current != null) {
+                List<ProductItem> cartItems = CartManager.getInstance().getCartItems();
+                List<Product> orderProducts = new ArrayList<>();
+
+                for (ProductItem p : cartItems) {
+                    orderProducts.add(new Product(p.title, p.variant, p.price, p.imageRes));
+                }
+
+                Order newOrder = new Order(orderProducts, CartManager.getInstance().getTotalPrice() + " VND", "To Receive");
+
+                OrderManager.getInstance().setUserEmail(current.getEmail());
+                OrderManager.getInstance().addOrder(newOrder);
+            }
+
             CartManager.getInstance().clearCart();
             showPaymentSuccessPopup();
         });
+
         createNotificationChannel();
     }
 
@@ -260,9 +283,5 @@ public class CheckOutActivity extends AppCompatActivity {
             NotificationStorage.saveNotification(this, currentCustomer.getEmail(), item);
         }
     }
-
 }
-
-
-
 

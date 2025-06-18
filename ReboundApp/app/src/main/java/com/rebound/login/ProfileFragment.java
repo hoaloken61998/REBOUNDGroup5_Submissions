@@ -16,6 +16,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
 import androidx.fragment.app.Fragment;
+
+import com.rebound.main.LanguageSelectorActivity;
+import com.rebound.main.OrdersActivity;
+import com.rebound.main.PrivacyPolicyActivity;
 import com.rebound.utils.SharedPrefManager;
 import com.bumptech.glide.Glide;
 import com.rebound.R;
@@ -32,6 +36,10 @@ public class ProfileFragment extends Fragment {
     private ImageView imgBackProfile;
     private ImageView imgAvatar;
     private TextView txtProfileUserName;
+    private LinearLayout optionMyOrders;
+    private LinearLayout optionPrivacyPolicy;
+    private LinearLayout optionLanguage;
+
 
     private Customer currentCustomer;
 
@@ -62,6 +70,9 @@ public class ProfileFragment extends Fragment {
         imgBackProfile = view.findViewById(R.id.imgBackProfile);
         imgAvatar = view.findViewById(R.id.imgAvatar);
         txtProfileUserName = view.findViewById(R.id.txtProfileUserName);
+        optionMyOrders = view.findViewById(R.id.optionMyOrders);
+        optionPrivacyPolicy = view.findViewById(R.id.optionPrivacyPolicy);
+        optionLanguage = view.findViewById(R.id.optionLanguage);
     }
 
     private void addEvents() {
@@ -100,6 +111,19 @@ public class ProfileFragment extends Fragment {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
+        optionMyOrders.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), OrdersActivity.class);
+            startActivity(intent);
+        });
+        optionPrivacyPolicy.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), PrivacyPolicyActivity.class));
+        });
+
+        optionLanguage.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), LanguageSelectorActivity.class));
+        });
+
+
 
         imgBackProfile.setOnClickListener(v -> requireActivity().onBackPressed());
     }

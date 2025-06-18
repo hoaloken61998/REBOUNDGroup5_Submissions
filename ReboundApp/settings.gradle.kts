@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ReboundApp"
 include(":app")
- 
+project(":app").projectDir = file("app")

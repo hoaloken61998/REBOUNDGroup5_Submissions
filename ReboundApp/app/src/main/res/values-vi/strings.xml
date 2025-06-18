@@ -1,0 +1,253 @@
+<?xml version="1.0" ?>
+<resources>
+    <string name="app_name">Chọn Ngôn Ngữ</string>
+    <string name="title_button_login_welcome">Đăng nhập</string>
+    <string name="title_button_register_welcome">Đăng ký</string>
+    <string name="title_notification_password_changed">Mật khẩu của bạn đã được thay đổi</string>
+    <string name="title_subtitle_complete_profile">Đừng lo, chỉ bạn mới có thể xem dữ liệu cá nhân của mình. Không ai khác có thể thấy.</string>
+    <string name="tile_new_password_hint">Mật khẩu mới</string>
+    <string name="title_subtitle_forgot_password">Đừng lo! Điều này xảy ra. Vui lòng nhập địa chỉ email liên kết với tài khoản của bạn.</string>
+    <string name="title_button_send_code">Gửi mã</string>
+    <string name="bottom_text_login">Chưa có tài khoản? &lt;b&gt;&lt;font color=&quot;#867B4A&quot;&gt;Đăng ký ngay&lt;/font&gt;&lt;/b&gt;</string>
+    <string name="bottom_text_forgot_password">Nhớ mật khẩu? &lt;b&gt;&lt;font color=&quot;#867B4A&quot;&gt;Đăng nhập&lt;/font&gt;&lt;/b&gt;</string>
+    <string name="title_subtitle_otp_verification">Nhập mã xác minh chúng tôi vừa gửi đến email của bạn.</string>
+    <string name="bottom_text_otp_verification">Chưa nhận được mã? &lt;b&gt;&lt;font color=&quot;#867B4A&quot;&gt;Gửi lại&lt;/font&gt;&lt;/b&gt;</string>
+    <string name="title_continue_guest_welcome">&lt;u&gt;Tiếp tục với tư cách khách&lt;/u&gt;</string>
+    <string name="bottom_text_register">Đã có tài khoản? &lt;b&gt;&lt;font color=&quot;#867B4A&quot;&gt;Đăng nhập ngay&lt;/font&gt;&lt;/b&gt;</string>
+    <string name="title_checkout_info_add_shipping_address">Thêm địa chỉ giao hàng</string>
+    <string name="title_add_shipping_address">Thêm địa chỉ giao hàng</string>
+    <string name="title_add_shipping_name_hint">Họ và tên</string>
+    <string name="title_add_shipping_address_hint">Địa chỉ</string>
+    <string name="title_add_shipping_city_hint">Thành phố</string>
+    <string name="title_add_shipping_district_hint">Quận/Huyện</string>
+    <string name="title_add_shipping_ward_hint">Phường/Xã</string>
+    <string name="title_add_shipping_phone_number_hint">Số điện thoại</string>
+    <string name="title_button_add_shipping_address">Thêm địa chỉ mới</string>
+    <string name="btn_close">Đóng</string>
+    <string name="title_payment_successful">THANH TOÁN THÀNH CÔNG</string>
+    <string name="title_payment_successful_message">Thanh toán của bạn đã thành công</string>
+    <string name="title_payment_successful_order_id">Mã đơn hàng 15263541</string>
+    <string name="title_payment_successful_rate_prompt">Đánh giá đơn hàng</string>
+    <string name="btn_payment_successful_back_shop">Quay lại cửa hàng</string>
+    <string name="title_order_id_label">Mã đơn hàng:</string>
+    <string name="title_create_new_card_name_on_card_hint">Tên trên thẻ</string>
+    <string name="title_create_new_card_card_number_hint">Số thẻ</string>
+    <string name="title_create_new_card_exp_month_hint">Tháng hết hạn</string>
+    <string name="title_create_new_card_exp_year_hint">Năm hết hạn</string>
+    <string name="title_create_new_card_cvv_hint">CVV</string>
+    <string name="title_button_create_new_card_add_card">Thêm thẻ</string>
+    <string name="success">Thành công</string>
+    <string name="title_reserved_successfully">ĐẶT LỊCH THÀNH CÔNG</string>
+    <string name="title_reservation_updated">Lịch hẹn của bạn đã được cập nhật!</string>
+    <string name="title_appointment_id_label">Mã cuộc hẹn:</string>
+    <string name="title_appointment_date_label">Ngày hẹn:</string>
+    <string name="title_appointment_time_label">Giờ hẹn:</string>
+    <string name="btn_remind_me">Nhắc tôi</string>
+    <string name="title_search_hint">Tìm kiếm</string>
+    <string name="title_button_search_filter">Tuỳ chọn lọc</string>
+    <string name="title_searched_recently">Đã tìm gần đây</string>
+    <string name="title_search_popular">Phổ biến</string>
+    <string name="title_no_results">Không tìm thấy kết quả</string>
+    <string name="title_no_results_description">Có vẻ như bạn đã nhập thông tin sản phẩm sai. Vui lòng thử lại!</string>
+    <string name="title_my_cart">Giỏ hàng</string>
+    <string name="hint_promo_code">Mã khuyến mãi</string>
+    <string name="btn_apply">Áp dụng</string>
+    <string name="title_payment_summary">Tóm tắt thanh toán</string>
+    <string name="title_label_subtotal">Tạm tính</string>
+    <string name="title_label_delivery_fee">Phí giao hàng</string>
+    <string name="title_label_discount">Giảm giá</string>
+    <string name="title_label_total_cost">Tổng cộng</string>
+    <string name="btn_checkout">Tiến hành thanh toán</string>
+    <string name="title_checkout">Thanh toán</string>
+    <string name="product_name">Tên sản phẩm</string>
+    <string name="title_notification">Thông báo</string>
+    <string name="title_no_notification">Không có thông báo!</string>
+    <string name="btn_go_to_store">Đến cửa hàng</string>
+    <string name="title_schedule_rebound_branches">Chi nhánh Rebound</string>
+    <string name="title_button_schedule_hanoi">Hà Nội</string>
+    <string name="title_button_schedule_ho_chi_minh">Hồ Chí Minh</string>
+    <string name="title_schedule_branch1">Rebound Cao Bá Quát</string>
+    <string name="title_schedule_branch2">Rebound Tâm Khương</string>
+    <string name="title_schedule_branch1_address">34A Cao Bá Quát, Quận Ba Đình</string>
+    <string name="title_schedule_branch2_address">77 Tâm Khương, Quận Đống Đa</string>
+    <string name="title_schedule_branch_hours">09:30 - 21:30</string>
+    <string name="title_schedule_select_service">Chọn dịch vụ</string>
+    <string name="title_schedule_service1">Trải nghiệm xỏ khuyên lần đầu</string>
+    <string name="title_schedule_service1_description">1–2 khuyên
+Không bao gồm trang sức</string>
+    <string name="title_schedule_service1_price">200.000 VND</string>
+    <string name="title_schedule_service1_duration">40 phút</string>
+    <string name="title_button_schedule_selected">ĐÃ CHỌN</string>
+    <string name="title_schedule_select_appointment_time">Chọn thời gian hẹn</string>
+    <string name="title_schedule_month_display">Tháng 6 năm 2025</string>
+    <string name="title_schedule_time_label">Thời gian</string>
+    <string name="title_schedule_default_time">8:00 Sáng</string>
+    <string name="title_schedule_book_appointment">Đặt lịch hẹn</string>
+    <string name="title_schedule_service2">Trải nghiệm xỏ khuyên đơn giản</string>
+    <string name="title_schedule_service2_description">Không bao gồm trang sức</string>
+    <string name="title_schedule_service2_price">200.000 VND</string>
+    <string name="title_schedule_service2_duration">30 phút</string>
+    <string name="title_schedule_service3">Trải nghiệm xỏ khuyên nâng cao - 3-4 khuyên</string>
+    <string name="title_schedule_service3_description">Không bao gồm trang sức</string>
+    <string name="title_schedule_service3_price">200.000 VND</string>
+    <string name="title_schedule_service3_duration">1 giờ</string>
+    <string name="title_schedule_service4">Tư vấn xỏ khuyên
+Styling</string>
+    <string name="title_schedule_service4_price">Dịch vụ miễn phí</string>
+    <string name="title_schedule_service4_duration">15 phút</string>
+    <string name="title_schedule_service4_description">Dịch vụ hậu mãi</string>
+    <string name="title_ar_rotation">Xoay</string>
+    <string name="title_ar_add_to_cart">Thêm vào giỏ</string>
+    <string name="title_ar_camera">Camera AR</string>
+    <string name="title_ar_necklaces">Dây chuyền</string>
+    <string name="title_ar_earrings">Bông tai</string>
+    <string name="title_ar_rings">Nhẫn</string>
+    <string name="title_ar_body_piercing">Xỏ khuyên cơ thể</string>
+    <string name="title_news_main">Tin tức</string>
+    <string name="title_latest_news">Tin mới nhất</string>
+    <string name="btn_book_appointment">Đặt lịch hẹn</string>
+    <string name="title_checkout_info_shipping_address">ĐỊA CHỈ GIAO HÀNG</string>
+    <string name="title_checkout_info_shipping_method">PHƯƠNG THỨC GIAO HÀNG</string>
+    <string name="title_checkout_info_payment_method">PHƯƠNG THỨC THANH TOÁN</string>
+    <string name="title_checkout_info_total">TỔNG</string>
+    <string name="title_button_checkout_info">Thanh toán</string>
+    <string name="title_payment_method_card">Phương thức thanh toán</string>
+    <string name="title_button_welcome_login">Đăng nhập</string>
+    <string name="title_button_welcome_register">Đăng ký</string>
+    <string name="title_register_username">Tên đăng nhập</string>
+    <string name="title_register_email">Email</string>
+    <string name="title_register_password">Mật khẩu</string>
+    <string name="title_register_confirm_password">Xác nhận mật khẩu</string>
+    <string name="title_or_register_with">Hoặc đăng ký với</string>
+    <string name="title_password_changed">Mật khẩu đã được thay đổi!</string>
+    <string name="title_password_changed_notification">Mật khẩu của bạn đã được thay đổi</string>
+    <string name="title_button_back_login">Quay lại đăng nhập</string>
+    <string name="title_complete_profile">Hoàn thành hồ sơ</string>
+    <string name="title_complete_profile_subtitle">Đừng lo, chỉ bạn mới có thể xem dữ liệu cá nhân của mình. Không ai khác có thể thấy.</string>
+    <string name="title_complete_profile_name">Họ và tên</string>
+    <string name="title_complete_profile_phone">Số điện thoại</string>
+    <string name="title_button_complete_profile">Hoàn thành hồ sơ</string>
+    <string name="title_create_new_password">Tạo mật khẩu mới</string>
+    <string name="title_subtitle_create_new_password">Mật khẩu mới phải khác mật khẩu cũ.</string>
+    <string name="title_new_password_hint">Mật khẩu mới</string>
+    <string name="title_confirm_password_hint">Xác nhận mật khẩu</string>
+    <string name="title_reset_password">Đặt lại mật khẩu</string>
+    <string name="title_forgot_password">Quên mật khẩu?</string>
+    <string name="title_forgot_password_subtitle">Đừng lo! Điều này xảy ra. Vui lòng nhập địa chỉ email liên kết với tài khoản của bạn.</string>
+    <string name="title_forgot_password_email_hint">Nhập địa chỉ email</string>
+    <string name="title_button_forgot_password_send_code">Gửi mã</string>
+    <string name="title_login_bottom_text">Chưa có tài khoản? &lt;b&gt;&lt;font color=&quot;#867B4A&quot;&gt;Đăng ký ngay&lt;/font&gt;&lt;/b&gt;</string>
+    <string name="title_forgot_password_bottom_text">Nhớ mật khẩu? <b><font color="#867B4A">Đăng nhập</font></b></string>
+
+    <string name="title_login_email_hint">Nhập email của bạn</string>
+    <string name="title_login_password_hint">Nhập mật khẩu của bạn</string>
+
+    <string name="title_login_forgot_password">Quên mật khẩu?</string>
+    <string name="title_button_login">Đăng nhập</string>
+    <string name="title_login_with">Hoặc đăng nhập bằng</string>
+
+    <string name="title_OTP_verification">Xác minh OTP</string>
+    <string name="title_otp_verification_subtitle">Nhập mã xác minh mà chúng tôi vừa gửi đến địa chỉ email của bạn.</string>
+    <string name="title_button_verify">Xác minh</string>
+    <string name="title_otp_verification_bottom_text">Chưa nhận được mã? <b><font color="#867B4A">Gửi lại</font></b></string>
+
+    <string name="title_profile">Hồ sơ</string>
+    <string name="title_your_profile">Hồ sơ của bạn</string>
+    <string name="title_profile_payment_methods">Phương thức thanh toán</string>
+    <string name="title_profile_my_orders">Đơn hàng của tôi</string>
+    <string name="title_profile_languages">Ngôn ngữ</string>
+    <string name="title_profile_settings">Cài đặt</string>
+    <string name="title_profile_privacy_policy">Chính sách bảo mật</string>
+    <string name="title_button_log_out">Đăng xuất</string>
+    <string name="title_edit_profile">Chỉnh sửa hồ sơ</string>
+    <string name="title_edit_profile_username_hint">Tên người dùng</string>
+    <string name="title_edit_profile_fullname_hint">Họ và tên</string>
+    <string name="title_edit_profile_email_hint">Email</string>
+    <string name="title_edit_profile_phone_hint">Số điện thoại</string>
+    <string name="title_edit_profile_password_hint">Mật khẩu</string>
+    <string name="title_button_update">Cập nhật</string>
+
+    <string name="title_welcome_continue_guest"><u>Tiếp tục với tư cách khách</u></string>
+    <string name="title_register_bottom_text">Đã có tài khoản? <b><font color="#867B4A">Đăng nhập ngay</font></b></string>
+    <string name="title_register_cb_agree">Tôi đồng ý với các điều khoản và điều kiện.</string>
+
+    <string name="title_profile_my_order">Đơn hàng của tôi</string>
+    <string name="title_profile_language">Ngôn ngữ</string>
+    <string name="title_profile_setting">Cài đặt</string>
+    <string name="title_login">Chào mừng trở lại! Rất vui khi gặp lại bạn!</string>
+
+    <string name="title_register">Xin chào! Hãy đăng ký để bắt đầu</string>
+    <string name="title_register_username_hint">Tên người dùng</string>
+    <string name="title_register_email_hint">Email</string>
+    <string name="title_register_password_hint">Mật khẩu</string>
+    <string name="title_register_confirm_password_hint">Xác nhận mật khẩu</string>
+
+    <string-array name="gender_options">
+        <item>Nam</item>
+        <item>Nữ</item>
+        <item>Khác</item>
+    </string-array>
+
+    <string name="title_log_out">Đăng xuất</string>
+    <string name="title_help_center">Trung tâm trợ giúp</string>
+
+    <string name="title_button_checkout">Thanh toán</string>
+    <string name="title_checkout_total">TỔNG CỘNG</string>
+
+    <string name="title_main_page_necklaces">Dây chuyền</string>
+    <string name="title_main_page_earrings">Bông tai</string>
+    <string name="title_main_page_rings">Nhẫn</string>
+    <string name="title_main_page_body_piercing">Xỏ khuyên cơ thể</string>
+    <string name="title_main_page_piercing_placements">Vị trí xỏ khuyên</string>
+    <string name="title_main_page_latest_collection">Bộ sưu tập mới nhất</string>
+    <string name="title_main_page_product_categories">Danh mục sản phẩm</string>
+
+    <string name="title_earrings">Bông tai</string>
+    <string name="title_product_detail">Chi tiết sản phẩm</string>
+    <string name="title_product_color">Màu sắc</string>
+    <string name="title_product_quantity">Số lượng</string>
+    <string name="title_product_total_price">TỔNG GIÁ</string>
+
+    <string name="title_helpcenter_helpcenter">Trung tâm trợ giúp</string>
+    <string name="title_helpcenter_search">Tìm kiếm</string>
+    <string name="title_button_onboarding_skip">Bỏ qua</string>
+    <string name="title_button_helpcenter_faqs">Câu hỏi thường gặp</string>
+    <string name="title_button_helpcenter_contactus">Liên hệ chúng tôi</string>
+    <string name="title_button_productdetail_addtocart">THÊM VÀO GIỎ</string>
+
+    <string name="open_nav">Mở menu điều hướng</string>
+    <string name="close_nav">Đóng menu điều hướng</string>
+    <string name="hello_blank_fragment">Xin chào blank fragment</string>
+    <string name="title_shop">Cửa hàng</string>
+    <string name="title_schedule">Lịch hẹn</string>
+    <string name="title_news">Tin tức</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="title_settings">Cài đặt</string>
+    <string name="title_share">Chia sẻ</string>
+    <string name="title_about_us">Về chúng tôi</string>
+    <string name="title_logout">Đăng xuất</string>
+    <string name="navigation_drawer_open">Mở menu</string>
+    <string name="navigation_drawer_close">Đóng menu</string>
+    <string name="title_navigation_shop">Cửa hàng</string>
+    <string name="title_navigation_schedule">Lịch hẹn</string>
+    <string name="title_navigation_news">Tin tức</string>
+    <string name="title_navigation_profile">Hồ sơ</string>
+    <string name="title_profile_wishlist">Danh sách yêu thích</string>
+    <string name="title_wishlist">Danh sách yêu thích của tôi</string>
+    <string name="title_update_password">Cập nhật mật khẩu</string>
+    <string name="title_update_password_password_hint">Nhập mật khẩu của bạn</string>
+    <string name="title_button_update_password_send">Gửi</string>
+    <string name="title_update_password_subtitle">Vui lòng nhập mật khẩu hiện tại liên kết với tài khoản của bạn.</string>
+    <string name="title_update_password_bottom_text">Không cập nhật nữa? <b><font color="#867B4A">Quay lại</font></b></string>
+
+    <string name="title_appointment_service_label">Dịch vụ: </string>
+    <string name="back">Quay lại</string>
+    <string name="title_select_language">Chọn ngôn ngữ</string>
+    <string name="title_english">Tiếng Anh</string>
+    <string name="title_vietnamese">Tiếng Việt</string>
+    <string name="title_buy_again">Mua lại</string>
+    <string name="title_delete">Xoá</string>
+    <string name="hint_search">Tìm kiếm</string>
+    <string name="title_privacy_policy">Chính sách bảo mật</string>
+
+</resources>

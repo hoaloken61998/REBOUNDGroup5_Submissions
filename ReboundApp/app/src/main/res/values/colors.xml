@@ -12,4 +12,14 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="Lavender">#8692f7</color>
+    <color name="dark_text">#1E232C</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="accent_dark">#FF867B4A</color>
+    <color name="accent_light">#FFAB9E67</color>
+    <color name="outline_text">#FF6D5D5D</color>
+    <!-- nếu cần thêm: -->
+    <color name="black_90">#E6000000</color>
+    <color name="black_26">#42000000</color>
+    <color name="hint_text_color">#858585</color>
+    <color name="lineColor">#D4CFA4</color>
 </resources>
