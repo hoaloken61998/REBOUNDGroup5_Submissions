@@ -83,7 +83,7 @@
         <!-- Profile Options -->
         <LinearLayout
             android:id="@+id/profileOptions"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="24dp"
@@ -91,7 +91,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- Item 1 -->
+        <!-- Item 1 -->
             <LinearLayout
                 android:id="@+id/optionYourProfile"
                 android:layout_width="match_parent"
@@ -159,13 +159,14 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="12dp"
-                android:background="@drawable/bottom_border">
+                android:background="@drawable/bottom_border"
+                android:clickable="true"
+                android:focusable="true">
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@mipmap/ic_order"/>
-                />
 
                 <TextView
                     android:layout_width="0dp"
@@ -195,7 +196,6 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@mipmap/ic_language"/>
-                />
 
                 <TextView
                     android:layout_width="0dp"
@@ -225,7 +225,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@mipmap/ic_lock"/>/>
+                    android:src="@mipmap/ic_lock"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -256,7 +256,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@mipmap/ic_help_center"/>/>
+                    android:src="@mipmap/ic_help_center"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -286,7 +286,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@mipmap/ic_log_out"/>/>
+                    android:src="@mipmap/ic_log_out"/>
 
                 <TextView
 

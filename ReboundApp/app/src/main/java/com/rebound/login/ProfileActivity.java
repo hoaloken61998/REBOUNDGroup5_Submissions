@@ -2,6 +2,7 @@ package com.rebound.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -12,11 +13,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.rebound.R;
+import com.rebound.main.OrdersActivity;
 
 public class ProfileActivity extends AppCompatActivity {
 
     LinearLayout optionHelpCenter;
     LinearLayout optionYourProfile;
+    LinearLayout optionMyOrders;
 
     ImageView imgBackProfile;
 
@@ -41,8 +44,11 @@ public class ProfileActivity extends AppCompatActivity {
         optionHelpCenter = findViewById(R.id.optionHelpCenter);
         optionYourProfile = findViewById(R.id.optionYourProfile);
         imgBackProfile = findViewById(R.id.imgBackProfile);
+        optionMyOrders = findViewById(R.id.optionMyOrders);
+        Log.d("ProfileActivity", "👉 optionMyOrders = " + optionMyOrders);
 
     }
+
 
     private void addEvents() {
         optionHelpCenter.setOnClickListener(v -> {
@@ -53,9 +59,15 @@ public class ProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
             startActivity(intent);
         });
+        optionMyOrders.setOnClickListener(v -> {
+            Log.d("ProfileActivity", "optionMyOrders clicked"); // kiểm tra có log hay không
+            Intent intent = new Intent(ProfileActivity.this, OrdersActivity.class);
+            startActivity(intent);
+        });
 
         imgBackProfile.setOnClickListener(v -> {
             finish();
         });
+
     }
 }

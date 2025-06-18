@@ -23,6 +23,7 @@ import com.rebound.R;
 import com.rebound.adapters.LastCollectionAdapter;
 import com.rebound.data.ProductData;
 import com.rebound.utils.CartManager;
+import com.rebound.utils.OrderManager;
 import com.rebound.utils.SharedPrefManager;
 
 public class MainPageFragment extends Fragment {
@@ -37,6 +38,7 @@ public class MainPageFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        OrderManager.init(requireContext());
 
         View view = inflater.inflate(R.layout.activity_main_page, container, false);
 

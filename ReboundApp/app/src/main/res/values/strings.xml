@@ -287,6 +287,14 @@
     <string name="title_update_password_bottom_text">Not update anymore? <b><font color="#867B4A">Back</font></b></string>
 
     <string name="title_appointment_service_label">Service: </string>
+    <string name="back">Back</string>
+    <string name="title_select_language">Select Language</string>
+    <string name="title_english">English</string>
+    <string name="title_vietnamese">Vietnamese</string>
+    <string name="title_buy_again">Buy again</string>
+    <string name="title_delete">Delete</string>
+    <string name="hint_search">Search</string>
+    <string name="title_privacy_policy">Privacy Policy</string>
 
 
 </resources>
