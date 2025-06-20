@@ -2,22 +2,42 @@ package com.rebound.models.Orders;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 public class Order {
+    private final String id;
     private final List<Product> productList;
-    private final String total; // Ví dụ: "330.000 VND"
-    private String status; // "Shipped" hoặc "To Receive"
+    private final String total;
+    private String status;
 
-    public Order(List<Product> productList, String status) {
-        this.productList = productList;
-        this.total = calculateFormattedTotal(productList);
-        this.status = status;
+    private String formatTotal(int rawTotal) {
+        return String.format("%,d VND", rawTotal).replace(',', '.');
     }
 
+
+    public Order(List<Product> productList, int rawTotal, String status) {
+        this.id = UUID.randomUUID().toString();
+        this.productList = productList;
+        this.total = formatTotal(rawTotal); // format từ int
+        this.status = status;
+    }
     public Order(List<Product> productList, String total, String status) {
+        this.id = UUID.randomUUID().toString();
         this.productList = productList;
         this.total = total;
         this.status = status;
+    }
+
+
+    public Order(String id, List<Product> productList, String total, String status) {
+        this.id = id;
+        this.productList = productList;
+        this.total = total;
+        this.status = status;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public List<Product> getProductList() {
@@ -36,38 +56,32 @@ public class Order {
         this.status = status;
     }
 
-    // 🧮 Tính tổng tiền từ danh sách sản phẩm
+    // Tính tổng tiền
     private String calculateFormattedTotal(List<Product> products) {
         BigDecimal sum = BigDecimal.ZERO;
-
         for (Product product : products) {
             try {
-                String raw = product.getPrice().replaceAll("[^\\d]", ""); // Chỉ lấy phần số
+                String raw = product.getPrice().replaceAll("[^\\d]", ""); // Chỉ lấy số
                 BigDecimal price = new BigDecimal(raw);
                 sum = sum.add(price);
             } catch (Exception e) {
-                e.printStackTrace(); // fallback nếu lỗi parse
+                e.printStackTrace();
             }
         }
-
         return String.format("%,.0f VND", sum.doubleValue());
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
         Order order = (Order) obj;
-
-        // So sánh theo total + status + productList
-        return total.equals(order.total)
-                && status.equals(order.status)
-                && productList.equals(order.productList);
+        return id.equals(order.id);
     }
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(total, status, productList);
+        return java.util.Objects.hash(id);
     }
-
 }

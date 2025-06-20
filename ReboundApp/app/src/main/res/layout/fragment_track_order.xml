@@ -32,41 +32,6 @@
             android:nestedScrollingEnabled="false" />
 
         <!-- Delivery Address -->
-        <TextView
-            android:layout_marginTop="32dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delivery Address"
-            android:textColor="#867B4A"
-            android:textSize="18sp"
-            android:fontFamily="@font/montserrat_bold" />
 
-        <TextView
-            android:id="@+id/txtCity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="--"
-            android:textColor="#5C5C5C"
-            android:textSize="15sp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/montserrat_regular" />
-
-        <TextView
-            android:id="@+id/txtFullAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="--"
-            android:textColor="#5C5C5C"
-            android:textSize="15sp"
-            android:fontFamily="@font/montserrat_regular" />
-
-        <TextView
-            android:id="@+id/txtPhone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="--"
-            android:textColor="#5C5C5C"
-            android:textSize="15sp"
-            android:fontFamily="@font/montserrat_regular" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

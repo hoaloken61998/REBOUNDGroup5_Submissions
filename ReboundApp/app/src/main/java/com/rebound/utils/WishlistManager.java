@@ -9,6 +9,7 @@ import com.rebound.models.Cart.ProductItem;
 import com.rebound.models.Customer.Customer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class WishlistManager {
@@ -32,13 +33,12 @@ public class WishlistManager {
         return instance;
     }
 
-    // 🔑 Key riêng cho từng user
     private String getUserWishlistKey() {
         Customer currentUser = SharedPrefManager.getCurrentCustomer(context);
         if (currentUser != null && currentUser.getEmail() != null) {
-            return "wishlist_" + currentUser.getEmail();  // hoặc dùng getUsername()
+            return "wishlist_" + currentUser.getEmail();
         }
-        return "wishlist_guest";  // fallback nếu chưa login
+        return "wishlist_guest";
     }
 
     public void addToWishlist(ProductItem product) {
@@ -61,15 +61,29 @@ public class WishlistManager {
         sharedPreferences.edit().putString(key, gson.toJson(list)).apply();
     }
 
-    public void removeFromWishlist(ProductItem product) {
+    public void removeFromWishlist(String title) {
         List<ProductItem> wishlist = getWishlist();
-        if (wishlist.remove(product)) {
-            saveWishlist(wishlist);
+        Iterator<ProductItem> iterator = wishlist.iterator();
+
+        while (iterator.hasNext()) {
+            ProductItem item = iterator.next();
+            if (item.title.equals(title)) {
+                iterator.remove();
+                break;
+            }
         }
+
+        saveWishlist(wishlist);
     }
 
-    public boolean isInWishlist(ProductItem product) {
-        return getWishlist().contains(product);
+    public boolean isInWishlist(String title) {
+        List<ProductItem> wishlist = getWishlist();
+        for (ProductItem item : wishlist) {
+            if (item.title.equals(title)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void clearWishlist() {

@@ -20,12 +20,13 @@ import com.rebound.utils.CartManager;
 import java.util.List;
 
 public class ShoppingCartActivity extends AppCompatActivity {
+
     RecyclerView recyclerView;
     TextView txtSubtotal, txtDelivery, txtDiscount, txtTotal;
     EditText editPromo;
     Button btnApply, btnCheckout;
     ImageView imgBackShoppingCart;
-    private static final int DELIVERY_FEE = 20000;
+
     private int discountAmount = 0;
 
     private CartAdapter adapter;
@@ -44,14 +45,13 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private void addViews() {
         recyclerView = findViewById(R.id.recyclerView);
         txtSubtotal = findViewById(R.id.txtShoppingCartSummarySubtotal);
-        txtDelivery = findViewById(R.id.txtShoppingCartSummaryDelivery);
         txtDiscount = findViewById(R.id.txtShoppingCartSummaryDiscount);
         txtTotal = findViewById(R.id.txtShoppingCartSummaryTotal);
         editPromo = findViewById(R.id.edtShoppingCartPromo);
         btnApply = findViewById(R.id.btnShoppingCartApply);
         btnCheckout = findViewById(R.id.btnCheckout);
+        txtDelivery = findViewById(R.id.txtShoppingCartSummaryDelivery);
         imgBackShoppingCart = findViewById(R.id.imgBackShoppingCart);
-
 
         cartItems = CartManager.getInstance().getCartItems();
 
@@ -65,17 +65,17 @@ public class ShoppingCartActivity extends AppCompatActivity {
             String code = editPromo.getText().toString().trim();
             if (code.equalsIgnoreCase("SALE10")) {
                 discountAmount = 100000;
-                Toast.makeText(this, "Applied 100.000 discount", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.discount_applied), Toast.LENGTH_SHORT).show();
             } else {
                 discountAmount = 0;
-                Toast.makeText(this, "Invalid promo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.invalid_promo), Toast.LENGTH_SHORT).show();
             }
             updateSummary();
         });
 
         btnCheckout.setOnClickListener(v -> {
             if (cartItems == null || cartItems.isEmpty()) {
-                Toast.makeText(this, "Your cart is empty. Please add items before checking out.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.empty_cart_warning), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -84,15 +84,13 @@ public class ShoppingCartActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        imgBackShoppingCart.setOnClickListener(v -> {
-            finish();
-        });
+        imgBackShoppingCart.setOnClickListener(v -> finish());
     }
 
     private void updateSummary() {
         int subtotal = getSubTotal();
         txtSubtotal.setText(format(subtotal));
-        txtDelivery.setText(format(DELIVERY_FEE));
+        txtDelivery.setText(getString(R.string.free_shipping));
         txtDiscount.setText(format(discountAmount));
         txtTotal.setText(format(getTotal()));
     }
@@ -111,11 +109,10 @@ public class ShoppingCartActivity extends AppCompatActivity {
     }
 
     private int getTotal() {
-        return getSubTotal() + DELIVERY_FEE - discountAmount;
+        return getSubTotal() - discountAmount;
     }
 
     private String format(int amount) {
         return String.format("%,d", amount).replace(',', '.') + " VND";
     }
 }
-

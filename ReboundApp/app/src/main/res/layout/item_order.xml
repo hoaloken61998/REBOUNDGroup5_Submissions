@@ -3,16 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
+    android:layout_margin="10dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="6dp"
     android:backgroundTint="@android:color/white">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_margin="16dp">
 
         <!-- Trạng thái đơn hàng -->
         <TextView
@@ -56,26 +55,36 @@
             android:fontFamily="@font/montserrat_medium"
             android:visibility="gone">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDelete"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                app:backgroundTint="#FFFFFF"
                 android:layout_height="40dp"
+                android:layout_marginBottom="3dp"
                 android:minHeight="40dp"
                 android:paddingHorizontal="16dp"
-                android:text="Delete"
+                android:paddingVertical="5dp"
+                android:text="@string/title_button_order_delete"
                 android:textSize="12sp"
-                android:background="@drawable/button_outline"
                 android:fontFamily="@font/montserrat_medium"
-                android:textColor="@color/outline_text" />
+                android:textColor="#666666"
+                app:strokeWidth="1dp"
+                app:strokeColor="#918585"
+                android:elevation="0dp"
+                app:cornerRadius="8dp" />
 
             <Button
                 android:id="@+id/btnBuyAgain"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="40dp"
                 android:minHeight="40dp"
                 android:paddingHorizontal="16dp"
                 android:layout_marginStart="8dp"
-                android:text="Buy Again"
+                android:layout_marginBottom="3dp"
+                android:paddingVertical="5dp"
+                android:text="@string/title_button_order_buy_again"
                 android:textSize="12sp"
                 android:textColor="@android:color/white"
                 android:fontFamily="@font/montserrat_medium"
@@ -92,31 +101,43 @@
             android:orientation="horizontal"
             android:visibility="gone">
 
-            <Button
-                android:id="@+id/btnOrderReceived"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:minHeight="40dp"
-                android:paddingHorizontal="16dp"
-                android:text="Order Received"
-                android:textSize="12sp"
-                android:enabled="false"
-                android:textColor="#C4C4C4"
-                android:fontFamily="@font/montserrat_medium"
-                android:background="@drawable/button_disabled"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnOrderReceived"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="40dp"
+                    android:paddingVertical="5dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="3dp"
+                    android:elevation="0dp"
+                    android:text="@string/title_button_order_received"
+                    android:textSize="12sp"
+                    android:textColor="#666666"
+                    android:fontFamily="@font/montserrat_medium"
+                    app:backgroundTint="#FFFFFF"
+                    app:cornerRadius="20dp"
+                    app:strokeColor="#918585"
+                    app:strokeWidth="1dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"/>
 
-            <Button
-                android:id="@+id/btnTrackOrder"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:minHeight="40dp"
-                android:paddingHorizontal="16dp"
-                android:layout_marginStart="8dp"
-                android:text="Track Order"
-                android:textSize="12sp"
-                android:textColor="@android:color/white"
-                android:fontFamily="@font/montserrat_medium"
-                android:background="@drawable/button_filled" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTrackOrder"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="40dp"
+                    android:paddingVertical="5dp"
+                    android:layout_marginBottom="3dp"
+                    android:text="@string/title_button_order_track"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/montserrat_medium"
+                    app:cornerRadius="20dp"
+                    android:backgroundTint="@color/accent_light"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#918585"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

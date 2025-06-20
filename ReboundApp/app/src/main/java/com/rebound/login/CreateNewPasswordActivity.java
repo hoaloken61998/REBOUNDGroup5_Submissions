@@ -23,7 +23,6 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
     ImageView imgBackCreateNewPassword;
     EditText edtCreateNewPassword, edtConfirmPassword;
     ListCustomer listCustomer;
-
     String email;
 
     @Override
@@ -31,18 +30,15 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_create_new_password);
-        // Nhận email và listCustomer từ màn trước
-        email = getIntent().getStringExtra("email");
 
+        email = getIntent().getStringExtra("email");
         listCustomer = SharedPrefManager.getCustomerList(this);
 
-// Nếu chưa từng lưu danh sách (lần đầu mở app)
         if (listCustomer == null) {
             listCustomer = new ListCustomer();
-            listCustomer.addSampleCustomers();  // chỉ gọi 1 lần duy nhất
-            SharedPrefManager.saveCustomerList(this, listCustomer); // lưu lại để dùng sau
+            listCustomer.addSampleCustomers();
+            SharedPrefManager.saveCustomerList(this, listCustomer);
         }
-
 
         addViews();
         addEvents();
@@ -52,7 +48,6 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
     }
 
     private void addViews() {
@@ -73,42 +68,36 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
         String confirmPass = edtConfirmPassword.getText().toString().trim();
 
         if (newPass.isEmpty() || confirmPass.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.create_password_fill_all), Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (!newPass.equals(confirmPass)) {
-            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.create_password_mismatch), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Tìm đúng user và update password
         boolean updated = false;
         for (Customer customer : listCustomer.getCustomers()) {
             if (customer.getEmail().equalsIgnoreCase(email)) {
                 customer.setPassword(newPass);
                 updated = true;
 
-                // ✅ Lưu lại password mới bằng SharedPreferences
                 getSharedPreferences("user_data", MODE_PRIVATE)
                         .edit()
                         .putString("email", email)
                         .putString("password", newPass)
                         .apply();
-
                 break;
             }
         }
 
         if (updated) {
-            // ✅ Lưu danh sách người dùng mới sau khi cập nhật password
             SharedPrefManager.saveCustomerList(this, listCustomer);
-
-            Toast.makeText(this, "Password updated successfully", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(CreateNewPasswordActivity.this, PasswordChangedActivity.class);
-            startActivity(intent);
+            Toast.makeText(this, getString(R.string.create_password_success), Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, PasswordChangedActivity.class));
         } else {
-            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.create_password_user_not_found), Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -2,11 +2,16 @@
 <project version="4">
   <component name="deploymentTargetSelector">
     <selectionStates>
-      <SelectionState runConfigName="Unnamed">
+      <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="REBOUNDGroup5_AndroidAppDevelopment.ReboundApp.app">
-        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2025-06-20T11:30:16.019954100Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Windows\.android\avd\Pixel_2.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
     </selectionStates>
   </component>

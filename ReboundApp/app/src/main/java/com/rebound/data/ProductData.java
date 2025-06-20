@@ -6,6 +6,7 @@ import com.rebound.models.Cart.ProductItem;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ProductData {
 
     public static List<ProductItem> getNecklaceList() {

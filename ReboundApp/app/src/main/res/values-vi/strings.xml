@@ -136,7 +136,7 @@ Styling</string>
     <string name="title_forgot_password_subtitle">Đừng lo! Điều này xảy ra. Vui lòng nhập địa chỉ email liên kết với tài khoản của bạn.</string>
     <string name="title_forgot_password_email_hint">Nhập địa chỉ email</string>
     <string name="title_button_forgot_password_send_code">Gửi mã</string>
-    <string name="title_login_bottom_text">Chưa có tài khoản? &lt;b&gt;&lt;font color=&quot;#867B4A&quot;&gt;Đăng ký ngay&lt;/font&gt;&lt;/b&gt;</string>
+    <string name="title_login_bottom_text">Chưa có tài khoản? <b><font color='#867B4A'>Đăng ký ngay</font></b></string>
     <string name="title_forgot_password_bottom_text">Nhớ mật khẩu? <b><font color="#867B4A">Đăng nhập</font></b></string>
 
     <string name="title_login_email_hint">Nhập email của bạn</string>
@@ -249,5 +249,272 @@ Styling</string>
     <string name="title_delete">Xoá</string>
     <string name="hint_search">Tìm kiếm</string>
     <string name="title_privacy_policy">Chính sách bảo mật</string>
+
+    <string name="title_checkout_shipping_payment_method">Chọn phương thức thanh toán</string>
+    <string name="title_button_order_delete">Xóa</string>
+    <string name="title_button_order_received">Đã nhận</string>
+    <string name="title_button_order_track">Theo dõi</string>
+    <string name="title_button_order_shipped">Đã giao</string>
+    <string name="title_button_order_buy_again">Mua lại</string>
+
+    <string name="title_bank_transfer">Chuyển khoản ngân hàng</string>
+    <string name="title_bank_transfer_qr_subtitle">Quét mã QR để thanh toán</string>
+    <string name="title_bank_transfer_qr_timer_default">Mã QR sẽ hết hạn sau 05:00</string>
+    <string name="title_button_bank_transferqr_regenerate">↻ Tạo lại mã QR</string>
+    <string name="title_button_confirm_payment_success">Xác nhận đã thanh toán</string>
+
+    <string name="title_payment_bank_transfer">Chuyển khoản ngân hàng</string>
+    <string name="title_payment_success">Thanh toán thành công</string>
+    <string name="title_payment_transaction_number">Mã giao dịch</string>
+    <string name="title_payment_time">Thời gian</string>
+    <string name="title_payment_money_sent">Số tiền đã gửi</string>
+    <string name="title_payment_we_receive">Chúng tôi nhận được</string>
+    <string name="title_button_payment_download_receipt">Tải biên lai</string>
+
+    <string name="title_logout_message">Thông báo</string>
+    <string name="title_logout_confirmation">Bạn có muốn đăng xuất không?</string>
+    <string name="title_button_logout_yes">Có</string>
+    <string name="title_button_logout_no">Không</string>
+
+    <string name="message_fill_all_fields">Vui lòng điền đầy đủ thông tin</string>
+    <string name="message_card_number_16_digits">Số thẻ phải gồm 16 chữ số</string>
+    <string name="message_invalid_exp_month">Tháng hết hạn không hợp lệ</string>
+    <string name="message_year_2_digits">Năm phải có 2 chữ số</string>
+    <string name="message_cvv_length">CVV phải gồm 3 hoặc 4 chữ số</string>
+    <string name="message_card_added_success">Thêm thẻ thành công</string>
+
+
+    <string name="message_capture_success">Đã chụp ảnh!</string>
+    <string name="message_camera_permission_required">Cần quyền camera để sử dụng tính năng này!</string>
+
+    <string name="checkout_add_address_fill_all_fields">Vui lòng điền đầy đủ thông tin</string>
+    <string name="checkout_add_address_user_not_logged_in">Người dùng chưa đăng nhập</string>
+    <string name="checkout_add_address_saved_success">Địa chỉ giao hàng đã được lưu</string>
+
+    <string name="qr_expired_message">Mã QR đã hết hạn. Vui lòng tạo lại.</string>
+    <string name="qr_expired_prompt">Mã QR đã hết hạn. Vui lòng tạo lại.</string>
+    <string name="qr_expire_countdown">Mã QR này sẽ hết hạn sau %1$02d:%2$02d</string>
+
+    <string name="payment_success_title">Thanh toán thành công</string>
+    <string name="payment_success_text">Giao dịch %1$s với %2$d VND đã hoàn tất.</string>
+    <string name="payment_success_detailed">Giao dịch %1$s với %2$d VND đã hoàn tất.</string>
+    <string name="time_just_now">Vừa xong</string>
+
+    <string name="channel_order_title">Thông báo đơn hàng</string>
+    <string name="channel_order_description">Thông báo khi đặt hàng hoặc thanh toán thành công</string>
+
+    <string name="checkout_user_not_found">Không tìm thấy thông tin người dùng</string>
+    <string name="checkout_no_card_info">Chưa có thông tin thẻ</string>
+    <string name="checkout_method_not_available">Không có phương thức thanh toán</string>
+    <string name="checkout_shipping_not_available">Chưa có địa chỉ giao hàng</string>
+    <string name="checkout_no_phone">Chưa có số điện thoại</string>
+    <string name="checkout_order_success_title">Đặt hàng thành công!</string>
+    <string name="checkout_order_success_bank">Giao dịch %1$s với %2$s đã được thực hiện.</string>
+    <string name="checkout_order_success_normal">Đơn hàng của bạn đang được xử lý.</string>
+    <string name="checkout_notification_channel_title">Thông báo đơn hàng</string>
+    <string name="checkout_notification_channel_description">Thông báo khi đặt hàng thành công</string>
+    <string name="checkout_order_confirmed_title">Đơn hàng đã xác nhận!</string>
+    <string name="checkout_order_confirmed_text">Bạn đã đặt hàng thành công với số tiền %1$s qua %2$s lúc %3$s.</string>
+    <string name="checkout_order_id">Mã đơn hàng: %1$s</string>
+
+    <string name="checkout_card_format">%1$s: %2$s kết thúc bằng ••••%3$s</string>
+
+    <string name="checkout_shipping_cod_not_supported">Không hỗ trợ Thanh toán khi nhận hàng với hình thức Nhận tại cửa hàng. Vui lòng chọn phương thức khác.</string>
+    <string name="checkout_shipping_pickup_not_supported">Không thể chọn Nhận tại cửa hàng khi đã chọn Thanh toán khi nhận hàng. Vui lòng chọn phương thức khác.</string>
+    <string name="checkout_shipping_user_not_found">Không tìm thấy người dùng.</string>
+    <string name="checkout_shipping_add_address">Vui lòng thêm địa chỉ giao hàng.</string>
+    <string name="checkout_shipping_select_shipping">Vui lòng chọn phương thức vận chuyển.</string>
+    <string name="checkout_shipping_select_payment">Vui lòng chọn phương thức thanh toán.</string>
+    <string name="checkout_shipping_invalid_payment">Phương thức thanh toán không hợp lệ</string>
+    <string name="checkout_shipping_confirm_title">Xác nhận đơn hàng</string>
+    <string name="checkout_shipping_confirm_cod">Bạn có chắc muốn đặt đơn hàng này và thanh toán khi nhận hàng?</string>
+    <string name="checkout_shipping_button_yes">Đồng ý</string>
+    <string name="checkout_shipping_button_cancel">Hủy</string>
+    <string name="checkout_shipping_no_card_added">Chưa thêm thẻ</string>
+    <string name="checkout_shipping_no_user">Không có người dùng</string>
+
+
+    <string name="pickup_at_store">Nhận tại cửa hàng</string>
+    <string name="standard_delivery">Giao hàng tiêu chuẩn</string>
+    <string name="express_delivery">Giao hàng nhanh</string>
+
+    <string name="cod">Thanh toán khi nhận hàng</string>
+    <string name="credit_card">Thẻ tín dụng</string>
+    <string name="debit_card">Thẻ ghi nợ</string>
+    <string name="bank_transfer">Chuyển khoản ngân hàng</string>
+
+    <string name="transaction_unknown">#KHÔNG_RÕ</string>
+    <string name="downloading_receipt">Đang tải hóa đơn...</string>
+
+    <string name="discount_applied">Đã áp dụng giảm 100.000</string>
+    <string name="invalid_promo">Mã giảm giá không hợp lệ</string>
+    <string name="empty_cart_warning">Giỏ hàng trống. Vui lòng thêm sản phẩm trước khi thanh toán.</string>
+    <string name="free_shipping">Miễn phí</string>
+
+
+    <string name="policy_cancel_html"><![CDATA[
+    <b>Chính sách hủy dịch vụ:</b><br/><br/>
+    Bạn có thể hủy các cuộc hẹn (ví dụ: bấm lỗ tai, tư vấn phong cách) trước 24 giờ mà không bị phạt.<br/><br/>
+    Nếu hủy trễ hoặc không đến, bạn có thể bị tính phí hủy hoặc mất ưu đãi khuyến mãi.<br/><br/>
+    Các đơn hàng sản phẩm vật lý (trang sức) chỉ có thể hủy trước khi xử lý giao hàng.
+]]></string>
+
+    <string name="terms_plain_html"><![CDATA[
+    <b>Tài khoản người dùng:</b> Bạn cần cung cấp thông tin chính xác và chịu trách nhiệm bảo mật tài khoản.<br/><br/>
+    <b>Đơn hàng & Thanh toán:</b> Mọi đơn hàng phụ thuộc vào tình trạng còn hàng. Giá có thể thay đổi mà không báo trước.<br/><br/>
+    <b>Thử trang sức AR:</b> Xem thử trang sức bằng công nghệ AR, chỉ mang tính minh họa.<br/><br/>
+    <b>Đặt lịch dịch vụ:</b> Vui lòng đến đúng giờ theo lịch đã đặt.<br/><br/>
+    <b>Hoàn tiền & Trả hàng:</b> Chỉ hỗ trợ hoàn tiền với sản phẩm lỗi hoặc hủy lịch hẹn hợp lệ.<br/><br/>
+    <b>Quyền riêng tư:</b> Dữ liệu của bạn được lưu trữ an toàn và không chia sẻ cho bên thứ ba.<br/><br/>
+    <b>Cập nhật chính sách:</b> Chúng tôi có thể thay đổi chính sách mà không cần thông báo trước.
+]]></string>
+
+    <string name="select_gender">Chọn giới tính</string>
+    <string name="complete_profile_fill_all">Vui lòng điền đầy đủ thông tin.</string>
+    <string name="complete_profile_user_not_found">Không tìm thấy người dùng.</string>
+    <string name="complete_profile_phone_exists">Số điện thoại đã được sử dụng.</string>
+
+    <string name="create_password_fill_all">Vui lòng điền đầy đủ thông tin.</string>
+    <string name="create_password_mismatch">Mật khẩu không khớp.</string>
+    <string name="create_password_success">Đổi mật khẩu thành công.</string>
+    <string name="create_password_user_not_found">Không tìm thấy người dùng.</string>
+
+    <string name="profile_update_success">Cập nhật hồ sơ thành công</string>
+    <string name="profile_update_user_not_found">Không tìm thấy người dùng</string>
+    <string name="profile_avatar_note_default">Chạm vào ảnh để thay đổi ảnh đại diện</string>
+
+    <string name="invalid_email_format">Email không hợp lệ!</string>
+    <string name="email_does_not_exist">Email không tồn tại!</string>
+    <string name="otp_email_subject">Mã OTP của bạn</string>
+    <string name="otp_email_body">Mã OTP của bạn là: %1$s</string>
+    <string name="otp_sent">Mã OTP đã được gửi tới email của bạn</string>
+
+    <!-- FAQ Categories -->
+    <string name="faq_category_delivery">Giao hàng</string>
+    <string name="faq_category_order">Đơn hàng</string>
+    <string name="faq_category_pricing">Giá cả</string>
+    <string name="faq_category_service">Dịch vụ</string>
+
+    <!-- DELIVERY FAQs -->
+    <string name="faq_delivery_missed">Nếu tôi bỏ lỡ giao hàng thì sao?</string>
+    <string name="faq_delivery_missed_answer">Chúng tôi sẽ giao lại vào ngày khả dụng tiếp theo.</string>
+
+    <string name="faq_delivery_time">Thời gian giao hàng ước tính là bao lâu?</string>
+    <string name="faq_delivery_time_answer">Giao hàng mất 2–3 ngày làm việc tùy theo địa điểm.</string>
+
+    <string name="faq_delivery_change_address">Tôi có thể đổi địa chỉ giao hàng sau khi đặt không?</string>
+    <string name="faq_delivery_change_address_answer">Có, nếu đơn chưa được gửi đi.</string>
+
+    <string name="faq_delivery_express">Có dịch vụ giao hàng nhanh không?</string>
+    <string name="faq_delivery_express_answer">Có, nội thành: 2–4 giờ, gần: 1–2 ngày, khác: 2–3 ngày.</string>
+
+    <!-- ORDER FAQs -->
+    <string name="faq_order_track">Làm thế nào để theo dõi đơn hàng?</string>
+    <string name="faq_order_track_answer">Bạn sẽ nhận được link theo dõi qua email.</string>
+
+    <string name="faq_order_cancel">Tôi có thể hủy đơn sau khi xác nhận không?</string>
+    <string name="faq_order_cancel_answer">Chỉ khi đơn chưa được gửi đi.</string>
+
+    <string name="faq_order_wrong_item">Tôi phải làm gì nếu nhận sai sản phẩm?</string>
+    <string name="faq_order_wrong_item_answer">Vui lòng liên hệ bộ phận hỗ trợ ngay.</string>
+
+    <string name="faq_order_modify">Tôi có thể chỉnh sửa đơn hàng sau khi thanh toán không?</string>
+    <string name="faq_order_modify_answer">Bạn có thể chỉnh nếu đơn chưa được gửi đi.</string>
+
+    <!-- PRICING FAQs -->
+    <string name="faq_pricing_calculation">Phí giao hàng được tính như thế nào?</string>
+    <string name="faq_pricing_calculation_answer">Tùy vào trọng lượng và khoảng cách.</string>
+
+    <string name="faq_pricing_hidden">Có phụ phí ẩn nào không?</string>
+    <string name="faq_pricing_hidden_answer">Không, mọi phí được hiển thị khi thanh toán.</string>
+
+    <string name="faq_pricing_bulk">Có giảm giá khi đặt số lượng lớn không?</string>
+    <string name="faq_pricing_bulk_answer">Có, với đơn từ 10 sản phẩm trở lên.</string>
+
+    <string name="faq_pricing_payment_methods">Chấp nhận những phương thức thanh toán nào?</string>
+    <string name="faq_pricing_payment_methods_answer">Visa, MasterCard, PayPal, COD.</string>
+
+    <!-- SERVICE FAQs -->
+    <string name="faq_service_weekends">Có giao hàng cuối tuần không?</string>
+    <string name="faq_service_weekends_answer">Có, nhưng chỉ tại một số khu vực.</string>
+
+    <string name="faq_service_return_policy">Chính sách trả hàng là gì?</string>
+    <string name="faq_service_return_policy_answer">Chấp nhận trả hàng trong vòng 14 ngày.</string>
+
+    <string name="faq_service_installation">Có cung cấp dịch vụ lắp đặt không?</string>
+    <string name="faq_service_installation_answer">Có, cho một số sản phẩm nhất định.</string>
+
+    <string name="faq_service_schedule">Tôi có thể đặt giờ giao hàng cụ thể không?</string>
+    <string name="faq_service_schedule_answer">Có, liên hệ hỗ trợ để sắp xếp.</string>
+
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Mật khẩu</string>
+    <string name="login_button">Đăng nhập</string>
+    <string name="login_google_button">Đăng nhập bằng Google</string>
+    <string name="login_forgot_password">Quên mật khẩu?</string>
+    <string name="login_register_prompt">Chưa có tài khoản? Đăng ký</string>
+    <string name="login_terms_agree">Tôi đồng ý với Điều khoản sử dụng</string>
+
+    <!-- Thông báo Toast -->
+    <string name="toast_fill_all">Vui lòng nhập đầy đủ Email và Mật khẩu.</string>
+    <string name="toast_invalid_email">Định dạng email không hợp lệ.</string>
+    <string name="toast_agree_terms">Vui lòng đồng ý với điều khoản để tiếp tục.</string>
+    <string name="toast_google_canceled">Đã hủy đăng nhập Google</string>
+    <string name="toast_google_failed">Đăng nhập Google thất bại: %1$s</string>
+
+    <string name="please_login_wishlist">Vui lòng đăng nhập để xem danh sách yêu thích</string>
+    <string name="please_login_orders">Vui lòng đăng nhập để xem đơn hàng của bạn.</string>
+    <string name="please_login_payment">Vui lòng đăng nhập để truy cập phương thức thanh toán</string>
+    <string name="logout_confirm_title">Bạn có chắc muốn đăng xuất không?</string>
+    <string name="logout_yes">Có</string>
+    <string name="logout_no">Không</string>
+
+    <string name="register_fill_all_fields">Vui lòng điền đầy đủ tất cả các trường bắt buộc.</string>
+
+    <string name="passwords_do_not_match">Mật khẩu không trùng khớp.</string>
+    <string name="agree_terms_to_continue">Vui lòng đồng ý với điều khoản để tiếp tục.</string>
+    <string name="username_exists">Tên người dùng đã tồn tại. Vui lòng chọn tên khác.</string>
+    <string name="email_exists">Email đã được sử dụng. Vui lòng dùng email khác.</string>
+    <string name="account_created_successfully">Tạo tài khoản thành công!</string>
+
+    <string name="contact_customer_service">Dịch vụ khách hàng</string>
+    <string name="contact_website">Trang web</string>
+
+    <string name="camera_not_available">Không có sẵn máy ảnh</string>
+    <string name="photo_captured_success">Chụp ảnh thành công.</string>
+    <string name="camera_permission_denied">Không được cấp quyền truy cập máy ảnh.</string>
+
+    <string name="schedule_login_required">Vui lòng đăng nhập để đặt lịch hẹn!</string>
+    <string name="schedule_select_date">Vui lòng chọn ngày!</string>
+    <string name="schedule_select_time">Vui lòng chọn thời gian!</string>
+    <string name="schedule_select_service">Vui lòng chọn dịch vụ!</string>
+    <string name="notification_appointment_title">Xác nhận lịch hẹn</string>
+    <string name="notification_appointment_message">Bạn đã đặt lịch thành công vào ngày %1$s lúc %2$s cho dịch vụ: %3$s</string>
+    <string name="estimated_date_label">Ngày giao hàng dự kiến: %1$s</string>
+
+
+    <string name="faq_pricing_calc">Phí vận chuyển được tính như thế nào?</string>
+    <string name="faq_pricing_calc_answer">Dựa vào khối lượng và khoảng cách.</string>
+
+    <string name="faq_pricing_hidden_fees">Có phụ phí ẩn không?</string>
+    <string name="faq_pricing_hidden_fees_answer">Không, tất cả phí được hiển thị khi thanh toán.</string>
+
+    <string name="faq_pricing_bulk_discount">Có giảm giá cho đơn hàng số lượng lớn không?</string>
+    <string name="faq_pricing_bulk_discount_answer">Có, với đơn từ 10 sản phẩm trở lên.</string>
+
+    <string name="faq_pricing_methods">Chấp nhận phương thức thanh toán nào?</string>
+    <string name="faq_pricing_methods_answer">Visa, MasterCard, PayPal, hoặc khi nhận hàng (COD).</string>
+    <string name="faq_delivery_address_change">Tôi có thể đổi địa chỉ giao hàng sau khi đặt hàng không?</string>
+    <string name="faq_delivery_address_change_answer">Có, nếu đơn hàng chưa được giao.</string>
+    <string name="faq_service_return">Chính sách đổi trả của bạn là gì?</string>
+    <string name="faq_service_return_answer">Chúng tôi chấp nhận đổi trả trong vòng 14 ngày.</string>
+
+    <string name="title_orders">Đơn hàng của tôi</string>
+    <string name="tab_orders_ongoing">Đang xử lý</string>
+    <string name="tab_orders_completed">Đã hoàn tất</string>
+
+
+    <string name="title_cancellation_policy">Chính sách hủy</string>
+    <string name="title_terms_and_conditions">Điều khoản và điều kiện</string>
 
 </resources>

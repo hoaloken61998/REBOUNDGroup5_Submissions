@@ -18,15 +18,13 @@
         android:layout_marginTop="24dp"
         android:paddingHorizontal="16dp">
 
-        <!-- Nút đóng bên trái -->
         <ImageView
             android:id="@+id/btnCloseArTop"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentStart="true"
-            android:src="@mipmap/ic_close_ar"/>
+            android:src="@mipmap/ic_close_ar" />
 
-        <!-- Tiêu đề ở giữa -->
         <TextView
             android:id="@+id/txtTitleAR"
             android:layout_width="wrap_content"
@@ -38,7 +36,7 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <!-- Nút xoay & thêm AR -->
+    <!-- Nút xoay & thêm vào giỏ -->
     <LinearLayout
         android:id="@+id/right_controls_container"
         android:layout_width="wrap_content"
@@ -49,7 +47,6 @@
         android:layout_marginTop="100dp"
         android:gravity="center_horizontal">
 
-        <!-- Switch Camera -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -78,7 +75,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Add to Cart -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,133 +103,171 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Menu -->
-    <FrameLayout
+    <!-- KHUNG DƯỚI CHỨA PHÂN LOẠI VÀ SẢN PHẨM -->
+    <RelativeLayout
+        android:id="@+id/bottomMenuLayout"
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:layout_alignParentBottom="true"
         android:background="#FFFFFF">
 
-        <!-- Dàn đều menu items -->
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/layoutCategoryMenu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingHorizontal="8dp">
+            android:background="#FFFFFF">
 
-            <!-- Necklaces -->
+            <!-- RecyclerView danh sách sản phẩm -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerProductAR"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:overScrollMode="never"
+                android:visibility="gone" />
+
+            <!-- MENU PHÂN LOẠI (mặc định hiển thị) -->
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:id="@+id/categoryIconsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:visibility="visible">
 
-                <ImageView
-                    android:id="@+id/imgARNecklaces"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@mipmap/ic_necklaces" />
-
-                <TextView
-                    android:id="@+id/txtARNecklaces"
-                    android:layout_width="wrap_content"
+                <!-- Dây chuyền -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/title_ar_necklaces"
-                    android:textColor="#000000"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
-            <!-- Earrings -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                    <ImageView
+                        android:id="@+id/imgARNecklaces"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@mipmap/ic_necklaces" />
 
-                <ImageView
-                    android:id="@+id/imgAREarrings"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@mipmap/ic_earrings" />
+                    <TextView
+                        android:id="@+id/txtARNecklaces"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:text="@string/title_ar_necklaces"
+                        android:textColor="#000000"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txtAREarrings"
-                    android:layout_width="wrap_content"
+                <!-- Bông tai -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/title_ar_earrings"
-                    android:textColor="#000000"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
-            <!-- Rings -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                    <ImageView
+                        android:id="@+id/imgAREarrings"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@mipmap/ic_earrings" />
 
-                <ImageView
-                    android:id="@+id/imgARRings"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@mipmap/ic_rings" />
+                    <TextView
+                        android:id="@+id/txtAREarrings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:text="@string/title_ar_earrings"
+                        android:textColor="#000000"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- Nhẫn -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/title_ar_rings"
-                    android:textColor="#000000"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
-            <!-- Body Piercing -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                    <ImageView
+                        android:id="@+id/imgARRings"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@mipmap/ic_rings" />
 
-                <ImageView
-                    android:id="@+id/imgARBodyPiercing"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@mipmap/ic_body_piercing" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:text="@string/title_ar_rings"
+                        android:textColor="#000000"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txtARBodyPiercing"
-                    android:layout_width="wrap_content"
+                <!-- Xỏ khuyên cơ thể -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/title_ar_body_piercing"
-                    android:textColor="#000000"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </LinearLayout>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
-        <!-- Nút đóng AR -->
+                    <ImageView
+                        android:id="@+id/imgARBodyPiercing"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@mipmap/ic_body_piercing" />
+
+                    <TextView
+                        android:id="@+id/txtARBodyPiercing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:text="@string/title_ar_body_piercing"
+                        android:textColor="#000000"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Nút đóng -->
         <ImageView
             android:id="@+id/btnCloseAR"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_gravity="end|top"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="12dp"
             android:src="@mipmap/ic_close_ar" />
-    </FrameLayout>
+    </RelativeLayout>
 
-
+    <!-- Nút chụp ảnh -->
     <ImageView
         android:id="@+id/btnCapture"
         android:layout_width="70dp"

@@ -58,14 +58,18 @@ public class OrderManager {
     }
 
     public void updateOrderStatus(Order updatedOrder) {
-        List<Order> current = getOrders();
-        for (int i = 0; i < current.size(); i++) {
-            if (current.get(i).equals(updatedOrder)) {
-                current.set(i, updatedOrder);
+        List<Order> orders = getOrders();
+        boolean updated = false;
+        for (int i = 0; i < orders.size(); i++) {
+            if (updatedOrder.getId() != null && updatedOrder.getId().equals(orders.get(i).getId())) {
+                orders.set(i, updatedOrder);
+                updated = true;
                 break;
             }
         }
-        saveOrders(current);
+        if (updated) {
+            saveOrders(orders); // Chỉ lưu nếu có cập nhật
+        }
     }
 
     public List<Order> getOrders() {

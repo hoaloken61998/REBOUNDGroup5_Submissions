@@ -1,12 +1,15 @@
 package com.rebound.adapters;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.rebound.R;
 
 public class ViewPaperAdapter extends RecyclerView.Adapter<ViewPaperAdapter.ImageViewHolder> {
 
@@ -21,18 +24,13 @@ public class ViewPaperAdapter extends RecyclerView.Adapter<ViewPaperAdapter.Imag
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ImageView imageView = new ImageView(context);
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        ));
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        return new ImageViewHolder(imageView);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_card_swipe, parent, false);
+        return new ImageViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        holder.imageView.setImageResource(imageResIds[position]);
+        holder.imgCard.setImageResource(imageResIds[position]);
     }
 
     @Override
@@ -41,12 +39,11 @@ public class ViewPaperAdapter extends RecyclerView.Adapter<ViewPaperAdapter.Imag
     }
 
     static class ImageViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        ImageView imgCard;
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView;
+            imgCard = itemView.findViewById(R.id.imgCard);
         }
     }
 }
-

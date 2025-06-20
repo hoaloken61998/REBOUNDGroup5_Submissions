@@ -30,7 +30,6 @@ public class TrackOrderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate layout XML bạn đã viết sẵn
         return inflater.inflate(R.layout.fragment_track_order, container, false);
     }
 
@@ -51,10 +50,10 @@ public class TrackOrderFragment extends Fragment {
 
 
         // Load info
-        ((TextView) view.findViewById(R.id.txtEstimatedDate)).setText("Estimated Date of Delivery: " + repo.getEstimatedDate(orderId));
-        ((TextView) view.findViewById(R.id.txtCity)).setText(repo.getCity(orderId));
-        ((TextView) view.findViewById(R.id.txtFullAddress)).setText(repo.getFullAddress(orderId));
-        ((TextView) view.findViewById(R.id.txtPhone)).setText(repo.getPhone(orderId));
+        String estimatedDate = repo.getEstimatedDate(orderId);
+        String text = getString(R.string.estimated_date_label, estimatedDate);
+        ((TextView) view.findViewById(R.id.txtEstimatedDate)).setText(text);
+
     }
 
 }

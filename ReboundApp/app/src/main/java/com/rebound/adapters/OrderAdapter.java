@@ -1,7 +1,6 @@
 package com.rebound.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +59,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.layoutOrderItems.removeAllViews();
 
         for (Product product : order.getProductList()) {
-            View item = LayoutInflater.from(context).inflate(R.layout.item_product, holder.layoutOrderItems, false);
+            View item = LayoutInflater.from(context).inflate(R.layout.item_product_order, holder.layoutOrderItems, false);
             ((TextView) item.findViewById(R.id.txtProductName)).setText(product.getName());
             ((TextView) item.findViewById(R.id.txtProductDesc)).setText(product.getVariant()); // 👈 đổi thành variant
             ((TextView) item.findViewById(R.id.txtProductPrice)).setText(product.getPrice());

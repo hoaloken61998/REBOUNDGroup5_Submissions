@@ -1,4 +1,5 @@
 package com.rebound.login;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,22 +11,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button; // ✨ Added
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog; // ✨ Added
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.rebound.R;
 import com.rebound.main.LanguageSelectorActivity;
 import com.rebound.main.OrdersActivity;
 import com.rebound.main.PrivacyPolicyActivity;
-import com.rebound.utils.SharedPrefManager;
-import com.bumptech.glide.Glide;
-import com.rebound.R;
 import com.rebound.models.Customer.Customer;
+import com.rebound.utils.SharedPrefManager;
 import com.rebound.login.WishlistActivity;
-
 
 public class ProfileFragment extends Fragment {
 
@@ -40,8 +42,9 @@ public class ProfileFragment extends Fragment {
     private LinearLayout optionPrivacyPolicy;
     private LinearLayout optionLanguage;
 
-
     private Customer currentCustomer;
+
+    private LinearLayout optionPaymentMethod;
 
     @Nullable
     @Override
@@ -73,6 +76,7 @@ public class ProfileFragment extends Fragment {
         optionMyOrders = view.findViewById(R.id.optionMyOrders);
         optionPrivacyPolicy = view.findViewById(R.id.optionPrivacyPolicy);
         optionLanguage = view.findViewById(R.id.optionLanguage);
+        optionPaymentMethod = view.findViewById(R.id.optionPaymentMethod);
     }
 
     private void addEvents() {
@@ -83,17 +87,14 @@ public class ProfileFragment extends Fragment {
         optionWishList.setOnClickListener(v -> {
             currentCustomer = SharedPrefManager.getCurrentCustomer(requireContext());
             if (currentCustomer == null) {
-                // Chưa đăng nhập
-                Toast.makeText(getContext(), "Please log in to view your wishlist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.please_login_wishlist), Toast.LENGTH_SHORT).show();
                 return;
             }
-            // Đã đăng nhập
             startActivity(new Intent(getActivity(), WishlistActivity.class));
         });
 
         optionYourProfile.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);
-            // Có thể truyền thêm username nếu cần
             if (currentCustomer != null) {
                 intent.putExtra("username", currentCustomer.getUsername());
             }
@@ -101,20 +102,48 @@ public class ProfileFragment extends Fragment {
         });
 
         optionLogOut.setOnClickListener(v -> {
-            // Xóa thông tin đăng nhập
-            SharedPreferences.Editor editor = requireActivity()
-                    .getSharedPreferences("user_session", Context.MODE_PRIVATE).edit();
-            editor.clear();
-            editor.apply();
+            // ✨ Added: AlertDialog xác nhận đăng xuất
+            View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_logout, null);
+            AlertDialog alertDialog = new AlertDialog.Builder(requireContext())
+                    .setView(dialogView)
+                    .setCancelable(false)
+                    .create();
 
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            Button btnYes = dialogView.findViewById(R.id.btnLogOutYes);
+            Button btnNo = dialogView.findViewById(R.id.btnLogOutNo);
+
+            btnYes.setOnClickListener(v1 -> {
+                SharedPreferences.Editor editor = requireActivity()
+                        .getSharedPreferences("user_session", Context.MODE_PRIVATE).edit();
+                editor.clear();
+                editor.apply();
+
+                alertDialog.dismiss();
+
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            });
+
+            btnNo.setOnClickListener(v1 -> alertDialog.dismiss());
+
+            if (alertDialog.getWindow() != null) {
+                alertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+
+            alertDialog.show();
         });
+
         optionMyOrders.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), OrdersActivity.class);
-            startActivity(intent);
+            currentCustomer = SharedPrefManager.getCurrentCustomer(requireContext());
+            if (currentCustomer == null) {
+                Toast.makeText(getContext(), getString(R.string.please_login_orders), Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(getActivity(), OrdersActivity.class);
+                startActivity(intent);
+            }
         });
+
         optionPrivacyPolicy.setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), PrivacyPolicyActivity.class));
         });
@@ -123,6 +152,19 @@ public class ProfileFragment extends Fragment {
             startActivity(new Intent(getActivity(), LanguageSelectorActivity.class));
         });
 
+        optionPaymentMethod.setOnClickListener(v -> {
+            Customer currentCustomer = SharedPrefManager.getCurrentCustomer(requireContext());
+
+            if (currentCustomer == null) {
+                Toast.makeText(getContext(), getString(R.string.please_login_payment), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Intent intent = new Intent(getActivity(), com.rebound.checkout.CreateNewCardActivity.class);
+            intent.putExtra("cardType", "Credit Card");
+            intent.putExtra("from", "profile");
+            startActivity(intent);
+        });
 
 
         imgBackProfile.setOnClickListener(v -> requireActivity().onBackPressed());
@@ -149,6 +191,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadUserInfo(); // Load lại dữ liệu khi quay về fragment
+        loadUserInfo();
     }
 }

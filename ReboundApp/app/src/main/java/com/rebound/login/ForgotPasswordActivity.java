@@ -91,7 +91,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         String email = edtForgotPasswordEmail.getText().toString().trim();
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Invalid email format!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.invalid_email_format), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -104,27 +104,22 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
 
         if (!emailExists) {
-            Toast.makeText(this, "Email does not exist!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.email_does_not_exist), Toast.LENGTH_SHORT).show();
             return;
         }
 
         String otp = generateOTP();
 
-        // Gửi email OTP
         new Thread(() -> {
-            GmailSender.sendEmail(email, "Your OTP Code", "Your OTP is: " + otp);
-        }).start(); // chạy ở background thread tránh lỗi UI freeze
+            GmailSender.sendEmail(email, getString(R.string.otp_email_subject), getString(R.string.otp_email_body, otp));
+        }).start();
 
-        // Chuyển qua màn OTP
         Intent intent = new Intent(ForgotPasswordActivity.this, OTPVerificationActivity.class);
         intent.putExtra("email", email);
         intent.putExtra("otp", otp);
         intent.putExtra("listCustomer", listCustomer);
         startActivity(intent);
 
-        Toast.makeText(this, "OTP sent to your email", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.otp_sent), Toast.LENGTH_SHORT).show();
     }
-
-
-
 }

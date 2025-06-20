@@ -17,6 +17,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.notificationList = notificationList;
     }
 
+    public void updateData(List<NotificationItem> newList) {
+        this.notificationList = newList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
         return notificationList.get(position).getType();

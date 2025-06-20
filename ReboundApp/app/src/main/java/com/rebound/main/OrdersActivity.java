@@ -25,7 +25,7 @@ public class OrdersActivity extends AppCompatActivity {
         tabOngoing = findViewById(R.id.tabOngoing);
         tabCompleted = findViewById(R.id.tabCompleted);
 
-        ImageView imgBack = findViewById(R.id.imgBack); // 👈 xử lý icon back
+        ImageView imgBack = findViewById(R.id.imgBack);
         imgBack.setOnClickListener(v -> finish());
 
         // Load mặc định Fragment ongoing

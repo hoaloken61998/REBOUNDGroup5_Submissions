@@ -38,6 +38,7 @@
     <!-- RecyclerView -->
 
     <!-- Summary Card -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
@@ -121,7 +122,8 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:visibility="gone">
 
             <TextView
                 android:text="@string/title_label_delivery_fee"

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.rebound.R;
 import com.rebound.models.Cart.ProductItem;
 import com.rebound.main.ProductDetailActivity;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHolder> {
@@ -29,7 +29,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
     @NonNull
     @Override
     public WishlistAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_wishlist_product, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_product, parent, false);
         return new ViewHolder(view);
     }
 

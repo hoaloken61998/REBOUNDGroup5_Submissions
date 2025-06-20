@@ -14,7 +14,7 @@ public class ProductItem implements Serializable {
 
     public int quantity = 1;
 
-    public String variant = "Silver"; // ✅ Thêm phân loại mặc định
+    public String variant = "Silver";
 
     // Constructor đầy đủ cho phần ProductDetail
     public ProductItem(String title, String price, int imageRes, String rating, String sold,
@@ -27,10 +27,9 @@ public class ProductItem implements Serializable {
         this.description = description;
         this.imageGoldRes = imageGoldRes;
         this.imageSilverRes = imageSilverRes;
-        this.variant = "Silver"; // ✅ Mặc định Silver, có thể thay đổi sau
+        this.variant = "Silver";
     }
 
-    // Constructor cũ (nếu vẫn dùng chỗ khác, giữ lại để không bị lỗi)
     public ProductItem(String title, String price, int imageRes, String rating) {
         this.title = title;
         this.price = price;
@@ -42,7 +41,6 @@ public class ProductItem implements Serializable {
         return title;
     }
 
-    // ✅ Optional: Getter/Setter nếu muốn xài tiện hơn
     public String getVariant() {
         return variant;
     }
@@ -57,7 +55,7 @@ public class ProductItem implements Serializable {
 
         ProductItem that = (ProductItem) o;
         return title.equals(that.title) &&
-                variant.equals(that.variant); // Phân biệt Gold / Silver
+                variant.equals(that.variant); // Phân biệt gold / silver
     }
 
     @Override

@@ -26,15 +26,6 @@ public class OrderRepository {
         return "05 July, 2025"; // hoặc lấy từ DB
     }
 
-    public String getCity(String orderId) {
-        return "Ho Chi Minh, Viet Nam";
-    }
 
-    public String getFullAddress(String orderId) {
-        return "10 Nguyen Van Dau, Ward 5, Phu Nhuan District";
-    }
 
-    public String getPhone(String orderId) {
-        return "0999999999";
-    }
 }

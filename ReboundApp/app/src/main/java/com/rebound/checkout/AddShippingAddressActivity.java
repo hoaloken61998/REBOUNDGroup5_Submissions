@@ -48,17 +48,15 @@ public class AddShippingAddressActivity extends AppCompatActivity {
 
             // Kiểm tra thông tin
             if (name.isEmpty() || address.isEmpty() || city.isEmpty() || district.isEmpty() || ward.isEmpty() || phone.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.checkout_add_address_fill_all_fields), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Lấy user hiện tại
             Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
             if (currentCustomer == null) {
-                Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.checkout_add_address_user_not_logged_in), Toast.LENGTH_SHORT).show();
                 return;
             }
-
             // Gộp địa chỉ đầy đủ (nếu muốn)
             String fullAddress = address + ", " + ward + ", " + district + ", " + city;
 
@@ -68,7 +66,7 @@ public class AddShippingAddressActivity extends AppCompatActivity {
             // Lưu vào SharedPreferences
             SharedPrefManager.saveShippingAddress(this, currentCustomer.getEmail(), shippingAddress);
 
-            Toast.makeText(this, "Shipping address saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.checkout_add_address_saved_success), Toast.LENGTH_SHORT).show();
             finish();
         });
     }

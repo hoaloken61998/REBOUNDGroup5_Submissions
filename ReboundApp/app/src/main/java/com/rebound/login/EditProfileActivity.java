@@ -92,30 +92,28 @@ public class EditProfileActivity extends AppCompatActivity {
                 currentCustomer.setPassword(edtPassword.getText().toString().trim());
                 currentCustomer.setGender(spGender.getSelectedItem().toString());
 
-                // Lấy customer hiện tại từ SharedPref để đảm bảo avatar luôn đồng bộ
                 Customer savedCustomer = SharedPrefManager.getCurrentCustomer(this);
 
-
-                // Nếu có chọn ảnh mới thì dùng ảnh mới, không thì giữ ảnh cũ từ savedCustomer
                 if (selectedImageUri != null) {
                     currentCustomer.setAvatarUrl(selectedImageUri.toString());
                 } else {
                     if (savedCustomer != null && savedCustomer.getAvatarUrl() != null) {
                         currentCustomer.setAvatarUrl(savedCustomer.getAvatarUrl());
                     } else {
-                        // Không có ảnh cũ, thì để null hoặc placeholder
                         currentCustomer.setAvatarUrl(null);
                     }
                 }
+
                 SharedPrefManager.updateCustomer(this, currentCustomer);
                 SharedPrefManager.setCurrentCustomer(this, currentCustomer);
 
-                Toast.makeText(this, "Update profile successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.profile_update_success), Toast.LENGTH_SHORT).show();
                 new android.os.Handler().postDelayed(this::finish, 1200);
             } else {
-                Toast.makeText(this, "Cannot find user data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.profile_update_user_not_found), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     private void loadUserData() {
@@ -147,7 +145,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         .into(imgAvatar);
             }
         } else {
-            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.profile_update_user_not_found), Toast.LENGTH_SHORT).show();
             finish();
         }
     }

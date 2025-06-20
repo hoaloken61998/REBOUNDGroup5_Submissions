@@ -9,9 +9,15 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
+        android:name=".ReboundApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,6 +26,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReboundLogin"
         tools:targetApi="31">
+        <activity
+            android:name=".checkout.PaymentSuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".checkout.BankTransferQRCodeActivity"
+            android:exported="false" />
         <activity
             android:name=".login.WishlistActivity"
             android:exported="false" />
@@ -119,8 +131,12 @@
         <activity
             android:name=".main.OrdersActivity"
             android:exported="false" />
-        <activity android:name=".main.PrivacyPolicyActivity" android:exported="true" />
-        <activity android:name=".main.LanguageSelectorActivity" android:exported="true"/>
+        <activity
+            android:name=".main.PrivacyPolicyActivity"
+            android:exported="true" />
+        <activity
+            android:name=".main.LanguageSelectorActivity"
+            android:exported="true" />
         <activity
             android:name=".login.UpdatePasswordActivity"
             android:exported="true" />
@@ -140,7 +156,6 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
     </application>
 
 </manifest>

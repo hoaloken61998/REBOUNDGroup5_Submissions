@@ -97,24 +97,24 @@ public class ScheduleServiceFragment extends Fragment {
         btnScheduleBook.setOnClickListener(v -> {
             Customer currentCustomer = SharedPrefManager.getCurrentCustomer(requireContext());
             if (currentCustomer == null) {
-                Toast.makeText(requireContext(), "Please log in to book an appointment!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.schedule_login_required), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String selectedTime = txtScheduleSelectedTime.getText().toString();
 
             if (selectedDateMillis[0] == 0) {
-                Toast.makeText(requireContext(), "Please select a date!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.schedule_select_date), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (selectedTime.isEmpty()) {
-                Toast.makeText(requireContext(), "Please select a time!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.schedule_select_time), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (selectedService.isEmpty()) {
-                Toast.makeText(requireContext(), "Please select a service!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.schedule_select_service), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -127,8 +127,8 @@ public class ScheduleServiceFragment extends Fragment {
 
             NotificationItem notification = new NotificationItem(
                     NotificationItem.TYPE_ITEM,
-                    "Appointment Confirmed",
-                    "You have successfully booked an appointment on " + selectedDate + " at " + selectedTime + " for the service: " + selectedService,
+                    getString(R.string.notification_appointment_title),
+                    getString(R.string.notification_appointment_message, selectedDate, selectedTime, selectedService),
                     "",
                     System.currentTimeMillis()
             );

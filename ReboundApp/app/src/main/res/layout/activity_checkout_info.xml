@@ -183,7 +183,7 @@
                 android:id="@+id/spinnerPayment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:entries="@array/payment_methods"
+                android:entries="@array/payment_method"
                 android:background="@android:color/transparent"
                 android:paddingEnd="32dp"
                 android:gravity="center_vertical" />

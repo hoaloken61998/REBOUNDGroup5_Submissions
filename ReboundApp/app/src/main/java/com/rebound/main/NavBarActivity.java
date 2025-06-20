@@ -1,4 +1,5 @@
 package com.rebound.main;
+import com.rebound.ar.ARCameraCategoryActivity;
 import com.rebound.login.ProfileFragment;
 import android.Manifest;
 import android.content.Intent;
@@ -77,12 +78,8 @@ public class NavBarActivity extends AppCompatActivity {
 
         // FAB mở camera
         fab.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
-            } else {
-                openCamera();
-            }
+            Intent intent = new Intent(NavBarActivity.this, ARCameraCategoryActivity.class);
+            startActivity(intent);
         });
 
         Customer current = SharedPrefManager.getCurrentCustomer(this);
@@ -103,7 +100,7 @@ public class NavBarActivity extends AppCompatActivity {
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(cameraIntent, 101);
         } else {
-            Toast.makeText(this, "Camera not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.camera_not_available), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -113,7 +110,7 @@ public class NavBarActivity extends AppCompatActivity {
 
         if (requestCode == 101 && resultCode == RESULT_OK && data != null) {
             Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
-            Toast.makeText(this, "Photo captured successfully.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.photo_captured_success), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -124,7 +121,7 @@ public class NavBarActivity extends AppCompatActivity {
         if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             openCamera();
         } else {
-            Toast.makeText(this, "Camera permission not granted.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.camera_permission_denied), Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -1,51 +1,58 @@
 package com.rebound.checkout;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
-import android.widget.TextView;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import com.rebound.main.NavBarActivity;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
 import com.rebound.adapters.CartAdapter;
+import com.rebound.main.NavBarActivity;
 import com.rebound.models.Cart.ProductItem;
+import com.rebound.models.Cart.ShippingAddress;
+import com.rebound.models.Customer.Customer;
+import com.rebound.models.Main.NotificationItem;
 import com.rebound.models.Orders.Order;
 import com.rebound.models.Orders.Product;
 import com.rebound.utils.CartManager;
+import com.rebound.utils.NotificationStorage;
 import com.rebound.utils.OrderManager;
 import com.rebound.utils.SharedPrefManager;
-import com.rebound.models.Customer.Customer;
-import com.rebound.models.Cart.ShippingAddress;
-import com.rebound.models.Main.NotificationItem;
-import com.rebound.utils.NotificationStorage;
-
-import android.os.Build;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import android.Manifest;
-import android.content.pm.PackageManager;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CheckOutActivity extends AppCompatActivity {
 
-    TextView txtTotal, txtName, txtAddress, txtPhone, txtCardInfo;
+    TextView txtTotal, txtName, txtAddress, txtPhone, txtCardInfo, txtSimplePaymentMethod;
+    LinearLayout layoutCardInfo, layoutSimplePaymentMethod;
+    ImageView imgBack;
     int totalAmountFromIntent = 0;
+
+    boolean fromBankTransfer = false;
+    String transactionId = "";
+    String time = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,44 +63,76 @@ public class CheckOutActivity extends AppCompatActivity {
         txtTotal = findViewById(R.id.txtCheckoutTotal);
         txtName = findViewById(R.id.txtCheckoutUsername);
         txtAddress = findViewById(R.id.txtCheckoutAddress);
-        txtPhone = findViewById(R.id.txtCheckoutPhone); // GẮN PHONE
+        txtPhone = findViewById(R.id.txtCheckoutPhone);
         txtCardInfo = findViewById(R.id.txtCheckoutCard);
+        txtSimplePaymentMethod = findViewById(R.id.txtSimplePaymentMethod);
+        layoutCardInfo = findViewById(R.id.layoutCardInfo);
+        layoutSimplePaymentMethod = findViewById(R.id.layoutSimplePaymentMethod);
+        imgBack = findViewById(R.id.imgBack);
+        imgBack.setOnClickListener(v -> finish());
+
         MaterialButton btnCheckout = findViewById(R.id.btnCheckout);
 
         totalAmountFromIntent = getIntent().getIntExtra("totalAmount", 0);
+        txtTotal.setText(String.format("%,d VND", totalAmountFromIntent).replace(',', '.'));
+
+        fromBankTransfer = getIntent().getBooleanExtra("fromBankTransfer", false);
+        if (fromBankTransfer) {
+            transactionId = getIntent().getStringExtra("transactionId");
+            time = getIntent().getStringExtra("time");
+        }
+
+        String paymentMethod = getIntent().getStringExtra("paymentMethod");
+        String cardType = getIntent().getStringExtra("cardType");
+
+        layoutCardInfo.setVisibility(View.GONE);
+        layoutSimplePaymentMethod.setVisibility(View.GONE);
 
         Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
         if (currentCustomer != null) {
             String email = currentCustomer.getEmail();
-            ShippingAddress address = SharedPrefManager.getShippingAddress(this, email);
 
-            if (address != null) {
-                txtName.setText(address.getName() != null ? address.getName() : currentCustomer.getFullName());
-                txtAddress.setText(address.getAddress() != null ? address.getAddress() : "Shipping address not available");
-                txtPhone.setText(address.getPhone() != null ? address.getPhone() : "No phone");
-            } else {
-                txtName.setText(currentCustomer.getFullName() != null ? currentCustomer.getFullName() : currentCustomer.getUsername());
-                txtAddress.setText("Shipping address not available");
-                txtPhone.setText("No phone");
-            }
+            if ("Credit Card".equalsIgnoreCase(cardType) || "Debit Card".equalsIgnoreCase(cardType)) {
+                layoutCardInfo.setVisibility(View.VISIBLE);
+                layoutSimplePaymentMethod.setVisibility(View.GONE);
 
-            // Card info
-            String nameOnCard = SharedPrefManager.getNameOnCard(this, email);
-            String cardNumber = SharedPrefManager.getCardNumber(this, email);
+                String name = "";
+                String number = "";
 
-            if (cardNumber != null && !cardNumber.isEmpty() && cardNumber.length() >= 4) {
-                String masked = "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);
-                if (nameOnCard != null && !nameOnCard.isEmpty()) {
-                    txtCardInfo.setText(nameOnCard + "\n" + masked);
+                if ("Credit Card".equalsIgnoreCase(cardType)) {
+                    name = SharedPrefManager.getCreditCardName(this, email);
+                    number = SharedPrefManager.getCreditCardNumber(this, email);
                 } else {
-                    txtCardInfo.setText(masked);
+                    name = SharedPrefManager.getDebitCardName(this, email);
+                    number = SharedPrefManager.getDebitCardNumber(this, email);
+                }
+
+                if (number != null && number.length() >= 2) {
+                    String lastDigits = number.substring(number.length() - 2);
+                    txtCardInfo.setText(getString(R.string.checkout_card_format, cardType, name, lastDigits));
+                } else {
+                    txtCardInfo.setText(getString(R.string.checkout_no_card_info));
                 }
             } else {
-                txtCardInfo.setText("No card info");
+                layoutCardInfo.setVisibility(View.GONE);
+                layoutSimplePaymentMethod.setVisibility(View.VISIBLE);
+                txtSimplePaymentMethod.setText(paymentMethod == null || paymentMethod.isEmpty()
+                        ? getString(R.string.checkout_method_not_available)
+                        : paymentMethod);
             }
 
+            ShippingAddress address = SharedPrefManager.getShippingAddress(this, email);
+            if (address != null) {
+                txtName.setText(address.getName() != null ? address.getName() : currentCustomer.getFullName());
+                txtAddress.setText(address.getAddress() != null ? address.getAddress() : getString(R.string.checkout_shipping_not_available));
+                txtPhone.setText(address.getPhone() != null ? address.getPhone() : getString(R.string.checkout_no_phone));
+            } else {
+                txtName.setText(currentCustomer.getFullName());
+                txtAddress.setText(getString(R.string.checkout_shipping_not_available));
+                txtPhone.setText(getString(R.string.checkout_no_phone));
+            }
         } else {
-            Toast.makeText(this, "User information not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.checkout_user_not_found), Toast.LENGTH_SHORT).show();
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -103,26 +142,59 @@ public class CheckOutActivity extends AppCompatActivity {
                 true
         ));
 
-        updateTotalFromIntent();
-
         btnCheckout.setOnClickListener(v -> {
             Customer current = SharedPrefManager.getCurrentCustomer(this);
             if (current != null) {
                 List<ProductItem> cartItems = CartManager.getInstance().getCartItems();
                 List<Product> orderProducts = new ArrayList<>();
-
                 for (ProductItem p : cartItems) {
                     orderProducts.add(new Product(p.title, p.variant, p.price, p.imageRes));
                 }
 
-                Order newOrder = new Order(orderProducts, CartManager.getInstance().getTotalPrice() + " VND", "To Receive");
+                String formattedTotal = String.format("%,d VND", totalAmountFromIntent).replace(',', '.');
+                Order newOrder = new Order(orderProducts, formattedTotal, "To Receive");
 
                 OrderManager.getInstance().setUserEmail(current.getEmail());
                 OrderManager.getInstance().addOrder(newOrder);
+
+                String title = getString(R.string.checkout_order_success_title);
+                String message = fromBankTransfer
+                        ? getString(R.string.checkout_order_success_bank, transactionId, formattedTotal)
+                        : getString(R.string.checkout_order_success_normal);
+
+                NotificationItem item = new NotificationItem(
+                        NotificationItem.TYPE_NOTIFICATION,
+                        title,
+                        message,
+                        "Just now",
+                        System.currentTimeMillis()
+                );
+                NotificationStorage.saveNotification(this, current.getEmail(), item);
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                        ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "order_channel")
+                            .setSmallIcon(R.mipmap.ic_order)
+                            .setContentTitle(title)
+                            .setContentText(message)
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            .setAutoCancel(true);
+                    NotificationManagerCompat.from(this).notify(1001, builder.build());
+                }
             }
 
             CartManager.getInstance().clearCart();
-            showPaymentSuccessPopup();
+
+            if (fromBankTransfer) {
+                Intent intent = new Intent(this, PaymentSuccessActivity.class);
+                intent.putExtra("transactionId", transactionId);
+                intent.putExtra("time", time);
+                intent.putExtra("amount", totalAmountFromIntent);
+                startActivity(intent);
+                finish();
+            } else {
+                showPaymentSuccessPopup();
+            }
         });
 
         createNotificationChannel();
@@ -132,24 +204,15 @@ public class CheckOutActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     "order_channel",
-                    "Order Notifications",
+                    getString(R.string.checkout_notification_channel_title),
                     NotificationManager.IMPORTANCE_DEFAULT
             );
-            channel.setDescription("Thông báo khi đặt hàng thành công");
-
+            channel.setDescription(getString(R.string.checkout_notification_channel_description));
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) {
                 manager.createNotificationChannel(channel);
             }
         }
-    }
-
-    private void updateTotalFromIntent() {
-        txtTotal.setText(format(totalAmountFromIntent) + " VND");
-    }
-
-    private String format(int amount) {
-        return String.format("%,d", amount).replace(',', '.');
     }
 
     private void showPaymentSuccessPopup() {
@@ -159,54 +222,28 @@ public class CheckOutActivity extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         TextView txtOrderId = dialog.findViewById(R.id.txtPaymentSuccessfulOrderId);
-        String generatedOrderId = generateOrderId();
-        txtOrderId.setText("Order ID: " + generatedOrderId);
+        txtOrderId.setText(getString(R.string.checkout_order_id, generateOrderId()));
 
-        ImageView imgClose = dialog.findViewById(R.id.imgClose);
-        imgClose.setOnClickListener(v -> {
+        dialog.findViewById(R.id.imgClose).setOnClickListener(v -> {
             dialog.dismiss();
             goToMain();
         });
 
         MaterialButton btnBackShop = dialog.findViewById(R.id.btnPaymentSuccessfulBackShop);
-
-// Trạng thái ban đầu: trắng, viền vàng, chữ đen
         btnBackShop.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
         btnBackShop.setTextColor(Color.BLACK);
         btnBackShop.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#BEB488")));
         btnBackShop.setStrokeWidth(1);
-
-// Khi nhấn: đổi sang vàng, không viền, chữ trắng
         btnBackShop.setOnClickListener(v -> {
             btnBackShop.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BEB488")));
             btnBackShop.setTextColor(Color.WHITE);
             btnBackShop.setStrokeWidth(0);
-
-            // Đợi 150ms cho thấy hiệu ứng màu rồi mới đi tiếp
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 dialog.dismiss();
                 goToMain();
             }, 300);
         });
 
-        ImageView imgSad = dialog.findViewById(R.id.imgSad);
-        ImageView imgNeutral = dialog.findViewById(R.id.imgNeutral);
-        ImageView imgHappy = dialog.findViewById(R.id.imgHappy);
-
-        imgSad.setOnClickListener(v -> {
-            Toast.makeText(this, "You rated: Sad 😞", Toast.LENGTH_SHORT).show();
-            highlightSelected(imgSad, imgNeutral, imgHappy);
-        });
-
-        imgNeutral.setOnClickListener(v -> {
-            Toast.makeText(this, "You rated: Neutral 😐", Toast.LENGTH_SHORT).show();
-            highlightSelected(imgNeutral, imgSad, imgHappy);
-        });
-
-        imgHappy.setOnClickListener(v -> {
-            Toast.makeText(this, "You rated: Happy 😊", Toast.LENGTH_SHORT).show();
-            highlightSelected(imgHappy, imgSad, imgNeutral);
-        });
         sendOrderNotification();
         dialog.show();
     }
@@ -214,33 +251,7 @@ public class CheckOutActivity extends AppCompatActivity {
     private String generateOrderId() {
         long timestamp = System.currentTimeMillis();
         int random = (int) (Math.random() * 1000);
-        String rawId = String.valueOf(timestamp).substring(6) + random;
-        return "ORD-" + rawId;
-    }
-
-    private void highlightSelected(ImageView selected, ImageView... others) {
-        selected.setColorFilter(getResources().getColor(R.color.teal_700), android.graphics.PorterDuff.Mode.SRC_IN);
-        for (ImageView img : others) {
-            img.setColorFilter(null);
-        }
-
-        Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
-        if (currentCustomer != null) {
-            String email = currentCustomer.getEmail();
-            String cardNumber = SharedPrefManager.getCardNumber(this, email);
-            String nameOnCard = SharedPrefManager.getNameOnCard(this, email);
-
-            Log.d("CHECK_CARD", "Email: " + email);
-            Log.d("CHECK_CARD", "Card Number: " + cardNumber);
-            Log.d("CHECK_CARD", "Name on Card: " + nameOnCard);
-
-            if (cardNumber != null && !cardNumber.isEmpty() && cardNumber.length() >= 4) {
-                String masked = "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);
-                txtCardInfo.setText(nameOnCard + "\n" + masked);
-            } else {
-                txtCardInfo.setText( "No card information available");
-            }
-        }
+        return "ORD-" + String.valueOf(timestamp).substring(6) + random;
     }
 
     private void goToMain() {
@@ -250,38 +261,41 @@ public class CheckOutActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     private void sendOrderNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
-                return;
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            return;
         }
 
+        Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
+        if (currentCustomer == null) return;
+
+        String formattedTotal = String.format("%,d VND", totalAmountFromIntent).replace(',', '.');
+        String method = fromBankTransfer ? "Bank Transfer" : txtSimplePaymentMethod.getText().toString();
+        String timeStr = fromBankTransfer ? time : new java.text.SimpleDateFormat("hh:mm a", java.util.Locale.getDefault()).format(new java.util.Date());
+
+        String title = getString(R.string.checkout_order_confirmed_title);
+        String body = getString(R.string.checkout_order_confirmed_text, formattedTotal, method, timeStr);
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "order_channel")
-                .setSmallIcon(R.mipmap.ic_order) // make sure this icon exists
-                .setContentTitle("Order Placed Successfully!")
-                .setContentText("Thank you for shopping at Rebound. Your order is being processed.")
+                .setSmallIcon(R.mipmap.ic_order)
+                .setContentTitle(title)
+                .setContentText(body)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.notify(1001, builder.build());
+        NotificationManagerCompat.from(this).notify(1001, builder.build());
 
-        long now = System.currentTimeMillis();
         NotificationItem item = new NotificationItem(
                 NotificationItem.TYPE_NOTIFICATION,
-                "Order Placed Successfully!",
-                "Your order is being processed.",
-                "Just now", // Can be formatted when displayed
-                now
+                title,
+                body,
+                "Just now",
+                System.currentTimeMillis()
         );
-
-        Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
-        if (currentCustomer != null) {
-            NotificationStorage.saveNotification(this, currentCustomer.getEmail(), item);
-        }
+        NotificationStorage.saveNotification(this, currentCustomer.getEmail(), item);
     }
 }
-

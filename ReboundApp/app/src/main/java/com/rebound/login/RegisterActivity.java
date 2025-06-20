@@ -12,11 +12,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import com.rebound.utils.SharedPrefManager;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.rebound.R;
 import com.rebound.models.Customer.Customer;
+import com.rebound.utils.SharedPrefManager;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -75,9 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         });
 
-        txtRegisterBottom.setOnClickListener(view ->
-                startActivity(new Intent(this, MainActivity.class))
-        );
+        txtRegisterBottom.setOnClickListener(view -> startActivity(new Intent(this, MainActivity.class)));
 
         btnRegister.setOnClickListener(view -> {
             String username = edtUsername.getText().toString().trim();
@@ -86,32 +85,32 @@ public class RegisterActivity extends AppCompatActivity {
             String confirm = edtConfirmPassword.getText().toString().trim();
 
             if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
-                Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.register_fill_all_fields), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(this, "Invalid email format.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.invalid_email_format), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!password.equals(confirm)) {
-                Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.passwords_do_not_match), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!chkRegisterTerms.isChecked()) {
-                Toast.makeText(this, "Please agree to the terms to continue.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.agree_terms_to_continue), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (SharedPrefManager.isUsernameTaken(this, username)) {
-                Toast.makeText(this, "Username already exists. Please choose another one.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.username_exists), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (SharedPrefManager.isEmailTaken(this, email)) {
-                Toast.makeText(this, "Email already exists. Please use another one.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.email_exists), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -119,9 +118,9 @@ public class RegisterActivity extends AppCompatActivity {
             SharedPrefManager.addCustomer(this, newCustomer);
             SharedPrefManager.setCurrentCustomer(this, newCustomer);
 
-            Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.account_created_successfully), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, CompleteProfileActivity.class);
-            intent.putExtra("email", email); // truyền sang hồ sơ nếu cần
+            intent.putExtra("email", email);
             startActivity(intent);
         });
     }

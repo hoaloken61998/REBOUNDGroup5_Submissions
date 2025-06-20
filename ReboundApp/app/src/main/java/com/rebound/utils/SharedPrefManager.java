@@ -192,32 +192,78 @@ public class SharedPrefManager {
 //        return context.getSharedPreferences("checkout_prefs", Context.MODE_PRIVATE);
 //    }
 
-    private static final String CARD_PREFS = "CARD_PREFS";
+private static final String CARD_PREFS = "CARD_PREFS";
+//
+//    // Lưu tên in trên thẻ
+//    public static void setNameOnCard(Context context, String email, String nameOnCard) {
+//        SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.putString(email + "_nameOnCard", nameOnCard);
+//        editor.apply();
+//    }
+//
+//    public static String getNameOnCard(Context context, String email) {
+//        SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
+//        return prefs.getString(email + "_nameOnCard", "");
+//    }
+//
+//    // Có thể mở rộng lưu thêm số thẻ nếu muốn
+//    public static void setCardNumber(Context context, String email, String cardNumber) {
+//        SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
+//        prefs.edit().putString(email + "_cardNumber", cardNumber).apply();
+//    }
+//
+//    public static String getCardNumber(Context context, String email) {
+//        SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
+//        return prefs.getString(email + "_cardNumber", "");
+//    }
+// CREDIT CARD
+// Credit Card
+public static void setCreditCard(Context context, String email, String name, String number) {
+    SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
+    prefs.edit()
+            .putString(email + "_credit_name", name)
+            .putString(email + "_credit_number", number)
+            .apply();
+}
 
-    // Lưu tên in trên thẻ
-    public static void setNameOnCard(Context context, String email, String nameOnCard) {
+    public static String getCreditCardName(Context context, String email) {
         SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(email + "_nameOnCard", nameOnCard);
-        editor.apply();
+        return prefs.getString(email + "_credit_name", "");
     }
 
-    public static String getNameOnCard(Context context, String email) {
+    public static String getCreditCardNumber(Context context, String email) {
         SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
-        return prefs.getString(email + "_nameOnCard", "");
+        return prefs.getString(email + "_credit_number", "");
     }
 
-    // Có thể mở rộng lưu thêm số thẻ nếu muốn
-    public static void setCardNumber(Context context, String email, String cardNumber) {
+    // Debit Card
+    public static void setDebitCard(Context context, String email, String name, String number) {
         SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
-        prefs.edit().putString(email + "_cardNumber", cardNumber).apply();
+        prefs.edit()
+                .putString(email + "_debit_name", name)
+                .putString(email + "_debit_number", number)
+                .apply();
     }
 
-    public static String getCardNumber(Context context, String email) {
+    public static String getDebitCardName(Context context, String email) {
         SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
-        return prefs.getString(email + "_cardNumber", "");
+        return prefs.getString(email + "_debit_name", "");
     }
 
+    public static String getDebitCardNumber(Context context, String email) {
+        SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
+        return prefs.getString(email + "_debit_number", "");
+    }
+
+    // Check existence
+    public static boolean hasCreditCard(Context context, String email) {
+        return !getCreditCardNumber(context, email).isEmpty();
+    }
+
+    public static boolean hasDebitCard(Context context, String email) {
+        return !getDebitCardNumber(context, email).isEmpty();
+    }
 
     // Reservation
     private static final String KEY_RESERVATION = "reservation_";

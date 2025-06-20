@@ -96,6 +96,8 @@ public class CompletedFragment extends Fragment {
             public void onOrderReceived(Order order) {
                 // Không áp dụng
             }
+
+
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -121,5 +123,10 @@ public class CompletedFragment extends Fragment {
 
             adapter.notifyDataSetChanged();
         }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadCompletedOrders();
     }
 }

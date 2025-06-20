@@ -1,5 +1,6 @@
 package com.rebound.checkout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -21,10 +22,17 @@ public class CreateNewCardActivity extends AppCompatActivity {
     private EditText edtNameOnCard, edtCardNumber, edtExpMonth, edtExpYear, edtCVV;
     private MaterialButton btnCreateNewCardAddCard;
 
+    private String cardType = ""; // "Credit Card" or "Debit Card"
+    private String from = "";     // profile | checkout
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_card);
+
+        // Nhận loại thẻ & nơi mở
+        cardType = getIntent().getStringExtra("cardType");
+        from = getIntent().getStringExtra("from"); // có thể là "profile" hoặc "checkout"
 
         viewPagerCards = findViewById(R.id.viewPagerCards);
         dotsIndicator = findViewById(R.id.dotsIndicator);
@@ -36,9 +44,9 @@ public class CreateNewCardActivity extends AppCompatActivity {
         btnCreateNewCardAddCard = findViewById(R.id.btnCreateNewCardAddCard);
 
         int[] imageResIds = {
-                R.mipmap.visa_logo,
-                R.mipmap.mastercard_logo,
-                R.mipmap.momo_logo
+                R.mipmap.card1,
+                R.mipmap.card2,
+                R.mipmap.card3
         };
 
         ViewPaperAdapter adapter = new ViewPaperAdapter(this, imageResIds);
@@ -54,46 +62,55 @@ public class CreateNewCardActivity extends AppCompatActivity {
             String expYear = edtExpYear.getText().toString().trim();
             String cvv = edtCVV.getText().toString().trim();
 
-            // RÀNG BUỘC
             if (nameOnCard.isEmpty() || cardNumber.isEmpty() ||
                     expMonth.isEmpty() || expYear.isEmpty() || cvv.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.message_fill_all_fields), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (cardNumber.length() != 16) {
-                Toast.makeText(this, "Card number must be 16 digits", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.message_card_number_16_digits), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             int month = Integer.parseInt(expMonth);
             if (month < 1 || month > 12) {
-                Toast.makeText(this, "Invalid expiration month", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.message_invalid_exp_month), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (expYear.length() != 2) {
-                Toast.makeText(this, "Year must be 2 digits", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.message_year_2_digits), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (cvv.length() < 3 || cvv.length() > 4) {
-                Toast.makeText(this, "CVV must be 3 or 4 digits", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.message_cvv_length), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
             if (currentCustomer != null) {
                 String email = currentCustomer.getEmail();
-                SharedPrefManager.setNameOnCard(this, email, nameOnCard);
-                SharedPrefManager.setCardNumber(this, email, cardNumber); // ✅ Thêm dòng này
+                if ("Credit Card".equals(cardType)) {
+                    SharedPrefManager.setCreditCard(this, email, nameOnCard, cardNumber);
+                } else if ("Debit Card".equals(cardType)) {
+                    SharedPrefManager.setDebitCard(this, email, nameOnCard, cardNumber);
+                }
             }
 
-            Toast.makeText(this, "Card added successfully", Toast.LENGTH_SHORT).show();
-            finish();
+            Toast.makeText(this, getString(R.string.message_card_added_success), Toast.LENGTH_SHORT).show();
+
+            if ("profile".equals(from)) {
+                finish();
+            } else {
+                int totalAmount = getIntent().getIntExtra("totalAmount", 0);
+                Intent intent = new Intent(this, CheckOutActivity.class);
+                intent.putExtra("totalAmount", totalAmount);
+                intent.putExtra("cardType", cardType);
+                startActivity(intent);
+                finish();
+            }
         });
     }
 }
-
-
-

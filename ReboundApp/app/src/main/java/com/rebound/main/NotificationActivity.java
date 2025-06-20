@@ -47,21 +47,31 @@ public class NotificationActivity extends AppCompatActivity {
         // Lấy tất cả thông báo theo email
         List<NotificationItem> allNoti = NotificationStorage.getNotifications(this, email);
 
-
-        if (allNoti.size() <= 2) {
+// Nếu không có thông báo thực sự
+        if (allNoti.isEmpty()) {
             startActivity(new Intent(this, NoNotificationActivity.class));
             finish();
             return;
         }
 
-        // Gán thời gian hiển thị cho từng thông báo
+// Gán "time ago"
         for (NotificationItem item : allNoti) {
-            if (item.getType() == NotificationItem.TYPE_ITEM) {
+            if (item.getType() == NotificationItem.TYPE_NOTIFICATION) {
                 item.setTimeAgo(formatTimeAgo(item.getTimestamp()));
             }
         }
 
-        adapter = new NotificationAdapter(allNoti);
+// ✅ Phân loại thành Latest / Older
+        List<NotificationItem> organizedList = categorizeNotifications(allNoti);
+
+// Nếu không có thông báo thật sự (ngoài header)
+        if (organizedList.size() <= 2) {
+            startActivity(new Intent(this, NoNotificationActivity.class));
+            finish();
+            return;
+        }
+
+        adapter = new NotificationAdapter(organizedList);
         recyclerViewNotification.setAdapter(adapter);
 
         imgBackNotification = findViewById(R.id.imgBackNotification);
@@ -81,5 +91,32 @@ public class NotificationActivity extends AppCompatActivity {
 
         long days = hours / 24;
         return days + " days ago";
+    }
+    private List<NotificationItem> categorizeNotifications(List<NotificationItem> all) {
+        long oneHourAgo = System.currentTimeMillis() - 3600 * 1000;
+
+        List<NotificationItem> latest = new ArrayList<>();
+        List<NotificationItem> older = new ArrayList<>();
+
+        for (NotificationItem item : all) {
+            if (item.getType() == NotificationItem.TYPE_NOTIFICATION) {
+                if (item.getTimestamp() >= oneHourAgo) {
+                    latest.add(item);
+                } else {
+                    older.add(item);
+                }
+            }
+        }
+
+        List<NotificationItem> result = new ArrayList<>();
+        if (!latest.isEmpty()) {
+            result.add(new NotificationItem(NotificationItem.TYPE_HEADER, "Latest", "", ""));
+            result.addAll(latest);
+        }
+        if (!older.isEmpty()) {
+            result.add(new NotificationItem(NotificationItem.TYPE_HEADER, "Older", "", ""));
+            result.addAll(older);
+        }
+        return result;
     }
 }

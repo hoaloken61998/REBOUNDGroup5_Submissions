@@ -41,38 +41,38 @@ public class CompleteProfileActivity extends AppCompatActivity {
             String phone = edtPhone.getText().toString().trim();
             String gender = spGender.getSelectedItem().toString();
 
-            if (name.isEmpty() || phone.isEmpty() || gender.equals("Select gender")) {
-                Toast.makeText(this, "Please fill in all information.", Toast.LENGTH_SHORT).show();
+            if (name.isEmpty() || phone.isEmpty() || gender.equals(getString(R.string.select_gender))) {
+                Toast.makeText(this, getString(R.string.complete_profile_fill_all), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Lấy email từ intent để xác định người dùng
+            // Lấy email từ intent
             String email = getIntent().getStringExtra("email");
             Customer customer = SharedPrefManager.getCustomerByEmail(this, email);
             if (customer == null) {
-                Toast.makeText(this, "User not found.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.complete_profile_user_not_found), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Sau đó dùng email ở chỗ lưu session
+            // Lưu session
             SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
             prefs.edit().putString("logged_in_email", email).apply();
 
-            // Kiểm tra số điện thoại đã tồn tại (trừ user hiện tại)
+            // Kiểm tra số điện thoại đã tồn tại
             if (SharedPrefManager.isPhoneTaken(this, phone, email)) {
-                Toast.makeText(this, "Phone number already exists.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.complete_profile_phone_exists), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Cập nhật thông tin
             customer.setFullName(name);
             customer.setPhone(phone);
-            customer.setGender(gender); // nếu có field gender
+            customer.setGender(gender);
 
             SharedPrefManager.updateCustomer(this, customer);
             SharedPrefManager.setCurrentCustomer(this, customer);
 
-            // Chuyển trang
+            // Chuyển tiếp
             Intent intent = new Intent(this, OnBoardingActivity.class);
             startActivity(intent);
             finish();

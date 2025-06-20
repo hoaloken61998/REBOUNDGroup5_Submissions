@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,17 +23,28 @@ import com.rebound.main.NavBarActivity;
 import com.rebound.models.Customer.Customer;
 import com.rebound.utils.CartManager;
 import com.rebound.utils.SharedPrefManager;
+import com.google.android.gms.auth.api.signin.*;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
+
 public class MainActivity extends AppCompatActivity {
+
 
     TextView txtLoginForgotPassword;
     TextView txtBottomLoginRegister;
     ImageView imgBackLogin;
 
+    ImageView imgGoogleSignIn;
+
     EditText edtLoginEmail;
     EditText edtLoginPassword;
     MaterialButton btnLogin;
     MaterialCheckBox chkTerms;
-
+    private GoogleSignInClient mGoogleSignInClient;
+    private static final int RC_SIGN_IN = 1000;
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +72,25 @@ public class MainActivity extends AppCompatActivity {
             btnLogin.setEnabled(isChecked);
             btnLogin.setAlpha(isChecked ? 1.0f : 0.5f);
         });
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        googleSignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                        handleSignInResult(task);
+                    } else {
+                        Toast.makeText(this, "Google Sign-In canceled", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
     }
 
     private void addEvents() {
@@ -70,6 +102,12 @@ public class MainActivity extends AppCompatActivity {
         txtBottomLoginRegister.setOnClickListener(v -> openRegisterActivity());
 
         txtLoginForgotPassword.setOnClickListener(v -> openForgotPasswordActivity());
+
+        imgGoogleSignIn.setOnClickListener(v -> {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            googleSignInLauncher.launch(signInIntent);
+        });
+
     }
 
     private void openRegisterActivity() {
@@ -133,5 +171,36 @@ public class MainActivity extends AppCompatActivity {
         edtLoginPassword = findViewById(R.id.edtLoginPassword);
         btnLogin = findViewById(R.id.btnLogin);
         chkTerms = findViewById(R.id.chkTerms);
+        imgGoogleSignIn = findViewById(R.id.imgGoogleSignIn);
+
     }
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            if (account != null) {
+                String email = account.getEmail();
+                String name = account.getDisplayName();
+                String avatarUrl = account.getPhotoUrl() != null ? account.getPhotoUrl().toString() : "";
+
+                Customer customer = new Customer();
+                customer.setEmail(email);
+                customer.setFullName(name);
+                customer.setAvatarUrl(avatarUrl);
+                customer.setUsername(email);
+
+                SharedPrefManager.addCustomer(this, customer);
+                SharedPrefManager.setCurrentCustomer(this, customer);
+                CartManager.getInstance().setUserEmail(email);
+
+                Intent intent = new Intent(MainActivity.this, NavBarActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+        } catch (ApiException e) {
+            Toast.makeText(this, "Google Sign-In failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
