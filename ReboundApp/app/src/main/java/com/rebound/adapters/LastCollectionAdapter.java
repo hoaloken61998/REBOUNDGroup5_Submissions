@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.rebound.R;
 import com.rebound.main.ProductDetailActivity;
 import com.rebound.models.Cart.ProductItem;
@@ -45,9 +46,11 @@ public class LastCollectionAdapter extends RecyclerView.Adapter<LastCollectionAd
         ProductItem item = filteredList.get(position);
 
         // Highlight keyword nếu có
-        String titleText = item.title;
+        // Defensive conversion for Object field
+        String titleText = item.ProductName != null ? item.ProductName.toString() : "";
+        String lowerTitleText = titleText.toLowerCase();
         if (!currentKeyword.isEmpty()) {
-            int start = titleText.toLowerCase().indexOf(currentKeyword.toLowerCase());
+            int start = lowerTitleText.indexOf(currentKeyword.toLowerCase());
             if (start >= 0) {
                 SpannableString spannable = new SpannableString(titleText);
                 int end = start + currentKeyword.length();
@@ -61,9 +64,18 @@ public class LastCollectionAdapter extends RecyclerView.Adapter<LastCollectionAd
             holder.title.setText(titleText);
         }
 
-        holder.price.setText(item.price);
-        holder.image.setImageResource(item.imageRes);
-
+        String priceText = item.ProductPrice != null ? item.ProductPrice.toString() : "";
+        holder.price.setText(priceText);
+        // Load image from URL using Glide
+        String imageLink = item.ImageLink != null ? item.ImageLink.toString() : "";
+        if (!imageLink.isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                .load(imageLink)
+                .placeholder(R.drawable.ic_placeholder) // Use your placeholder image
+                .into(holder.image);
+        } else {
+            holder.image.setImageResource(R.drawable.ic_placeholder); // fallback image
+        }
 
         // Click để mở chi tiết sản phẩm
         holder.itemView.setOnClickListener(v -> {
@@ -72,7 +84,6 @@ public class LastCollectionAdapter extends RecyclerView.Adapter<LastCollectionAd
             intent.putExtra("product", item);
             context.startActivity(intent);
         });
-
     }
 
     @Override
@@ -90,7 +101,7 @@ public class LastCollectionAdapter extends RecyclerView.Adapter<LastCollectionAd
         } else {
             String lowerKeyword = currentKeyword.toLowerCase();
             for (ProductItem item : originalList) {
-                if (item.title.toLowerCase().contains(lowerKeyword)) {
+                if (item.ProductName != null && item.ProductName.toString().toLowerCase().contains(lowerKeyword)) {
                     filteredList.add(item);
                 }
             }
@@ -119,6 +130,11 @@ public class LastCollectionAdapter extends RecyclerView.Adapter<LastCollectionAd
         filteredList.clear();
         filteredList.addAll(newList);
 
+        notifyDataSetChanged();
+    }
+    public void updateList(List<ProductItem> newList) {
+        this.originalList = new ArrayList<>(newList);
+        this.filteredList = new ArrayList<>(newList);
         notifyDataSetChanged();
     }
 }

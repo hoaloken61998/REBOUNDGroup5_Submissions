@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.rebound.R;
 import com.rebound.models.Cart.ProductItem;
 
@@ -36,9 +37,17 @@ public class ProductARAdapter extends RecyclerView.Adapter<ProductARAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ProductItem product = productList.get(position);
 
-        // Gán hình và tên
-        holder.txtProductAR.setText(product.title);
-        holder.imgProductAR.setImageResource(product.imageRes);
+        // Gán hình và tên từ Firebase fields
+        holder.txtProductAR.setText(product.ProductName != null ? product.ProductName.toString() : "");
+        String imageLink = product.ImageLink != null ? product.ImageLink.toString() : null;
+        if (imageLink != null && !imageLink.isEmpty()) {
+            Glide.with(context)
+                .load(imageLink)
+                .placeholder(R.drawable.ic_placeholder)
+                .into(holder.imgProductAR);
+        } else {
+            holder.imgProductAR.setImageResource(R.drawable.ic_placeholder);
+        }
 
         // Tính toán độ rộng item nếu sản phẩm <= 4
         int totalItem = getItemCount();

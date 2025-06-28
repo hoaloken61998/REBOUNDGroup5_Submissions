@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
+import com.rebound.connectors.CustomerConnector;
 import com.rebound.models.Customer.Customer;
 import com.rebound.utils.SharedPrefManager;
 
@@ -80,35 +81,67 @@ public class EditProfileActivity extends AppCompatActivity {
         imgEdit.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
+            // THIS IS THE CRITICAL FIX: You must add the flag here.
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivityForResult(intent, PICK_IMAGE_REQUEST);
         });
 
         btnUpdate.setOnClickListener(v -> {
             if (currentCustomer != null) {
-                currentCustomer.setUsername(edtUsername.getText().toString().trim());
                 currentCustomer.setFullName(edtFullName.getText().toString().trim());
                 currentCustomer.setEmail(edtEmail.getText().toString().trim());
-                currentCustomer.setPhone(edtPhone.getText().toString().trim());
-                currentCustomer.setPassword(edtPassword.getText().toString().trim());
-                currentCustomer.setGender(spGender.getSelectedItem().toString());
+                // Remove leading zero before saving as Long, but handle empty string and non-numeric input
+                String phoneInput = edtPhone.getText().toString().trim();
+                if (phoneInput.startsWith("0")) {
+                    phoneInput = phoneInput.substring(1);
+                }
+                Long phoneLong = 0L;
+                if (!phoneInput.isEmpty()) {
+                    try {
+                        phoneLong = Long.parseLong(phoneInput);
+                    } catch (NumberFormatException e) {
+                        phoneLong = 0L;
+                    }
+                }
+                currentCustomer.setPhoneNumber(phoneLong);
+                try {
+                    currentCustomer.setPassword(Long.parseLong(edtPassword.getText().toString().trim()));
+                } catch (NumberFormatException e) {
+                    currentCustomer.setPassword(0L);
+                }
+                currentCustomer.setSex(spGender.getSelectedItem().toString());
 
                 Customer savedCustomer = SharedPrefManager.getCurrentCustomer(this);
 
                 if (selectedImageUri != null) {
-                    currentCustomer.setAvatarUrl(selectedImageUri.toString());
+                    currentCustomer.setAvatarURL(selectedImageUri.toString());
                 } else {
-                    if (savedCustomer != null && savedCustomer.getAvatarUrl() != null) {
-                        currentCustomer.setAvatarUrl(savedCustomer.getAvatarUrl());
+                    if (savedCustomer != null && savedCustomer.getAvatarURL() != null) {
+                        currentCustomer.setAvatarURL(savedCustomer.getAvatarURL());
                     } else {
-                        currentCustomer.setAvatarUrl(null);
+                        currentCustomer.setAvatarURL(null);
                     }
                 }
 
                 SharedPrefManager.updateCustomer(this, currentCustomer);
                 SharedPrefManager.setCurrentCustomer(this, currentCustomer);
 
-                Toast.makeText(this, getString(R.string.profile_update_success), Toast.LENGTH_SHORT).show();
-                new android.os.Handler().postDelayed(this::finish, 1200);
+                // Update to Firebase as well
+                CustomerConnector connector = new com.rebound.connectors.CustomerConnector();
+                // Debug: Show userID and email before update
+                android.util.Log.d("EditProfile", "Updating userID: " + currentCustomer.getUserID() + ", email: " + currentCustomer.getEmail());
+                connector.updateCustomerInFirebase(currentCustomer, new com.rebound.callback.FirebaseSingleCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        Toast.makeText(EditProfileActivity.this, getString(R.string.profile_update_success), Toast.LENGTH_SHORT).show();
+                        new android.os.Handler().postDelayed(EditProfileActivity.this::finish, 1200);
+                    }
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        Toast.makeText(EditProfileActivity.this, "Failed to update profile in database: " + errorMessage + "\nuserID: " + currentCustomer.getUserID(), Toast.LENGTH_LONG).show();
+                    }
+                });
+                // Remove the old Toast and Handler here
             } else {
                 Toast.makeText(this, getString(R.string.profile_update_user_not_found), Toast.LENGTH_SHORT).show();
             }
@@ -123,23 +156,33 @@ public class EditProfileActivity extends AppCompatActivity {
             edtUsername.setText(currentCustomer.getUsername());
             edtFullName.setText(currentCustomer.getFullName());
             edtEmail.setText(currentCustomer.getEmail());
-            edtPhone.setText(currentCustomer.getPhone());
-            edtPassword.setText(currentCustomer.getPassword());
+            // Safely format phone number as String, always show leading zero if not present
+            String phone = "";
+            try {
+                phone = String.valueOf(currentCustomer.getPhoneNumber());
+            } catch (Exception e) {
+                phone = "";
+            }
+            if (!phone.isEmpty() && !phone.startsWith("0")) {
+                phone = "0" + phone;
+            }
+            edtPhone.setText(phone);
+            edtPassword.setText(String.valueOf(currentCustomer.getPassword()));
             txtAvatarNote.setText(currentCustomer.getFullName());
 
             String[] genderOptions = getResources().getStringArray(R.array.gender_options);
             int selectedIndex = 0;
             for (int i = 0; i < genderOptions.length; i++) {
-                if (genderOptions[i].equalsIgnoreCase(currentCustomer.getGender())) {
+                if (genderOptions[i].equalsIgnoreCase(currentCustomer.getSex())) {
                     selectedIndex = i;
                     break;
                 }
             }
             spGender.setSelection(selectedIndex);
 
-            if (currentCustomer.getAvatarUrl() != null && !currentCustomer.getAvatarUrl().isEmpty()) {
+            if (currentCustomer.getAvatarURL() != null && !currentCustomer.getAvatarURL().isEmpty()) {
                 Glide.with(this)
-                        .load(Uri.parse(currentCustomer.getAvatarUrl()))
+                        .load(Uri.parse(currentCustomer.getAvatarURL()))
                         .circleCrop()
                         .placeholder(R.mipmap.ic_avatar_sample)
                         .into(imgAvatar);
@@ -157,11 +200,11 @@ public class EditProfileActivity extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             selectedImageUri = data.getData();
 
-            // Cấp quyền truy cập URI vĩnh viễn
+            // With the fix in Part 1, this block will now work correctly.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 try {
-                    getContentResolver().takePersistableUriPermission(selectedImageUri, takeFlags);
+                    // Directly request the read permission you asked for when launching the intent.
+                    getContentResolver().takePersistableUriPermission(selectedImageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 } catch (SecurityException e) {
                     e.printStackTrace();
                 }

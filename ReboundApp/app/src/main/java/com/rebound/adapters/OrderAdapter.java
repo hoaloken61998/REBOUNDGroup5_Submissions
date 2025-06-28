@@ -13,9 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.rebound.R;
 import com.rebound.models.Orders.Order;
-import com.rebound.models.Orders.Product;
+import com.rebound.models.Cart.ProductItem;
 
 import java.util.List;
 
@@ -53,18 +54,37 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         String status = screenType.equals("ongoing") ? "To Receive" : "Shipped";
 
         holder.txtStatus.setText(status);
-        holder.txtTotal.setText("Total: " + order.getTotal());
+        holder.txtTotal.setText("Total: " + order.getSubtotal());
         holder.groupToReceive.setVisibility(View.GONE);
         holder.groupShipped.setVisibility(View.GONE);
         holder.layoutOrderItems.removeAllViews();
 
-        for (Product product : order.getProductList()) {
-            View item = LayoutInflater.from(context).inflate(R.layout.item_product_order, holder.layoutOrderItems, false);
-            ((TextView) item.findViewById(R.id.txtProductName)).setText(product.getName());
-            ((TextView) item.findViewById(R.id.txtProductDesc)).setText(product.getVariant()); // 👈 đổi thành variant
-            ((TextView) item.findViewById(R.id.txtProductPrice)).setText(product.getPrice());
-            ((ImageView) item.findViewById(R.id.imgProduct)).setImageResource(product.getImageResId());
-            holder.layoutOrderItems.addView(item);
+        List<ProductItem> products = null;
+        try {
+            products = order.getProductList();
+        } catch (Exception e) {
+            // Ignore error temporarily
+        }
+        if (products != null) {
+            for (ProductItem product : products) {
+                View item = LayoutInflater.from(context).inflate(R.layout.item_product_order, holder.layoutOrderItems, false);
+                ((TextView) item.findViewById(R.id.txtProductName)).setText(product.ProductName != null ? product.ProductName.toString() : "");
+                ((TextView) item.findViewById(R.id.txtProductDesc)).setText(""); // Default value
+                String priceText = product.ProductPrice != null ? product.ProductPrice.toString() : "";
+                ((TextView) item.findViewById(R.id.txtProductPrice)).setText(priceText);
+                // Load image from URL using Glide
+                String imageUrl = product.ImageLink != null ? product.ImageLink.toString() : "";
+                ImageView imgView = item.findViewById(R.id.imgProduct);
+                if (!imageUrl.isEmpty()) {
+                    Glide.with(context)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.ic_placeholder)
+                        .into(imgView);
+                } else {
+                    imgView.setImageResource(R.drawable.ic_placeholder);
+                }
+                holder.layoutOrderItems.addView(item);
+            }
         }
 
         if (screenType.equals("ongoing")) {

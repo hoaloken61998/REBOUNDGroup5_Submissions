@@ -17,7 +17,7 @@ import com.rebound.R;
 import com.rebound.adapters.OrderAdapter;
 import com.rebound.models.Customer.Customer;
 import com.rebound.models.Orders.Order;
-import com.rebound.models.Orders.Product;
+import com.rebound.models.Cart.ProductItem;
 import com.rebound.utils.OrderManager;
 import com.rebound.utils.SharedPrefManager;
 

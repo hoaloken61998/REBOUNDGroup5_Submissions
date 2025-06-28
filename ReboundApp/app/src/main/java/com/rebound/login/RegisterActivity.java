@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.rebound.R;
-import com.rebound.models.Customer.Customer;
+import com.rebound.utils.FirebaseCustomerChecker;
 import com.rebound.utils.SharedPrefManager;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -78,16 +78,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         txtRegisterBottom.setOnClickListener(view -> startActivity(new Intent(this, MainActivity.class)));
 
-        btnRegister.setOnClickListener(view -> {
+        btnRegister.setOnClickListener(v -> {
             String username = edtUsername.getText().toString().trim();
             String email = edtEmail.getText().toString().trim();
             String password = edtPassword.getText().toString().trim();
             String confirm = edtConfirmPassword.getText().toString().trim();
-
-            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
-                Toast.makeText(this, getString(R.string.register_fill_all_fields), Toast.LENGTH_SHORT).show();
-                return;
-            }
 
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(this, getString(R.string.invalid_email_format), Toast.LENGTH_SHORT).show();
@@ -104,24 +99,39 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-            if (SharedPrefManager.isUsernameTaken(this, username)) {
-                Toast.makeText(this, getString(R.string.username_exists), Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (SharedPrefManager.isEmailTaken(this, email)) {
-                Toast.makeText(this, getString(R.string.email_exists), Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Customer newCustomer = new Customer(username, email, password);
-            SharedPrefManager.addCustomer(this, newCustomer);
-            SharedPrefManager.setCurrentCustomer(this, newCustomer);
-
-            Toast.makeText(this, getString(R.string.account_created_successfully), Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, CompleteProfileActivity.class);
-            intent.putExtra("email", email);
-            startActivity(intent);
+            // Only check username/email, then pass all info to CompleteProfileActivity
+            FirebaseCustomerChecker.isUsernameTaken(username, new FirebaseCustomerChecker.TakenCallback() {
+                @Override
+                public void onResult(boolean isTaken) {
+                    if (isTaken) {
+                        Toast.makeText(RegisterActivity.this, getString(R.string.username_exists), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    FirebaseCustomerChecker.isEmailTaken(email, new FirebaseCustomerChecker.TakenCallback() {
+                        @Override
+                        public void onResult(boolean isTaken) {
+                            if (isTaken) {
+                                Toast.makeText(RegisterActivity.this, getString(R.string.email_exists), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            // Pass all info to CompleteProfileActivity
+                            Intent intent = new Intent(RegisterActivity.this, CompleteProfileActivity.class);
+                            intent.putExtra("username", username);
+                            intent.putExtra("email", email);
+                            intent.putExtra("password", password);
+                            startActivity(intent);
+                        }
+                        @Override
+                        public void onError(String error) {
+                            Toast.makeText(RegisterActivity.this, error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                @Override
+                public void onError(String error) {
+                    Toast.makeText(RegisterActivity.this, error, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 }

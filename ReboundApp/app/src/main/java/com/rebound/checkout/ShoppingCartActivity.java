@@ -96,17 +96,38 @@ public class ShoppingCartActivity extends AppCompatActivity {
     }
 
     private int getSubTotal() {
+        if (cartItems == null) {
+            return 0;
+        }
         return cartItems.stream()
                 .mapToInt(item -> {
+                    if (item == null) {
+                        return 0;
+                    }
                     try {
-                        int unitPrice = Integer.parseInt(item.price.replace(".", "").replace(" VND", "").trim());
-                        return unitPrice * item.quantity;
+                        int unitPrice = 0;
+                        if (item.ProductPrice != null) {
+                            String priceStr = item.ProductPrice.toString();
+                            if (!priceStr.isEmpty()) {
+                                unitPrice = Integer.parseInt(priceStr.replace(".", "").replace(" VND", "").trim());
+                            }
+                        }
+                        int qty = 1; // Default quantity
+                        Long stockQuantityLong = null;
+                        try {
+                            stockQuantityLong = item.ProductStockQuantity;
+                        } catch (Exception e) {
+                            // This catch is if direct field access throws an error
+                        }
+                        // You can use stockQuantityLong if needed
+                        return unitPrice * qty;
                     } catch (Exception e) {
                         return 0;
                     }
                 })
                 .sum();
     }
+
 
     private int getTotal() {
         return getSubTotal() - discountAmount;

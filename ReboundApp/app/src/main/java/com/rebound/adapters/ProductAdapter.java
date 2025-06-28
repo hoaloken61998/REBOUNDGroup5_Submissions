@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.rebound.R;
 import com.rebound.main.ProductDetailActivity;
 import com.rebound.models.Cart.ProductItem;
@@ -40,11 +41,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ProductItem item = list.get(position);
-        holder.title.setText(item.title);
-        holder.price.setText(item.price);
-        holder.rating.setText(item.rating);
-        holder.image.setImageResource(item.imageRes);
-
+        holder.title.setText(item.ProductName != null ? item.ProductName.toString() : "");
+        holder.price.setText(item.ProductPrice != null ? item.ProductPrice.toString() : "");
+        // Show rating instantly from ProductItem if available
+        if (item.Rating != null) {
+            holder.rating.setText(item.Rating.toString());
+        } else {
+            holder.rating.setText("");
+        }
+        String imageLink = item.ImageLink != null ? item.ImageLink.toString() : null;
+        if (imageLink != null && !imageLink.isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                .load(imageLink)
+                .placeholder(R.drawable.ic_placeholder)
+                .into(holder.image);
+        } else {
+            holder.image.setImageResource(R.drawable.ic_placeholder);
+        }
         holder.itemView.setOnClickListener(v -> {
             Context context = holder.itemView.getContext();
             Intent intent = new Intent(context, ProductDetailActivity.class);

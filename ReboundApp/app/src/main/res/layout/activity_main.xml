@@ -104,7 +104,7 @@
                 android:id="@+id/txtTerms"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_register_cb_agree"
+                android:text="@string/title_save_information"
                 android:textColor="#8391A1"
                 android:textSize="15sp"
                 android:textStyle="italic" />

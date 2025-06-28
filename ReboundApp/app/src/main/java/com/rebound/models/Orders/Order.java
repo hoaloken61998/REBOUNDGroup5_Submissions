@@ -1,87 +1,81 @@
 package com.rebound.models.Orders;
 
-import java.math.BigDecimal;
+import com.google.firebase.database.PropertyName;
+
 import java.util.List;
-import java.util.UUID;
 
 public class Order {
-    private final String id;
-    private final List<Product> productList;
-    private final String total;
-    private String status;
+    @PropertyName("OrderID")
+    public Object OrderID;
+    @PropertyName("UserID")
+    public Object UserID;
+    @PropertyName("PaymentMethodID")
+    public Object PaymentMethodID;
+    @PropertyName("DeliveryFee")
+    public Object DeliveryFee;
+    @PropertyName("DiscountValue")
+    public Object DiscountValue;
+    @PropertyName("Subtotal")
+    public Object Subtotal;
+    @PropertyName("TotalAmount")
+    public Object TotalAmount;
+    @PropertyName("UserPromotion")
+    public Object UserPromotion;
+    @PropertyName("OrderDate")
+    public Object OrderDate;
+    @PropertyName("Status")
+    public Object Status;
+    @PropertyName("productList")
+    public List<com.rebound.models.Cart.ProductItem> productList;
+    @PropertyName("total")
+    public Object total;
 
-    private String formatTotal(int rawTotal) {
-        return String.format("%,d VND", rawTotal).replace(',', '.');
+    public Order() {}
+
+    public String getOrderID() {
+        return objectToString(OrderID);
     }
-
-
-    public Order(List<Product> productList, int rawTotal, String status) {
-        this.id = UUID.randomUUID().toString();
-        this.productList = productList;
-        this.total = formatTotal(rawTotal); // format từ int
-        this.status = status;
+    public String getUserID() {
+        return objectToString(UserID);
     }
-    public Order(List<Product> productList, String total, String status) {
-        this.id = UUID.randomUUID().toString();
-        this.productList = productList;
-        this.total = total;
-        this.status = status;
+    public String getPaymentMethodID() {
+        return objectToString(PaymentMethodID);
     }
-
-
-    public Order(String id, List<Product> productList, String total, String status) {
-        this.id = id;
-        this.productList = productList;
-        this.total = total;
-        this.status = status;
+    public String getDeliveryFee() {
+        return objectToString(DeliveryFee);
     }
-
-    public String getId() {
-        return id;
+    public String getDiscountValue() {
+        return objectToString(DiscountValue);
     }
-
-    public List<Product> getProductList() {
+    public String getSubtotal() {
+        return objectToString(Subtotal);
+    }
+    public String getTotalAmount() {
+        return objectToString(TotalAmount);
+    }
+    public String getUserPromotion() {
+        return objectToString(UserPromotion);
+    }
+    public String getOrderDate() {
+        return objectToString(OrderDate);
+    }
+    public String getStatus() {
+        return objectToString(Status);
+    }
+    public void setStatus(String status) {
+        this.Status = status;
+    }
+    public List<com.rebound.models.Cart.ProductItem> getProductList() {
         return productList;
     }
-
-    public String getTotal() {
-        return total;
+    public void setProductList(List<com.rebound.models.Cart.ProductItem> productList) {
+        this.productList = productList;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    // Tính tổng tiền
-    private String calculateFormattedTotal(List<Product> products) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (Product product : products) {
-            try {
-                String raw = product.getPrice().replaceAll("[^\\d]", ""); // Chỉ lấy số
-                BigDecimal price = new BigDecimal(raw);
-                sum = sum.add(price);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return String.format("%,.0f VND", sum.doubleValue());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-
-        Order order = (Order) obj;
-        return id.equals(order.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return java.util.Objects.hash(id);
+    private String objectToString(Object obj) {
+        if (obj == null) return null;
+        if (obj instanceof String) return (String) obj;
+        if (obj instanceof Number) return String.valueOf(obj);
+        return obj.toString();
     }
 }

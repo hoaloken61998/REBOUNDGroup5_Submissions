@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
+import com.rebound.connectors.CustomerConnector;
 import com.rebound.main.OnBoardingActivity;
 import com.rebound.models.Customer.Customer;
 import com.rebound.utils.SharedPrefManager;
@@ -46,36 +47,86 @@ public class CompleteProfileActivity extends AppCompatActivity {
                 return;
             }
 
-            // Lấy email từ intent
-            String email = getIntent().getStringExtra("email");
-            Customer customer = SharedPrefManager.getCustomerByEmail(this, email);
-            if (customer == null) {
-                Toast.makeText(this, getString(R.string.complete_profile_user_not_found), Toast.LENGTH_SHORT).show();
-                return;
-            }
+            // Get registration info from intent
+            Intent intent = getIntent();
+            String username = intent.getStringExtra("username");
+            String email = intent.getStringExtra("email");
+            String password = intent.getStringExtra("password");
 
-            // Lưu session
-            SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
-            prefs.edit().putString("logged_in_email", email).apply();
-
+            // Check phone uniqueness (optional, can be improved with Firebase query)
             // Kiểm tra số điện thoại đã tồn tại
             if (SharedPrefManager.isPhoneTaken(this, phone, email)) {
                 Toast.makeText(this, getString(R.string.complete_profile_phone_exists), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Cập nhật thông tin
-            customer.setFullName(name);
-            customer.setPhone(phone);
-            customer.setGender(gender);
+            // Fetch all users to get the highest UserID
+            com.rebound.utils.SharedPrefManager.getAllCustomersFromFirebase(new com.rebound.callback.FirebaseListCallback<com.rebound.models.Customer.Customer>() {
+                @Override
+                public void onSuccess(java.util.ArrayList<com.rebound.models.Customer.Customer> customers) {
+                    long highestUserId = 0;
+                    if (customers != null) {
+                        for (com.rebound.models.Customer.Customer c : customers) {
+                            try {
+                                long userId = 0;
+                                String userIdStr = c.getUserID();
+                                if (userIdStr != null && !userIdStr.isEmpty()) {
+                                    userId = Long.parseLong(userIdStr);
+                                }
+                                if (userId > highestUserId) {
+                                    highestUserId = userId;
+                                }
+                            } catch (Exception ex) {
+                                // Ignore parse errors, skip this customer
+                            }
+                        }
+                    }
+                    // Fix: User index (key) should match UserID
+                    long newUserId = highestUserId + 1;
+                    long userKey = highestUserId; // Use the same value for key and UserID
+                    // NOTE: Only use PascalCase setters to ensure Firebase fields are PascalCase
+                    com.rebound.models.Customer.Customer newCustomer = new com.rebound.models.Customer.Customer();
+                    newCustomer.setAvatarURL("");
+                    newCustomer.setDateOfBirth("");
+                    newCustomer.setEmail(email);
+                    newCustomer.setFullName(name);
+                    try {
+                        newCustomer.setPassword(Long.parseLong(password));
+                    } catch (NumberFormatException e) {
+                        newCustomer.setPassword(0L);
+                    }
+                    try {
+                        newCustomer.setPhoneNumber(Long.parseLong(phone));
+                    } catch (NumberFormatException e) {
+                        newCustomer.setPhoneNumber(0L);
+                    }
+                    newCustomer.setRegistrationDate("");
+                    newCustomer.setSex(gender);
+                    newCustomer.setUserID(newUserId);
+                    newCustomer.setUserRanking("");
+                    newCustomer.setUsername(username);
 
-            SharedPrefManager.updateCustomer(this, customer);
-            SharedPrefManager.setCurrentCustomer(this, customer);
-
-            // Chuyển tiếp
-            Intent intent = new Intent(this, OnBoardingActivity.class);
-            startActivity(intent);
-            finish();
+                    // Add to Firebase with numeric key matching UserID8
+                    CustomerConnector connector = new CustomerConnector();
+                    connector.addCustomerToFirebaseWithId(userKey, newCustomer, new com.rebound.callback.FirebaseSingleCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            Toast.makeText(CompleteProfileActivity.this, getString(R.string.account_created_successfully), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(CompleteProfileActivity.this, com.rebound.main.OnBoardingActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                        @Override
+                        public void onFailure(String errorMessage) {
+                            Toast.makeText(CompleteProfileActivity.this, getString(R.string.error_creating_account) + ": " + errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                @Override
+                public void onFailure(String errorMessage) {
+                    Toast.makeText(CompleteProfileActivity.this, getString(R.string.error_creating_account) + ": " + errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         // Nút back

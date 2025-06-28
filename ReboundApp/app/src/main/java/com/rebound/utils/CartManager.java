@@ -43,14 +43,46 @@ public class CartManager {
         return instance;
     }
 
+
+
     public void addToCart(ProductItem newItem) {
-        for (ProductItem item : cartItems) {
-            if (item.title.equals(newItem.title) && item.variant.equals(newItem.variant)) {
-                item.quantity += newItem.quantity;
+        if (newItem == null || newItem.ProductID == null) {
+            // Cannot add an invalid item
+            return;
+        }
+
+        // Ensure newItem.ProductStockQuantity is not null, default to 1 if it is.
+        // This represents the quantity of the newItem being added in this transaction.
+        long quantityToAdd = 1L; // Default to adding 1
+        if (newItem.ProductStockQuantity != null && newItem.ProductStockQuantity > 0) {
+            quantityToAdd = newItem.ProductStockQuantity;
+        } else if (newItem.ProductStockQuantity == null) {
+            // If the incoming item has a null quantity, explicitly set it to 1 for this add operation
+            newItem.ProductStockQuantity = 1L;
+        }
+
+
+        for (ProductItem existingItem : cartItems) {
+            // Compare ProductID. Make sure ProductID type is consistent (e.g., both Long)
+            // If ProductID in ProductItem is Object, you'll need careful casting and null checks here.
+            // Assuming ProductID is Long in ProductItem for this example.
+            if (existingItem.ProductID != null && existingItem.ProductID.equals(newItem.ProductID)) {
+
+                // Item already exists, update its quantity
+                long currentQuantityInCart = 0L;
+                if (existingItem.ProductStockQuantity != null) {
+                    currentQuantityInCart = existingItem.ProductStockQuantity;
+                }
+
+                existingItem.ProductStockQuantity = currentQuantityInCart + quantityToAdd;
                 saveCart();
-                return;
+                return; // Item found and updated, exit
             }
         }
+
+        // If item was not found in the cart, add it as a new entry.
+        // The newItem.ProductStockQuantity should already be set (e.g., to 1 or the passed value).
+        // If it was null initially and defaulted to 1 above, that's what will be added.
         cartItems.add(newItem);
         saveCart();
     }
@@ -73,14 +105,56 @@ public class CartManager {
         return cartItems.size();
     }
 
+    // In CartManager.java
+
     public int getTotalPrice() {
         int total = 0;
         for (ProductItem item : cartItems) {
+            int unitPrice = 0; // Initialize unitPrice here, outside the inner try
+            int quantity = 1;  // Initialize quantity here
+
             try {
-                String cleaned = item.price.replace(".", "").replace(" VND", "").trim();
-                int unitPrice = Integer.parseInt(cleaned);
-                total += unitPrice * item.quantity;
-            } catch (Exception ignored) {}
+                // Price parsing
+                if (item.ProductPrice != null && !item.ProductPrice.toString().isEmpty()) {
+                    String cleanedPrice = item.ProductPrice.toString().replace(".", "").replace(" VND", "").trim();
+                    unitPrice = Integer.parseInt(cleanedPrice); // Assign to the outer scope unitPrice
+                } else {
+                    // Handle case where price is null or empty, perhaps log it or default differently
+                    System.err.println("Warning: ProductPrice is null or empty for item: " + (item.ProductName != null ? item.ProductName : "Unknown"));
+                    // unitPrice remains 0, so this item won't add to total if price is invalid
+                }
+
+                // Quantity retrieval and conversion
+                try {
+                    Long stockQuantityLong = item.ProductStockQuantity;
+                    if (stockQuantityLong != null) {
+                        if (stockQuantityLong > Integer.MAX_VALUE) {
+                            quantity = Integer.MAX_VALUE;
+                        } else if (stockQuantityLong < Integer.MIN_VALUE) {
+                            quantity = Integer.MIN_VALUE;
+                        } else {
+                            quantity = stockQuantityLong.intValue();
+                        }
+                        if (quantity < 1) {
+                            quantity = 1;
+                        }
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error retrieving quantity for item: " + (item.ProductName != null ? item.ProductName : "null item") + " - " + e.getMessage());
+                    // quantity remains 1 (default)
+                }
+
+                total += unitPrice * quantity; // Now unitPrice is in scope
+
+            } catch (NumberFormatException e) {
+                // This specifically catches errors from Integer.parseInt(cleanedPrice)
+                System.err.println("Error parsing price for item: " + (item.ProductName != null ? item.ProductName : "Unknown") + " - " + e.getMessage());
+                // This item effectively adds 0 to the total if its price can't be parsed
+            } catch (Exception e) {
+                // Catch-all for any other unexpected error with this item
+                System.err.println("Unexpected error processing item for total price: " + (item.ProductName != null ? item.ProductName : "Unknown") + " - " + e.getMessage());
+                // This item also effectively adds 0 to the total in case of other errors
+            }
         }
         return total;
     }

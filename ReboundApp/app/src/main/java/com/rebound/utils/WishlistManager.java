@@ -61,25 +61,23 @@ public class WishlistManager {
         sharedPreferences.edit().putString(key, gson.toJson(list)).apply();
     }
 
-    public void removeFromWishlist(String title) {
+    public void removeFromWishlist(String productName) {
         List<ProductItem> wishlist = getWishlist();
         Iterator<ProductItem> iterator = wishlist.iterator();
-
         while (iterator.hasNext()) {
             ProductItem item = iterator.next();
-            if (item.title.equals(title)) {
+            if (item.ProductName != null && item.ProductName.equals(productName)) {
                 iterator.remove();
                 break;
             }
         }
-
         saveWishlist(wishlist);
     }
 
-    public boolean isInWishlist(String title) {
+    public boolean isInWishlist(String productName) {
         List<ProductItem> wishlist = getWishlist();
         for (ProductItem item : wishlist) {
-            if (item.title.equals(title)) {
+            if (item.ProductName != null && item.ProductName.equals(productName)) {
                 return true;
             }
         }

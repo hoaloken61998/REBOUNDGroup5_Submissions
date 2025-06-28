@@ -1,67 +1,28 @@
 package com.rebound.models.Cart;
 
+import com.rebound.callback.FirebaseListCallback;
+import com.rebound.callback.FirebaseSingleCallback;
+
 import java.io.Serializable;
 
 public class ProductItem implements Serializable {
-    public String title;
-    public String price;
-    public int imageRes;
-    public String rating;
-    public String sold;
-    public String description;
-    public int imageGoldRes;
-    public int imageSilverRes;
+    // --- Firebase fields ---
+    public Object ProductName;
+    public Object ProductDescription;
+    public Object ProductPrice;
+    public Object ImageLink;
 
-    public int quantity = 1;
+    // Assuming these are numbers (Longs) in Firebase
+    public Long ProductID;
+    public Long CategoryID;
+    public Long ProductStockQuantity; // Or Integer if the quantity is smaller
+    public Long StatusID;          // Or Integer
+    public Long SoldQuantity;       // Or Integer
+    public Double Rating;      // Or Integer, depending on how you store ratings
 
-    public String variant = "Silver";
-
-    // Constructor đầy đủ cho phần ProductDetail
-    public ProductItem(String title, String price, int imageRes, String rating, String sold,
-                       String description, int imageGoldRes, int imageSilverRes) {
-        this.title = title;
-        this.price = price;
-        this.imageRes = imageRes;
-        this.rating = rating;
-        this.sold = sold;
-        this.description = description;
-        this.imageGoldRes = imageGoldRes;
-        this.imageSilverRes = imageSilverRes;
-        this.variant = "Silver";
+    public ProductItem() {
+        // Default constructor required for Firebase
     }
 
-    public ProductItem(String title, String price, int imageRes, String rating) {
-        this.title = title;
-        this.price = price;
-        this.imageRes = imageRes;
-        this.rating = rating;
-    }
 
-    public String getName() {
-        return title;
-    }
-
-    public String getVariant() {
-        return variant;
-    }
-
-    public void setVariant(String variant) {
-        this.variant = variant;
-    }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ProductItem that = (ProductItem) o;
-        return title.equals(that.title) &&
-                variant.equals(that.variant); // Phân biệt gold / silver
-    }
-
-    @Override
-    public int hashCode() {
-        int result = title.hashCode();
-        result = 31 * result + variant.hashCode();
-        return result;
-    }
 }

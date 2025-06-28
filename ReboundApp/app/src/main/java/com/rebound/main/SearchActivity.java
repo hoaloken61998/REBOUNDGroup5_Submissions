@@ -1,6 +1,5 @@
 package com.rebound.main;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -14,12 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rebound.R;
 import com.rebound.adapters.LastCollectionAdapter;
-import com.rebound.data.ProductData;
 import com.rebound.models.Cart.ProductItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
@@ -41,7 +38,24 @@ public class SearchActivity extends AppCompatActivity {
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         searchView = findViewById(R.id.searchView);
         recyclerView = new RecyclerView(this);
-        allProducts = ProductData.getAllProducts();
+        allProducts = new ArrayList<>();
+        // Load all products from Firebase
+        com.rebound.connectors.FirebaseConnector.getAllItems(
+            "Product",
+            com.rebound.models.Cart.ProductItem.class,
+            new com.rebound.callback.FirebaseListCallback<com.rebound.models.Cart.ProductItem>() {
+                @Override
+                public void onSuccess(ArrayList<com.rebound.models.Cart.ProductItem> result) {
+                    allProducts.clear();
+                    allProducts.addAll(result);
+                    adapter.updateList(result);
+                }
+                @Override
+                public void onFailure(String errorMessage) {
+                    adapter.updateList(new ArrayList<>());
+                }
+            }
+        );
 
         // RecyclerView setup (nếu muốn hiển thị kết quả ngay bên dưới layout)
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -89,7 +103,8 @@ public class SearchActivity extends AppCompatActivity {
     private void performSearch(String keyword) {
         List<ProductItem> filtered = new ArrayList<>();
         for (ProductItem item : allProducts) {
-            if (item.getName().toLowerCase().contains(keyword.toLowerCase())) {
+            String nameStr = item.ProductName != null ? item.ProductName.toString() : "";
+            if (!nameStr.isEmpty() && nameStr.toLowerCase().contains(keyword.toLowerCase())) {
                 filtered.add(item);
             }
         }

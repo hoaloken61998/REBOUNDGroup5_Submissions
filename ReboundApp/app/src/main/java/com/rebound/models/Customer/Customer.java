@@ -1,103 +1,134 @@
 package com.rebound.models.Customer;
 
+import com.google.firebase.database.PropertyName;
+
 import java.io.Serializable;
 
 public class Customer implements Serializable {
-    private String username;
-    private String email;
-    private String password;
+    @PropertyName("UserID")
+    private Object UserID;
+    @PropertyName("Email")
+    private String Email;
+    @PropertyName("Password")
+    private Object Password;
+    @PropertyName("FullName")
+    private String FullName;
+    @PropertyName("AvatarURL")
+    private String AvatarURL;
+    @PropertyName("PhoneNumber")
+    private Object PhoneNumber;
+    @PropertyName("RegistrationDate")
+    private String RegistrationDate;
+    @PropertyName("DateOfBirth")
+    private String DateOfBirth;
+    @PropertyName("Sex")
+    private String Sex;
+    @PropertyName("UserRanking")
+    private String UserRanking;
+    @PropertyName("Username")
+    private String Username;
 
-    private String phone;
-    private String fullName;
-    private String avatarUrl;
-    private String gender; // male/female/other
+    public Customer() {}
 
+    @PropertyName("UserID")
+    public String getUserID() { return objectToString(UserID); }
+    @PropertyName("UserID")
+    public void setUserID(Object UserID) { this.UserID = UserID; }
 
-    public Customer() {
+    @PropertyName("Email")
+    public String getEmail() { return Email; }
+    @PropertyName("Email")
+    public void setEmail(String Email) {
+        if (Email == null) {
+            android.util.Log.e("CustomerDebug", "Email is null or not a String");
+        }
+        this.Email = Email;
     }
 
-    public Customer(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
+    @PropertyName("Password")
+    public String getPassword() { return objectToString(Password); }
+    @PropertyName("Password")
+    public void setPassword(Object Password) { this.Password = Password; }
+
+    @PropertyName("FullName")
+    public String getFullName() { return FullName; }
+    @PropertyName("FullName")
+    public void setFullName(String FullName) {
+        if (FullName == null) {
+            android.util.Log.e("CustomerDebug", "FullName is null or not a String");
+        }
+        this.FullName = FullName;
     }
 
-    public Customer(String username, String email, String password,
-                    String fullName, String avatarUrl, String gender, String phone) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.fullName = fullName;
-        this.avatarUrl = avatarUrl;
-        this.gender = gender;
-        this.phone = phone;
+    @PropertyName("AvatarURL")
+    public String getAvatarURL() { return AvatarURL; }
+    @PropertyName("AvatarURL")
+    public void setAvatarURL(String AvatarURL) {
+        if (AvatarURL == null) {
+            android.util.Log.e("CustomerDebug", "AvatarURL is null or not a String");
+        }
+        this.AvatarURL = AvatarURL;
     }
 
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", avatarUrl='" + avatarUrl + '\'' +
-                ", gender='" + gender + '\'' +
-                '}';
+    @PropertyName("PhoneNumber")
+    public String getPhoneNumber() { return objectToString(PhoneNumber); }
+    @PropertyName("PhoneNumber")
+    public void setPhoneNumber(Object PhoneNumber) { this.PhoneNumber = PhoneNumber; }
+
+    @PropertyName("RegistrationDate")
+    public String getRegistrationDate() { return RegistrationDate; }
+    @PropertyName("RegistrationDate")
+    public void setRegistrationDate(String RegistrationDate) {
+        if (RegistrationDate == null) {
+            android.util.Log.e("CustomerDebug", "RegistrationDate is null or not a String");
+        }
+        this.RegistrationDate = RegistrationDate;
     }
 
-    // Getter và Setter cho tất cả trường
-    public String getUsername() {
-        return username;
+    @PropertyName("DateOfBirth")
+    public String getDateOfBirth() { return DateOfBirth; }
+    @PropertyName("DateOfBirth")
+    public void setDateOfBirth(String DateOfBirth) {
+        if (DateOfBirth == null) {
+            android.util.Log.e("CustomerDebug", "DateOfBirth is null or not a String");
+        }
+        this.DateOfBirth = DateOfBirth;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    @PropertyName("Sex")
+    public String getSex() { return Sex; }
+    @PropertyName("Sex")
+    public void setSex(String Sex) {
+        if (Sex == null) {
+            android.util.Log.e("CustomerDebug", "Sex is null or not a String");
+        }
+        this.Sex = Sex;
     }
 
-    public String getEmail() {
-        return email;
+    @PropertyName("UserRanking")
+    public String getUserRanking() { return UserRanking; }
+    @PropertyName("UserRanking")
+    public void setUserRanking(String UserRanking) {
+        if (UserRanking == null) {
+            android.util.Log.e("CustomerDebug", "UserRanking is null or not a String");
+        }
+        this.UserRanking = UserRanking;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    @PropertyName("Username")
+    public String getUsername() { return Username; }
+    @PropertyName("Username")
+    public void setUsername(String Username) {
+        if (Username == null) {
+            android.util.Log.e("CustomerDebug", "Username is null or not a String");
+        }
+        this.Username = Username;
     }
 
-    public String getPassword() {
-        return password;
+    private String objectToString(Object obj) {
+        if (obj == null) return null;
+        if (obj instanceof String) return (String) obj;
+        if (obj instanceof Number) return String.valueOf(obj);
+        return obj.toString();
     }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
 }

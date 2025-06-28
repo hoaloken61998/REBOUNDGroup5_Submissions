@@ -8,9 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
 import com.rebound.utils.CartManager;
@@ -62,27 +64,48 @@ public class ProductDetailActivity extends AppCompatActivity {
         currentItem = (ProductItem) intent.getSerializableExtra("product");
 
         if (currentItem != null) {
-            productTitle.setText(currentItem.title);
-            ratingText.setText(currentItem.rating + " (53 reviews)");
-            soldText.setText(currentItem.sold);
-            productDetailsContent.setText(currentItem.description);
-            productImage.setImageResource(currentItem.imageSilverRes);
+            productTitle.setText(currentItem.ProductName != null ? currentItem.ProductName.toString() : "");
+            soldText.setText(""); // You can load sold count from Firebase if needed
+            productDetailsContent.setText(currentItem.ProductDescription != null ? currentItem.ProductDescription.toString() : "");
+            // Load image from URL using Glide
+            String imageLink = currentItem.ImageLink != null ? currentItem.ImageLink.toString() : null;
+            if (imageLink != null && !imageLink.isEmpty()) {
+                Glide.with(this)
+                    .load(imageLink)
+                    .placeholder(R.drawable.ic_placeholder)
+                    .into(productImage);
+            } else {
+                productImage.setImageResource(R.drawable.ic_placeholder);
+            }
             isGoldSelected = false;
 
+            // Show rating instantly from ProductItem
+            if (currentItem.Rating != null) {
+                ratingText.setText("Rating: " + currentItem.Rating);
+            } else {
+                ratingText.setText("Rating: N/A");
+            }
+
+            // Show number of sold for this product instantly from ProductItem
+            if (currentItem.SoldQuantity != null) {
+                soldText.setText("Sold: " + currentItem.SoldQuantity);
+            } else {
+                soldText.setText("Sold: 0");
+            }
+
             try {
-                String cleaned = currentItem.price.replace(".", "")
+                String cleaned = "0";
+                if (currentItem.ProductPrice != null) {
+                    String priceStr = currentItem.ProductPrice.toString();
+                    cleaned = priceStr.replace(".", "")
                         .replace(" VND", "")
                         .replace("vnd", "")
                         .trim();
+                }
                 pricePerItem = Integer.parseInt(cleaned);
             } catch (Exception e) {
                 pricePerItem = 0;
             }
-
-            // Check wishlist status
-            boolean isInWishlist = WishlistManager.getInstance(this).isInWishlist(currentItem.title);
-            isHearted = isInWishlist;
-            heartIcon.setImageResource(isHearted ? R.drawable.ic_heart_filled : R.mipmap.ic_heart);
         }
 
         quantityValue.setText(String.valueOf(quantity));
@@ -92,21 +115,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
 
         goldColor.setOnClickListener(v -> {
-            if (currentItem != null) {
-                productImage.setImageResource(currentItem.imageGoldRes);
-                isGoldSelected = true;
-                checkGold.setVisibility(View.VISIBLE);
-                checkSilver.setVisibility(View.GONE);
-            }
+            // No longer show unsupported message, just let the user click and do nothing
         });
 
         silverColor.setOnClickListener(v -> {
-            if (currentItem != null) {
-                productImage.setImageResource(currentItem.imageSilverRes);
-                isGoldSelected = false;
-                checkGold.setVisibility(View.GONE);
-                checkSilver.setVisibility(View.VISIBLE);
-            }
+            // No longer show unsupported message, just let the user click and do nothing
         });
 
         heartIcon.setOnClickListener(v -> {
@@ -115,16 +128,15 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Toast.makeText(ProductDetailActivity.this, "Please log in to add to your wishlist.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             isHearted = !isHearted;
-
             if (isHearted) {
                 heartIcon.setImageResource(R.drawable.ic_heart_filled);
                 WishlistManager.getInstance(this).addToWishlist(currentItem);
                 Toast.makeText(this, "Added to wishlist", Toast.LENGTH_SHORT).show();
             } else {
                 heartIcon.setImageResource(R.mipmap.ic_heart);
-                WishlistManager.getInstance(this).removeFromWishlist(currentItem.title);
+                // Convert ProductName to String for removeFromWishlist
+                WishlistManager.getInstance(this).removeFromWishlist(currentItem.ProductName != null ? currentItem.ProductName.toString() : "");
                 Toast.makeText(this, "Removed from wishlist", Toast.LENGTH_SHORT).show();
             }
         });
@@ -149,25 +161,21 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please log in to add items to your cart", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             CartManager.getInstance().setUserEmail(currentCustomer.getEmail());
-
             if (currentItem != null) {
                 for (int i = 0; i < quantity; i++) {
-                    ProductItem itemCopy = new ProductItem(
-                            currentItem.title,
-                            currentItem.price,
-                            isGoldSelected ? currentItem.imageGoldRes : currentItem.imageSilverRes,
-                            currentItem.rating,
-                            currentItem.sold,
-                            currentItem.description,
-                            currentItem.imageGoldRes,
-                            currentItem.imageSilverRes
-                    );
-                    itemCopy.setVariant(isGoldSelected ? "Gold" : "Silver");
+                    ProductItem itemCopy = new ProductItem();
+                    itemCopy.ProductName = currentItem.ProductName;
+                    itemCopy.ProductPrice = currentItem.ProductPrice;
+                    itemCopy.ImageLink = currentItem.ImageLink;
+                    itemCopy.ProductDescription = currentItem.ProductDescription;
+                    itemCopy.ProductID = currentItem.ProductID;
+                    // When copying CategoryID, use the Long field directly
+                    itemCopy.CategoryID = currentItem.CategoryID;
+                    itemCopy.ProductStockQuantity = 1L;
+                    itemCopy.StatusID = currentItem.StatusID;
                     CartManager.getInstance().addToCart(itemCopy);
                 }
-
                 Toast.makeText(this, "Item added to cart", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, ShoppingCartActivity.class));
             }

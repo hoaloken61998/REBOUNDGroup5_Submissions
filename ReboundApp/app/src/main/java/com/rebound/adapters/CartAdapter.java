@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.rebound.R;
 import com.rebound.models.Cart.ProductItem;
 
@@ -64,60 +65,92 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ProductItem item = cartList.get(position);
 
-        holder.name.setText(item.title);
-        holder.variant.setText(item.variant);
-        if (item.variant != null && item.variant.equals("Gold")) {
-            holder.image.setImageResource(item.imageGoldRes);
+        // Defensive conversion for Object fields
+        holder.name.setText(item.ProductName != null ? item.ProductName.toString() : "");
+        // Variant: not available in new model, so leave blank or set a placeholder
+        holder.variant.setText("");
+        // Defensive conversion for ImageLink
+        String imageLink = item.ImageLink != null ? item.ImageLink.toString() : "";
+        if (!imageLink.isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                .load(imageLink)
+                .placeholder(R.drawable.ic_placeholder)
+                .into(holder.image);
         } else {
-            holder.image.setImageResource(item.imageSilverRes);
+            holder.image.setImageResource(R.drawable.ic_placeholder);
         }
-
-        int unitPrice = extractPrice(item.price);
-        int totalPrice = unitPrice * item.quantity;
+        // Price calculation: parse ProductPrice (remove non-digits), multiply by quantity
+        String priceStr = item.ProductPrice != null ? item.ProductPrice.toString() : "";
+        int unitPrice = extractPrice(priceStr);
+        int quantity = 1;
+        try {
+            Long stockQuantityLong = item.ProductStockQuantity;
+            if (stockQuantityLong != null) {
+                if (stockQuantityLong > Integer.MAX_VALUE) {
+                    quantity = Integer.MAX_VALUE;
+                } else if (stockQuantityLong < Integer.MIN_VALUE) {
+                    quantity = Integer.MIN_VALUE;
+                } else {
+                    quantity = stockQuantityLong.intValue();
+                }
+                if (quantity < 1) {
+                    quantity = 1;
+                }
+            }
+        } catch (Exception e) {
+            quantity = 1;
+        }
+        int totalPrice = unitPrice * quantity;
         holder.price.setText(String.format("%,d VND", totalPrice).replace(',', '.'));
 
         if (isReadOnly) {
             holder.btnPlus.setVisibility(View.GONE);
             holder.btnMinus.setVisibility(View.GONE);
-            holder.quantity.setText("Qty: " + item.quantity);
+            holder.quantity.setText("Qty: " + quantity);
         } else {
             holder.btnPlus.setVisibility(View.VISIBLE);
             holder.btnMinus.setVisibility(View.VISIBLE);
-            holder.quantity.setText(String.valueOf(item.quantity));
+            holder.quantity.setText(String.valueOf(quantity));
 
+            final int quantityFinal = quantity;
+            final ProductItem finalItem = item;
+            final int pos = position;
             holder.btnPlus.setOnClickListener(v -> {
-                item.quantity++;
-                notifyItemChanged(position);
+                int newQty = quantityFinal + 1;
+                // Convert int to Long
+                finalItem.ProductStockQuantity = Long.valueOf(newQty);
+                // Alternatively, though Long.valueOf() is often preferred for clarity:
+                // finalItem.ProductStockQuantity = (long) newQty; // Cast to primitive long, then auto-box to Long
+                notifyItemChanged(pos);
                 if (updateTotal != null) updateTotal.run();
             });
 
             holder.btnMinus.setOnClickListener(v -> {
-                if (item.quantity > 1) {
-                    item.quantity--;
-                    notifyItemChanged(position);
+                if (quantityFinal > 1) {
+                    int newQty = quantityFinal - 1;
+                    // Convert int to Long
+                    finalItem.ProductStockQuantity = Long.valueOf(newQty); // THIS IS THE FIX for line 124
+                    // Alternatively:
+                    // finalItem.ProductStockQuantity = (long) newQty;
+                    notifyItemChanged(pos);
                     if (updateTotal != null) updateTotal.run();
                 } else {
-                    // Số lượng = 1 → hỏi có muốn xóa không
+                    // Logic to show "Remove item" dialog
                     new androidx.appcompat.app.AlertDialog.Builder(holder.itemView.getContext())
                             .setTitle("Remove item")
                             .setMessage("Do you want to remove this item from your cart?")
                             .setPositiveButton("Yes", (dialog, which) -> {
-                                // Xóa trong CartManager
-                                com.rebound.utils.CartManager.getInstance().removeFromCart(item);
-
-                                // Xóa trong adapter
-                                cartList.remove(position);
-                                notifyItemRemoved(position);
-                                notifyItemRangeChanged(position, cartList.size());
-
+                                com.rebound.utils.CartManager.getInstance().removeFromCart(finalItem);
+                                cartList.remove(pos);
+                                notifyItemRemoved(pos);
+                                notifyItemRangeChanged(pos, cartList.size());
                                 if (updateTotal != null) updateTotal.run();
                             })
                             .setNegativeButton("No", null)
                             .show();
-                    // màu nút
-
                 }
             });
+
 
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.quantity.getLayoutParams();
             if (isReadOnly) {

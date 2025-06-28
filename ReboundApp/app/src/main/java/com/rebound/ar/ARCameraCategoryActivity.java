@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.*;
@@ -17,7 +16,6 @@ import android.provider.MediaStore;
 import android.util.TypedValue;
 import android.view.Surface;
 import android.view.TextureView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -46,7 +44,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.rebound.adapters.ProductARAdapter;
-import com.rebound.data.ProductData;
 
 
 public class ARCameraCategoryActivity extends AppCompatActivity {
@@ -121,22 +118,7 @@ public class ARCameraCategoryActivity extends AppCompatActivity {
 // Áp padding: trái, trên, phải, dưới
         recyclerProductAR.setPadding(paddingHorizontal, paddingTop, paddingHorizontal, 10);
 
-        // Bấm vào từng danh mục
-        findViewById(R.id.imgARNecklaces).setOnClickListener(v -> {
-            showProducts(ProductData.getNecklaceList());
-        });
 
-        findViewById(R.id.imgAREarrings).setOnClickListener(v -> {
-            showProducts(ProductData.getEarringList());
-        });
-
-        findViewById(R.id.imgARRings).setOnClickListener(v -> {
-            showProducts(ProductData.getRingList());
-        });
-
-        findViewById(R.id.imgARBodyPiercing).setOnClickListener(v -> {
-            showProducts(ProductData.getBodyPiercingList());
-        });
         ImageView btnClose = findViewById(R.id.btnCloseArTop);
         btnClose.setOnClickListener(v -> {
             Intent intent = new Intent(ARCameraCategoryActivity.this, NavBarActivity.class);
@@ -273,6 +255,7 @@ public class ARCameraCategoryActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_REQUEST_CODE
                 && grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

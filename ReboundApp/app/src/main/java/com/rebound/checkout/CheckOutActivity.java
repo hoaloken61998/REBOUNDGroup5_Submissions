@@ -34,7 +34,6 @@ import com.rebound.models.Cart.ShippingAddress;
 import com.rebound.models.Customer.Customer;
 import com.rebound.models.Main.NotificationItem;
 import com.rebound.models.Orders.Order;
-import com.rebound.models.Orders.Product;
 import com.rebound.utils.CartManager;
 import com.rebound.utils.NotificationStorage;
 import com.rebound.utils.OrderManager;
@@ -146,13 +145,17 @@ public class CheckOutActivity extends AppCompatActivity {
             Customer current = SharedPrefManager.getCurrentCustomer(this);
             if (current != null) {
                 List<ProductItem> cartItems = CartManager.getInstance().getCartItems();
-                List<Product> orderProducts = new ArrayList<>();
+                List<ProductItem> orderProducts = new ArrayList<>();
                 for (ProductItem p : cartItems) {
-                    orderProducts.add(new Product(p.title, p.variant, p.price, p.imageRes));
+                    // Directly add ProductItem to orderProducts
+                    orderProducts.add(p);
                 }
 
-                String formattedTotal = String.format("%,d VND", totalAmountFromIntent).replace(',', '.');
-                Order newOrder = new Order(orderProducts, formattedTotal, "To Receive");
+                String formattedTotal = String.format(java.util.Locale.US, "%,d VND", totalAmountFromIntent).replace(',', '.');
+                Order newOrder = new Order();
+                newOrder.productList = orderProducts;
+                newOrder.total = formattedTotal;
+                newOrder.Status = "To Receive";
 
                 OrderManager.getInstance().setUserEmail(current.getEmail());
                 OrderManager.getInstance().addOrder(newOrder);

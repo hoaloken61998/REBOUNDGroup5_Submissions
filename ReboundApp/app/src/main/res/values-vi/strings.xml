@@ -477,6 +477,7 @@ Styling</string>
     <string name="email_exists">Email đã được sử dụng. Vui lòng dùng email khác.</string>
     <string name="account_created_successfully">Tạo tài khoản thành công!</string>
 
+    <string name="error_creating_account">Lỗi khi tạo tài khoản</string>
     <string name="contact_customer_service">Dịch vụ khách hàng</string>
     <string name="contact_website">Trang web</string>
 
@@ -516,5 +517,7 @@ Styling</string>
 
     <string name="title_cancellation_policy">Chính sách hủy</string>
     <string name="title_terms_and_conditions">Điều khoản và điều kiện</string>
+    <string name="title_save_information">Lưu thông tin đăng nhập</string>
+    <string name="please_login">Làm ơn đăng nhập</string>
 
 </resources>

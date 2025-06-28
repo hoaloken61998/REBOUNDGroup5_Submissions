@@ -75,6 +75,54 @@ public class OTPVerificationActivity extends AppCompatActivity {
         edtOTP2 = findViewById(R.id.edtOTP2);
         edtOTP3 = findViewById(R.id.edtOTP3);
         edtOTP4 = findViewById(R.id.edtOTP4);
+
+        // Auto move to next field after input
+        setupOTPInputs();
+    }
+
+    private void setupOTPInputs() {
+        edtOTP1.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 1) edtOTP2.requestFocus();
+            }
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+        edtOTP2.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 1) edtOTP3.requestFocus();
+                else if (s.length() == 0) edtOTP1.requestFocus();
+            }
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+        edtOTP3.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 1) edtOTP4.requestFocus();
+                else if (s.length() == 0) edtOTP2.requestFocus();
+            }
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+        edtOTP4.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 0) edtOTP3.requestFocus();
+            }
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
     }
 
     public void do_verify_otp(View view) {

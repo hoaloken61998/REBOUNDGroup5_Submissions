@@ -8,9 +8,10 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -39,12 +40,6 @@
             android:name=".main.CategoryProductActivity"
             android:exported="false" />
         <activity
-            android:name=".login.ProfileActivity"
-            android:exported="false"
-            android:fullBackupContent="@xml/backup_rules"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name" />
-        <activity
             android:name=".ar.ARCameraCategoryActivity"
             android:exported="false" />
         <activity
@@ -67,9 +62,6 @@
             android:exported="false" />
         <activity
             android:name=".main.NotificationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".main.EarringsActivity"
             android:exported="false" />
         <activity
             android:name=".main.SearchActivity"
@@ -138,9 +130,6 @@
             android:name=".main.LanguageSelectorActivity"
             android:exported="true" />
         <activity
-            android:name=".login.UpdatePasswordActivity"
-            android:exported="true" />
-        <activity
             android:name=".login.WelcomeActivity"
             android:exported="true">
             <intent-filter>
@@ -159,3 +148,7 @@
     </application>
 
 </manifest>
+
+<!-- NOTE: The following activities are referenced but missing in your project:
+ProfileActivity, ARCameraProductActivity, NewsActivity, MainPageActivity, ScheduleServiceActivity, CheckoutInfoActivity.
+You should add these classes or remove their entries from the manifest. -->

@@ -23,7 +23,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     ImageView imgBackForgotPassword;
     TextView txtBottomForgotPasswordLogin;
     Button btnSendCode;
-    EditText edtForgotPasswordEmail;
+    EditText edtForgotPasswordPhone;
     ListCustomer listCustomer;
 
     @Override
@@ -34,7 +34,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
 
 
-        // ✅ Load từ SharedPreferences
+
         listCustomer = SharedPrefManager.getCustomerList(this);
         if (listCustomer == null) {
             listCustomer = new ListCustomer(); // tạo danh sách mẫu
@@ -73,7 +73,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         imgBackForgotPassword = findViewById(R.id.imgBackForgotPassword);
         txtBottomForgotPasswordLogin = findViewById(R.id.txtBottomForgotPasswordLogin);
         btnSendCode = findViewById(R.id.btnSendCode);
-        edtForgotPasswordEmail = findViewById(R.id.edtForgotPasswordEmail);
+        edtForgotPasswordPhone = findViewById(R.id.edtForgotPasswordEmail); // reuse id for phone
     }
 
     private void openLoginActivity() {
@@ -88,38 +88,33 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     public void do_send_code(View view) {
-        String email = edtForgotPasswordEmail.getText().toString().trim();
+        String phone = edtForgotPasswordPhone.getText().toString().trim();
+        String phoneForCompare = phone.startsWith("0") ? phone.substring(1) : phone;
 
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, getString(R.string.invalid_email_format), Toast.LENGTH_SHORT).show();
+        if (!phone.matches("^0?\\d{9,14}$")) {
+            Toast.makeText(this, "Invalid phone number format", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        boolean emailExists = false;
-        for (Customer customer : listCustomer.getCustomers()) {
-            if (customer.getEmail().equalsIgnoreCase(email)) {
-                emailExists = true;
-                break;
-            }
-        }
-
-        if (!emailExists) {
-            Toast.makeText(this, getString(R.string.email_does_not_exist), Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String otp = generateOTP();
-
-        new Thread(() -> {
-            GmailSender.sendEmail(email, getString(R.string.otp_email_subject), getString(R.string.otp_email_body, otp));
-        }).start();
-
-        Intent intent = new Intent(ForgotPasswordActivity.this, OTPVerificationActivity.class);
-        intent.putExtra("email", email);
-        intent.putExtra("otp", otp);
-        intent.putExtra("listCustomer", listCustomer);
-        startActivity(intent);
-
-        Toast.makeText(this, getString(R.string.otp_sent), Toast.LENGTH_SHORT).show();
+        // Query Firebase for PhoneNumber (without leading zero)
+        com.google.firebase.database.DatabaseReference userRef = com.google.firebase.database.FirebaseDatabase.getInstance().getReference("User");
+        userRef.orderByChild("PhoneNumber").equalTo(Long.parseLong(phoneForCompare))
+            .limitToFirst(1)
+            .get()
+            .addOnSuccessListener(snapshot -> {
+                if (snapshot.exists()) {
+                    String otp = generateOTP();
+                    android.telephony.SmsManager smsManager = android.telephony.SmsManager.getDefault();
+                    smsManager.sendTextMessage(phone, null, "Your OTP code is: " + otp, null, null);
+                    Toast.makeText(this, "OTP sent to phone: " + phone, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(ForgotPasswordActivity.this, OTPVerificationActivity.class);
+                    intent.putExtra("phone", phone);
+                    intent.putExtra("otp", otp);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Phone number does not exist", Toast.LENGTH_SHORT).show();
+                }
+            })
+            .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

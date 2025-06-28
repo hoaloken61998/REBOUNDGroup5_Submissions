@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.rebound.callback.FirebaseListCallback;
 import com.rebound.models.Customer.Customer;
 import com.rebound.models.Customer.ListCustomer;
 import com.rebound.models.Cart.ShippingAddress;
@@ -49,7 +50,7 @@ public class SharedPrefManager {
         ListCustomer listCustomer = getCustomerList(context);
         if (listCustomer != null) {
             for (Customer c : listCustomer.getCustomers()) {
-                if (c.getUsername().equals(username)) {
+                if (c.getUsername() != null && c.getUsername().equalsIgnoreCase(username)) {
                     return c;
                 }
             }
@@ -63,7 +64,7 @@ public class SharedPrefManager {
         if (listCustomer != null) {
             for (int i = 0; i < listCustomer.getCustomers().size(); i++) {
                 Customer c = listCustomer.getCustomers().get(i);
-                if (c.getUsername().equals(updatedCustomer.getUsername())) {
+                if (c.getUsername() != null && c.getUsername().equals(updatedCustomer.getUsername())) {
                     listCustomer.getCustomers().set(i, updatedCustomer);
                     saveCustomerList(context, listCustomer);
                     return;
@@ -76,7 +77,7 @@ public class SharedPrefManager {
         ListCustomer listCustomer = getCustomerList(context);
         if (listCustomer != null) {
             for (Customer c : listCustomer.getCustomers()) {
-                if (c.getUsername().equalsIgnoreCase(username)) {
+                if (c.getUsername() != null && c.getUsername().equalsIgnoreCase(username)) {
                     return true;
                 }
             }
@@ -92,7 +93,9 @@ public class SharedPrefManager {
 
         // Kiểm tra nếu đã có thì cập nhật
         for (int i = 0; i < listCustomer.getCustomers().size(); i++) {
-            if (listCustomer.getCustomers().get(i).getUsername().equals(customer.getUsername())) {
+            String existingUsername = listCustomer.getCustomers().get(i).getUsername();
+            String newUsername = customer.getUsername();
+            if (existingUsername != null && existingUsername.equals(newUsername)) {
                 listCustomer.getCustomers().set(i, customer);
                 saveCustomerList(context, listCustomer);
                 return;
@@ -103,11 +106,12 @@ public class SharedPrefManager {
         listCustomer.getCustomers().add(customer);
         saveCustomerList(context, listCustomer);
     }
+
     public static Customer getCustomerByEmail(Context context, String email) {
         ListCustomer listCustomer = getCustomerList(context);
         if (listCustomer != null) {
             for (Customer c : listCustomer.getCustomers()) {
-                if (c.getEmail().equalsIgnoreCase(email)) {
+                if (c.getEmail() != null && c.getEmail().equalsIgnoreCase(email)) {
                     return c;
                 }
             }
@@ -119,9 +123,10 @@ public class SharedPrefManager {
         ListCustomer listCustomer = getCustomerList(context);
         if (listCustomer != null) {
             for (Customer c : listCustomer.getCustomers()) {
-                if (c.getPhone() != null && c.getPhone().equals(phone)) {
+                // PhoneNumber is now long, so convert to String for comparison
+                if (String.valueOf(c.getPhoneNumber()).equals(phone)) {
                     // Nếu là user khác (không cùng email), thì coi như trùng
-                    if (!c.getEmail().equalsIgnoreCase(exceptEmail)) {
+                    if (c.getEmail() != null && !c.getEmail().equalsIgnoreCase(exceptEmail)) {
                         return true;
                     }
                 }
@@ -129,23 +134,26 @@ public class SharedPrefManager {
         }
         return false;
     }
+
     public static boolean isEmailTaken(Context context, String email) {
         ListCustomer listCustomer = getCustomerList(context);
         if (listCustomer != null) {
             for (Customer c : listCustomer.getCustomers()) {
-                if (c.getEmail().equalsIgnoreCase(email)) {
+                if (c.getEmail() != null && c.getEmail().equalsIgnoreCase(email)) {
                     return true;
                 }
             }
         }
         return false;
     }
+
     public static void setCurrentCustomer(Context context, Customer customer) {
         SharedPreferences prefs = context.getSharedPreferences("user_session", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("logged_in_email", customer.getEmail());
         editor.apply();
     }
+
     public static Customer getCurrentCustomer(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("user_session", Context.MODE_PRIVATE);
         String email = prefs.getString("logged_in_email", null);
@@ -154,6 +162,14 @@ public class SharedPrefManager {
             return getCustomerByEmail(context, email);
         }
         return null;
+    }
+
+    public static void logoutCurrentCustomer(Context context) {
+        // Clear the logged-in email from user_session
+        SharedPreferences prefs = context.getSharedPreferences("user_session", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove("logged_in_email");
+        editor.apply();
     }
 
     private static final String KEY_SHIPPING_ADDRESS = "shipping_address_";
@@ -192,8 +208,9 @@ public class SharedPrefManager {
 //        return context.getSharedPreferences("checkout_prefs", Context.MODE_PRIVATE);
 //    }
 
-private static final String CARD_PREFS = "CARD_PREFS";
-//
+    private static final String CARD_PREFS = "CARD_PREFS";
+
+    //
 //    // Lưu tên in trên thẻ
 //    public static void setNameOnCard(Context context, String email, String nameOnCard) {
 //        SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
@@ -219,13 +236,13 @@ private static final String CARD_PREFS = "CARD_PREFS";
 //    }
 // CREDIT CARD
 // Credit Card
-public static void setCreditCard(Context context, String email, String name, String number) {
-    SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
-    prefs.edit()
-            .putString(email + "_credit_name", name)
-            .putString(email + "_credit_number", number)
-            .apply();
-}
+    public static void setCreditCard(Context context, String email, String name, String number) {
+        SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
+        prefs.edit()
+                .putString(email + "_credit_name", name)
+                .putString(email + "_credit_number", number)
+                .apply();
+    }
 
     public static String getCreditCardName(Context context, String email) {
         SharedPreferences prefs = context.getSharedPreferences(CARD_PREFS, Context.MODE_PRIVATE);
@@ -288,4 +305,15 @@ public static void setCreditCard(Context context, String email, String name, Str
         return null;
     }
 
+    // Callback interface for async checks
+    public interface TakenCallback {
+        void onResult(boolean isTaken);
+
+        void onError(String error);
+    }
+
+    // Check username from Firebase (modular, logic in callback)
+    public static void getAllCustomersFromFirebase(FirebaseListCallback<Customer> callback) {
+        com.rebound.connectors.FirebaseConnector.getAllItems("User", Customer.class, callback);
+    }
 }

@@ -18,16 +18,30 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
+
+import com.rebound.connectors.FirebaseProductConnector;
 import com.rebound.models.Customer.Customer;
 import com.rebound.R;
 import com.rebound.adapters.LastCollectionAdapter;
-import com.rebound.data.ProductData;
 import com.rebound.utils.CartManager;
 import com.rebound.utils.OrderManager;
-import com.rebound.utils.SharedPrefManager;
+import com.rebound.connectors.FirebaseConnector;
+import com.rebound.callback.FirebaseListCallback;
+import com.rebound.models.Cart.ProductItem;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainPageFragment extends Fragment {
     private LastCollectionAdapter adapter;
+    private RecyclerView recyclerView;
+    private static final HashMap<String, String> CATEGORY_ID_MAP = new HashMap<>();
+    static {
+        CATEGORY_ID_MAP.put("Necklaces", "3");
+        CATEGORY_ID_MAP.put("Earrings", "1");
+        CATEGORY_ID_MAP.put("Rings", "1");
+        CATEGORY_ID_MAP.put("Body Piercing", "4");
+    }
 
     public MainPageFragment() {
         // Required empty constructor
@@ -57,9 +71,9 @@ public class MainPageFragment extends Fragment {
         view.findViewById(R.id.btnMainPageBodyPiercing).setOnClickListener(v -> openCategory("Body Piercing"));
 
         // Khởi tạo RecyclerView "Latest Collection"
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewLastCollection);
+        recyclerView = view.findViewById(R.id.recyclerViewLastCollection);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        adapter = new LastCollectionAdapter(ProductData.getLastCollectionList());
+        adapter = new LastCollectionAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
         // Giỏ hàng
@@ -109,6 +123,29 @@ public class MainPageFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void loadCategoryProducts(String category) {
+        // This method is now only used for the default display, not for button clicks
+        String categoryIdStr = CATEGORY_ID_MAP.get(category);
+        if (categoryIdStr == null) return;
+        long categoryId; // Use long for consistency with ProductItem.CategoryID
+        try {
+            categoryId = Long.parseLong(categoryIdStr);
+        } catch (NumberFormatException e) {
+            adapter.updateList(new ArrayList<>());
+            return;
+        }
+        FirebaseProductConnector.getProductsByCategoryNumber("Product", (int) categoryId, ProductItem.class, new FirebaseListCallback<ProductItem>() {
+            @Override
+            public void onSuccess(ArrayList<ProductItem> result) {
+                adapter.updateList(result);
+            }
+            @Override
+            public void onFailure(String errorMessage) {
+                adapter.updateList(new ArrayList<>());
+            }
+        });
     }
 
     private void openCategory(String category) {

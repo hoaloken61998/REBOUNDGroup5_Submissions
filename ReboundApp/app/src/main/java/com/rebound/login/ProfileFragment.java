@@ -11,10 +11,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button; // ✨ Added
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog; // ✨ Added
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
@@ -28,6 +28,7 @@ import com.rebound.main.PrivacyPolicyActivity;
 import com.rebound.models.Customer.Customer;
 import com.rebound.utils.SharedPrefManager;
 import com.rebound.login.WishlistActivity;
+import com.rebound.connectors.CustomerConnector;
 
 public class ProfileFragment extends Fragment {
 
@@ -94,10 +95,14 @@ public class ProfileFragment extends Fragment {
         });
 
         optionYourProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), EditProfileActivity.class);
-            if (currentCustomer != null) {
-                intent.putExtra("username", currentCustomer.getUsername());
+            // Always get the latest currentCustomer before checking
+            currentCustomer = SharedPrefManager.getCurrentCustomer(requireContext());
+            if (currentCustomer == null) {
+                Toast.makeText(getContext(), getString(R.string.please_login), Toast.LENGTH_SHORT).show();
+                return;
             }
+            Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+            intent.putExtra("username", currentCustomer.getUsername());
             startActivity(intent);
         });
 
@@ -113,8 +118,11 @@ public class ProfileFragment extends Fragment {
             Button btnNo = dialogView.findViewById(R.id.btnLogOutNo);
 
             btnYes.setOnClickListener(v1 -> {
+                // Clear current user session
+                SharedPrefManager.logoutCurrentCustomer(requireContext());
+                // Optionally clear other session data if needed
                 SharedPreferences.Editor editor = requireActivity()
-                        .getSharedPreferences("user_session", Context.MODE_PRIVATE).edit();
+                        .getSharedPreferences("auth", Context.MODE_PRIVATE).edit();
                 editor.clear();
                 editor.apply();
 
@@ -167,25 +175,45 @@ public class ProfileFragment extends Fragment {
         });
 
 
+        imgBackProfile.setVisibility(View.VISIBLE);
         imgBackProfile.setOnClickListener(v -> requireActivity().onBackPressed());
     }
 
     private void loadUserInfo() {
         currentCustomer = SharedPrefManager.getCurrentCustomer(requireContext());
-
-        if (currentCustomer != null) {
-            txtProfileUserName.setText(currentCustomer.getFullName());
-
-            String avatarUrl = currentCustomer.getAvatarUrl();
-            if (avatarUrl != null && !avatarUrl.isEmpty()) {
-                Glide.with(this)
-                        .load(avatarUrl)
-                        .placeholder(R.mipmap.ic_avatar_sample)
-                        .into(imgAvatar);
-            } else {
-                imgAvatar.setImageResource(R.mipmap.ic_avatar_sample);
-            }
+        if (currentCustomer == null) {
+            // Not logged in, hide profile info or show login prompt
+            txtProfileUserName.setText(getString(R.string.please_login));
+            imgAvatar.setImageResource(R.drawable.ic_placeholder); // Use your default avatar resource
+            return;
         }
+        // Fetch latest info from Firebase
+        CustomerConnector connector = new CustomerConnector();
+        com.rebound.connectors.FirebaseConnector.getAllItems(
+            "User",
+            Customer.class,
+            new com.rebound.callback.FirebaseListCallback<Customer>() {
+                @Override
+                public void onSuccess(java.util.ArrayList<Customer> customers) {
+                    for (Customer c : customers) {
+                        if (c != null && c.getEmail() != null && c.getEmail().equalsIgnoreCase(currentCustomer.getEmail())) {
+                            txtProfileUserName.setText(c.getFullName());
+                            if (c.getAvatarURL() != null && !c.getAvatarURL().isEmpty()) {
+                                Glide.with(requireContext()).load(c.getAvatarURL()).into(imgAvatar);
+                            } else {
+                                imgAvatar.setImageResource(R.drawable.ic_placeholder);
+                            }
+                            break;
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(String errorMessage) {
+                    txtProfileUserName.setText(currentCustomer.getFullName());
+                    imgAvatar.setImageResource(R.drawable.ic_placeholder);
+                }
+            }
+        );
     }
 
     @Override

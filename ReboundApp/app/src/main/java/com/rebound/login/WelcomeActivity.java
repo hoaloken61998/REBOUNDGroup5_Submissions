@@ -1,6 +1,8 @@
 package com.rebound.login;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -10,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import com.rebound.models.Customer.ListCustomer;
 import com.rebound.models.Customer.Customer;
 import com.rebound.R;
@@ -28,6 +32,11 @@ public class WelcomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_welcome);
 
+        // Request SMS permission before proceeding
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1002);
+        }
+
         addViews();
         addEvents();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -40,8 +49,18 @@ public class WelcomeActivity extends AppCompatActivity {
 
         if (listCustomer == null) {
             listCustomer = new ListCustomer();
-            listCustomer.addSampleCustomers(); // chỉ gọi 1 lần duy nhất
             SharedPrefManager.saveCustomerList(this, listCustomer);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1002) {
+            if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                // Permission denied, close the app or show a message
+                finish();
+            }
         }
     }
 

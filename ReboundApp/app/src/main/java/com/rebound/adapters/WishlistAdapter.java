@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.rebound.R;
 import com.rebound.models.Cart.ProductItem;
 import com.rebound.main.ProductDetailActivity;
@@ -37,11 +38,19 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
     public void onBindViewHolder(@NonNull WishlistAdapter.ViewHolder holder, int position) {
         ProductItem item = wishlist.get(position);
 
-        // Gán dữ liệu vào View
-        holder.imgProduct.setImageResource(item.imageRes);
-        holder.txtProduct.setText(item.title);
-        holder.txtProductPrice.setText(item.price);
-        holder.txtProductRating.setText(item.rating);
+        // Gán dữ liệu vào View từ Firebase fields
+        String imageLink = item.ImageLink != null ? item.ImageLink.toString() : null;
+        if (imageLink != null && !imageLink.isEmpty()) {
+            Glide.with(context)
+                .load(imageLink)
+                .placeholder(R.drawable.ic_placeholder)
+                .into(holder.imgProduct);
+        } else {
+            holder.imgProduct.setImageResource(R.drawable.ic_placeholder);
+        }
+        holder.txtProduct.setText(item.ProductName != null ? item.ProductName.toString() : "");
+        holder.txtProductPrice.setText(item.ProductPrice != null ? item.ProductPrice.toString() : "");
+        holder.txtProductRating.setText(""); // No rating in Firebase
 
         // Khi bấm vào sản phẩm
         holder.itemView.setOnClickListener(v -> {

@@ -36,7 +36,6 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
 
         if (listCustomer == null) {
             listCustomer = new ListCustomer();
-            listCustomer.addSampleCustomers();
             SharedPrefManager.saveCustomerList(this, listCustomer);
         }
 
@@ -80,7 +79,11 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
         boolean updated = false;
         for (Customer customer : listCustomer.getCustomers()) {
             if (customer.getEmail().equalsIgnoreCase(email)) {
-                customer.setPassword(newPass);
+                try {
+                    customer.setPassword(Long.parseLong(newPass));
+                } catch (NumberFormatException e) {
+                    customer.setPassword(0L);
+                }
                 updated = true;
 
                 getSharedPreferences("user_data", MODE_PRIVATE)

@@ -18,7 +18,6 @@ import com.rebound.adapters.OrderAdapter;
 import com.rebound.models.Cart.ProductItem;
 import com.rebound.models.Customer.Customer;
 import com.rebound.models.Orders.Order;
-import com.rebound.models.Orders.Product;
 import com.rebound.utils.CartManager;
 import com.rebound.utils.OrderManager;
 import com.rebound.utils.SharedPrefManager;
@@ -59,28 +58,12 @@ public class CompletedFragment extends Fragment {
 
             @Override
             public void onBuyAgain(Order order) {
-                for (Product product : order.getProductList()) {
-                    String variant = product.getVariant() != null ? product.getVariant() : "Default";
-
-                    // Nếu bạn muốn giả lập rating từ variant, parse số hoặc dùng mặc định
-                    String fakeRating = "4.5";  // ví dụ mặc định nếu variant không hợp lệ
-
-                    try {
-                        Float.parseFloat(variant);  // kiểm tra nếu variant là số
-                        fakeRating = variant;
-                    } catch (NumberFormatException ignored) {}
-
-                    ProductItem item = new ProductItem(
-                            product.getName(),          // title
-                            product.getPrice(),         // price
-                            product.getImageResId(),    // image
-                            fakeRating,                 // rating
-                            "0 SOLD",                   // sold
-                            "",                         // desc
-                            product.getImageResId(),    // image1
-                            product.getImageResId()     // image2
-                    );
-
+                for (ProductItem product : order.getProductList()) {
+                    ProductItem item = new ProductItem();
+                    item.ProductName = product.ProductName;
+                    item.ProductPrice = product.ProductPrice;
+                    item.ImageLink = product.ImageLink;
+                    // Set other fields as needed
                     CartManager.getInstance().addToCart(item);
                 }
 
