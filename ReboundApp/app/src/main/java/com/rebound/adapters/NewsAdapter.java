@@ -11,9 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.rebound.R;
-import com.rebound.models.Main.NewsItem;
 import com.rebound.main.NewsDetailActivity;
+import com.rebound.models.Main.NewsItem;
 
 import java.util.List;
 
@@ -41,15 +42,26 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         holder.title.setText(item.getTitle());
         holder.subtitle.setText(item.getSubtitle());
         holder.date.setText(item.getDate());
-        holder.image.setImageResource(item.getImageResId());
+
+        String imageUrl = item.getImageUrl();
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher) // nếu lỗi cũng hiện icon mặc định
+                    .into(holder.image);
+        } else {
+            // Ẩn ImageView nếu không có ảnh
+            holder.image.setVisibility(View.GONE);
+        }
 
         // Xử lý sự kiện click
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, NewsDetailActivity.class);
             intent.putExtra("title", item.getTitle());
-            intent.putExtra("desc", item.getSubtitle());
+            intent.putExtra("desc", item.getFullContent()); // dùng nội dung chi tiết
             intent.putExtra("date", item.getDate());
-            intent.putExtra("imageResId", item.getImageResId());
+            intent.putExtra("imageUrl", item.getImageUrl()); // truyền URL thay vì resId
             context.startActivity(intent);
         });
     }

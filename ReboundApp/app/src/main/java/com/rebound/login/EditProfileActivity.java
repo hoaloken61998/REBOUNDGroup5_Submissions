@@ -90,29 +90,28 @@ public class EditProfileActivity extends AppCompatActivity {
             if (currentCustomer != null) {
                 currentCustomer.setFullName(edtFullName.getText().toString().trim());
                 currentCustomer.setEmail(edtEmail.getText().toString().trim());
-                // Remove leading zero before saving as Long, but handle empty string and non-numeric input
+
                 String phoneInput = edtPhone.getText().toString().trim();
-                if (phoneInput.startsWith("0")) {
-                    phoneInput = phoneInput.substring(1);
-                }
-                Long phoneLong = 0L;
                 if (!phoneInput.isEmpty()) {
-                    try {
-                        phoneLong = Long.parseLong(phoneInput);
-                    } catch (NumberFormatException e) {
-                        phoneLong = 0L;
+                    if (phoneInput.startsWith("0")) {
+                        phoneInput = phoneInput.substring(1);
                     }
+                    if (!phoneInput.matches("\\d+")) {
+                        Toast.makeText(this, "Số điện thoại không hợp lệ", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    currentCustomer.setPhoneNumber(phoneInput);
                 }
-                currentCustomer.setPhoneNumber(phoneLong);
-                try {
-                    currentCustomer.setPassword(Long.parseLong(edtPassword.getText().toString().trim()));
-                } catch (NumberFormatException e) {
-                    currentCustomer.setPassword(0L);
+
+                // ✅ Giữ lại mật khẩu nếu không nhập mới
+                String passwordInput = edtPassword.getText().toString().trim();
+                if (!passwordInput.isEmpty()) {
+                    currentCustomer.setPassword(passwordInput);
                 }
+
                 currentCustomer.setSex(spGender.getSelectedItem().toString());
 
                 Customer savedCustomer = SharedPrefManager.getCurrentCustomer(this);
-
                 if (selectedImageUri != null) {
                     currentCustomer.setAvatarURL(selectedImageUri.toString());
                 } else {
@@ -126,22 +125,23 @@ public class EditProfileActivity extends AppCompatActivity {
                 SharedPrefManager.updateCustomer(this, currentCustomer);
                 SharedPrefManager.setCurrentCustomer(this, currentCustomer);
 
-                // Update to Firebase as well
-                CustomerConnector connector = new com.rebound.connectors.CustomerConnector();
-                // Debug: Show userID and email before update
+                CustomerConnector connector = new CustomerConnector();
                 android.util.Log.d("EditProfile", "Updating userID: " + currentCustomer.getUserID() + ", email: " + currentCustomer.getEmail());
+                String debugUserId = currentCustomer.getUserID() != null ? currentCustomer.getUserID() : "null";
+                android.util.Log.d("DebugUserID", "⚠️ currentCustomer.getUserID() = " + debugUserId);
+
                 connector.updateCustomerInFirebase(currentCustomer, new com.rebound.callback.FirebaseSingleCallback<Void>() {
                     @Override
                     public void onSuccess(Void result) {
                         Toast.makeText(EditProfileActivity.this, getString(R.string.profile_update_success), Toast.LENGTH_SHORT).show();
                         new android.os.Handler().postDelayed(EditProfileActivity.this::finish, 1200);
                     }
+
                     @Override
                     public void onFailure(String errorMessage) {
                         Toast.makeText(EditProfileActivity.this, "Failed to update profile in database: " + errorMessage + "\nuserID: " + currentCustomer.getUserID(), Toast.LENGTH_LONG).show();
                     }
                 });
-                // Remove the old Toast and Handler here
             } else {
                 Toast.makeText(this, getString(R.string.profile_update_user_not_found), Toast.LENGTH_SHORT).show();
             }

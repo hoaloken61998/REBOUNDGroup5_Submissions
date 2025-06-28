@@ -13,7 +13,6 @@ import com.rebound.models.Customer.Customer;
 import com.rebound.models.Customer.ListCustomer;
 import com.rebound.utils.SharedPrefManager;
 
-
 import java.util.ArrayList;
 
 public class CustomerConnector {
@@ -23,13 +22,12 @@ public class CustomerConnector {
         listCustomer = SharedPrefManager.getCustomerList(context);
 
         if (listCustomer == null) {
-            listCustomer = new ListCustomer(); // lần đầu chưa có, tạo mẫu
-            SharedPrefManager.saveCustomerList(context, listCustomer); // lưu vào
+            listCustomer = new ListCustomer();
+            SharedPrefManager.saveCustomerList(context, listCustomer);
         }
     }
 
     public CustomerConnector() {
-
     }
 
     public ArrayList<Customer> get_all_customers() {
@@ -45,8 +43,8 @@ public class CustomerConnector {
                     public void onSuccess(java.util.ArrayList<com.rebound.models.Customer.Customer> customers) {
                         for (com.rebound.models.Customer.Customer c : customers) {
                             if (c != null && c.getEmail() != null &&
-                                (c.getEmail().equalsIgnoreCase(email)) &&
-                                (String.valueOf(c.getPassword()).equals(pwd) || String.valueOf(c.getPassword()).equalsIgnoreCase(pwd))) {
+                                    (c.getEmail().equalsIgnoreCase(email)) &&
+                                    (String.valueOf(c.getPassword()).equals(pwd) || String.valueOf(c.getPassword()).equalsIgnoreCase(pwd))) {
                                 callback.onSuccess(c);
                                 return;
                             }
@@ -63,52 +61,67 @@ public class CustomerConnector {
     }
 
     public void addCustomerToFirebaseWithId(long userId, Customer customer, com.rebound.callback.FirebaseSingleCallback<Void> callback) {
-        com.google.firebase.database.FirebaseDatabase.getInstance()
-            .getReference("User")
-            .child(String.valueOf(userId))
-            .setValue(customer)
-            .addOnSuccessListener(aVoid -> callback.onSuccess(null))
-            .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+        FirebaseDatabase.getInstance()
+                .getReference("User")
+                .child(String.valueOf(userId))
+                .setValue(customer)
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage() != null ? e.getMessage() : "Unknown error when adding user"));
     }
 
     public void updateCustomerInFirebase(Customer updatedCustomer, FirebaseSingleCallback<Void> callback) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User");
-        final Long userIdLong;
+
+        final String userIdStr;
         try {
             Object idObj = updatedCustomer.getUserID();
-            if (idObj instanceof Long) {
-                userIdLong = (Long) idObj;
-            } else if (idObj instanceof String) {
-                userIdLong = Long.parseLong((String) idObj);
-            } else if (idObj != null) {
-                userIdLong = Long.parseLong(idObj.toString());
-            } else {
+            if (idObj == null) {
                 callback.onFailure("UserID is null");
                 return;
             }
+
+            if (idObj instanceof Number) {
+                userIdStr = String.valueOf(((Number) idObj).longValue());
+            } else {
+                userIdStr = idObj.toString().replace(".0", "");
+            }
         } catch (Exception e) {
-            callback.onFailure("Invalid userID");
+            callback.onFailure("Invalid userID format");
             return;
         }
-        // Find the node with matching UserID and update it
+
+        Log.d("CustomerUpdate", "Looking for UserID to update: " + userIdStr);
+
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean found = false;
                 for (DataSnapshot userSnap : dataSnapshot.getChildren()) {
                     Object userIdObj = userSnap.child("UserID").getValue();
-                    if (userIdObj != null && userIdObj instanceof Number && ((Number) userIdObj).longValue() == userIdLong) {
+                    String firebaseUserId = userIdObj != null ? String.valueOf(userIdObj).replace(".0", "") : null;
+                    Log.d("CustomerUpdate", "Found Firebase UserID: " + firebaseUserId);
+
+                    if (firebaseUserId != null && firebaseUserId.equals(userIdStr)) {
                         userSnap.getRef().setValue(updatedCustomer)
-                            .addOnSuccessListener(aVoid -> callback.onSuccess(null))
-                            .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("CustomerUpdate", "Updated user with ID: " + userIdStr);
+                                    callback.onSuccess(null);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("CustomerUpdate", "Failed to update: " + e.getMessage());
+                                    callback.onFailure(e.getMessage() != null ? e.getMessage() : "Unknown Firebase error");
+                                });
                         found = true;
                         break;
                     }
                 }
+
                 if (!found) {
+                    Log.e("CustomerUpdate", "No matching user found for ID: " + userIdStr);
                     callback.onFailure("No matching user found to update.");
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 callback.onFailure(databaseError.getMessage());

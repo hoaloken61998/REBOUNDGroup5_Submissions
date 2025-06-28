@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import com.rebound.utils.SharedPrefManager;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -14,11 +14,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import com.rebound.models.Customer.ListCustomer;
-import com.rebound.models.Customer.Customer;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.rebound.R;
 import com.rebound.main.NavBarActivity;
-
+import com.rebound.models.Customer.Customer;
+import com.rebound.models.Customer.ListCustomer;
+import com.rebound.utils.SharedPrefManager;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -32,13 +36,14 @@ public class WelcomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_welcome);
 
-        // Request SMS permission before proceeding
+        // Yêu cầu quyền gửi SMS
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1002);
         }
 
         addViews();
         addEvents();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -46,7 +51,6 @@ public class WelcomeActivity extends AppCompatActivity {
         });
 
         ListCustomer listCustomer = SharedPrefManager.getCustomerList(this);
-
         if (listCustomer == null) {
             listCustomer = new ListCustomer();
             SharedPrefManager.saveCustomerList(this, listCustomer);
@@ -58,16 +62,13 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1002) {
             if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                // Permission denied, close the app or show a message
-                finish();
+                finish(); // Nếu từ chối, thoát app
             }
         }
     }
 
     private void addEvents() {
         btnWelcomeLogin.setOnClickListener(view -> {
-            // Handle login button click
-            // Start LoginActivity
             startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
         });
 
@@ -76,16 +77,13 @@ public class WelcomeActivity extends AppCompatActivity {
             intent.putExtra("previous_activity", "welcome");
             startActivity(intent);
         });
+
         txtWelcomeGuest.setOnClickListener(view -> {
-            // Gán khách vãng lai làm current user bằng setCurrentCustomer
             Customer guest = new Customer();
             guest.setUsername("guest");
             guest.setEmail("guest@guest.com");
-
-            SharedPrefManager.setCurrentCustomer(this, guest); // Lưu 'guest' vào user_session
-
-            Intent intent = new Intent(WelcomeActivity.this, NavBarActivity.class);
-            startActivity(intent);
+            SharedPrefManager.setCurrentCustomer(this, guest);
+            startActivity(new Intent(WelcomeActivity.this, NavBarActivity.class));
         });
     }
 

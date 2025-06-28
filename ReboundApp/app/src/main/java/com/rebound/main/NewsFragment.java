@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,14 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rebound.R;
 import com.rebound.adapters.NewsAdapter;
-import com.rebound.data.NewsData;
 import com.rebound.models.Main.NewsItem;
+import com.rebound.utils.FirebaseNewsFetcher;
+import com.rebound.callback.FirebaseListCallback;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class NewsFragment extends Fragment {
 
     private RecyclerView recyclerViewNews;
+    private NewsAdapter adapter;
 
     @Nullable
     @Override
@@ -32,12 +35,19 @@ public class NewsFragment extends Fragment {
         recyclerViewNews = view.findViewById(R.id.recyclerViewNews);
         recyclerViewNews.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Lấy dữ liệu từ NewsData
-        List<NewsItem> newsItems = NewsData.convertToNewsItems(NewsData.getSampleNews());
+        // Gọi Firebase để lấy danh sách bài viết
+        FirebaseNewsFetcher.getAllNews(new FirebaseListCallback<NewsItem>() {
+            @Override
+            public void onSuccess(ArrayList<NewsItem> newsItems) {
+                adapter = new NewsAdapter(requireContext(), newsItems);
+                recyclerViewNews.setAdapter(adapter);
+            }
 
-        // Thiết lập Adapter
-        NewsAdapter adapter = new NewsAdapter(requireContext(), newsItems);
-        recyclerViewNews.setAdapter(adapter);
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(requireContext(), "Không thể tải tin tức: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return view;
     }
