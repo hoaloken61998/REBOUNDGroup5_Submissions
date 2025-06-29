@@ -5,11 +5,10 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 // Import Firebase Authentication modules
-import { Auth, getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail, User, signOut } from '@angular/fire/auth';
-import { initializeApp } from 'firebase/app';
-
-declare const __firebase_config: string;
-declare const __initial_auth_token: string;
+import { Auth, signInWithEmailAndPassword, setPersistence, sendPasswordResetEmail, User } from '@angular/fire/auth';
+// QUAN TRỌNG: Import browserLocalPersistence và browserSessionPersistence TRỰC TIẾP từ 'firebase/auth'
+// Đây là nguồn chính xác và đáng tin cậy của các hằng số Persistence
+import { browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 
 
 @Component({
@@ -23,12 +22,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   errorMessage: string | null = null;
   successMessage: string | null = null;
-  private auth: Auth;
+  private auth: Auth; // Inject Auth instance
 
-  constructor(private fb: FormBuilder, private router: Router) {
-    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-    const app = initializeApp(firebaseConfig);
-    this.auth = getAuth(app);
+  constructor(private fb: FormBuilder, private router: Router, auth: Auth) { // Inject Auth here
+    this.auth = auth; // Assign injected Auth to private property
 
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -38,12 +35,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Không cần logic điều hướng trong ngOnInit nữa, AuthGuard và Router sẽ xử lý.
     console.log('Login Component: ngOnInit. Ready for login form.');
   }
 
   ngOnDestroy(): void {
-    // No specific cleanup needed
+    // No specific cleanup needed for Firebase auth listeners in this setup
   }
 
   async onSubmit(): Promise<void> {
@@ -54,44 +50,45 @@ export class LoginComponent implements OnInit, OnDestroy {
       const { email, password, rememberMe } = this.loginForm.value;
 
       try {
+        // Sử dụng browserLocalPersistence hoặc browserSessionPersistence đã được import trực tiếp từ 'firebase/auth'
         await setPersistence(this.auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
+        
         const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
         const user = userCredential.user;
         console.log('Login successful:', user.email ?? 'No Email');
 
-        this.successMessage = 'Login successful!';
+        this.successMessage = 'Đăng nhập thành công!';
         
         // IMPORTANT: SET THE FLAG IN LOCALSTORAGE ON SUCCESSFUL LOGIN
         localStorage.setItem('isLoggedIn', 'true');
 
         setTimeout(() => {
-          // Navigate to the dashboard route within the protected app shell
-          this.router.navigate(['/dashboard']); // <-- Changed target route
+          this.router.navigate(['/dashboard']);
         }, 1500);
 
       } catch (error: any) {
         console.error('Login error:', error);
         switch (error.code) {
           case 'auth/invalid-credential':
-            this.errorMessage = 'Invalid email or password. Please try again.';
+            this.errorMessage = 'Email hoặc mật khẩu không hợp lệ. Vui lòng thử lại.';
             break;
           case 'auth/user-disabled':
-            this.errorMessage = 'Your account has been disabled.';
+            this.errorMessage = 'Tài khoản của bạn đã bị vô hiệu hóa.';
             break;
           case 'auth/invalid-email':
-            this.errorMessage = 'Invalid email address.';
+            this.errorMessage = 'Địa chỉ email không hợp lệ.';
             break;
           case 'auth/too-many-requests':
-            this.errorMessage = 'Too many login attempts. Please try again later.';
+            this.errorMessage = 'Quá nhiều yêu cầu đăng nhập không thành công. Vui lòng thử lại sau.';
             break;
           default:
-            this.errorMessage = 'An unknown error occurred. Please try again.';
+            this.errorMessage = 'Đã xảy ra lỗi không xác định. Vui lòng thử lại.';
         }
         // IMPORTANT: REMOVE THE FLAG FROM LOCALSTORAGE ON FAILED LOGIN
         localStorage.removeItem('isLoggedIn');
       }
     } else {
-      this.errorMessage = 'Please fill in all required fields correctly.';
+      this.errorMessage = 'Vui lòng điền đầy đủ và đúng định dạng các trường.';
       // IMPORTANT: REMOVE THE FLAG FROM LOCALSTORAGE IF FORM IS INVALID
       localStorage.removeItem('isLoggedIn');
     }
@@ -103,13 +100,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     const email = this.loginForm.get('email')?.value;
 
     if (!email || !this.loginForm.get('email')?.valid) {
-      this.errorMessage = 'Please enter a valid email address to reset your password.';
+      this.errorMessage = 'Vui lòng nhập một địa chỉ email hợp lệ để reset mật khẩu.';
       return;
     }
 
     try {
       await sendPasswordResetEmail(this.auth, email);
-      this.successMessage = 'Password reset email sent. Please check your inbox.';
+      this.successMessage = 'Email đặt lại mật khẩu đã được gửi. Vui lòng kiểm tra hộp thư của bạn.';
     } catch (error: any) {
       console.error('Forgot password error:', error);
       switch (error.code) {
@@ -126,11 +123,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  // This logout function should ideally only be called by the login page itself if user is already logged in
-  // but somehow landed here. For actual logout, the sidebar's logout button will trigger /log-out route.
   async logout(): Promise<void> {
     try {
-      await signOut(this.auth);
+      await this.auth.signOut();
       console.log('Successfully logged out.');
       localStorage.removeItem('isLoggedIn');
       this.router.navigate(['/log-in']);
