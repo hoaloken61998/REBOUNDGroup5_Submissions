@@ -10,13 +10,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CalendarView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
-
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -25,22 +19,20 @@ import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
 import com.rebound.connectors.BranchConnector;
 import com.rebound.data.BranchData;
+import com.rebound.main.ReservationDialog;
 import com.rebound.models.Customer.Customer;
-import com.rebound.models.Main.NotificationItem;
-import com.rebound.models.Reservation.Reservation;
-import com.rebound.utils.NotificationStorage;
+import com.rebound.utils.FirebaseReservationManager;
 import com.rebound.utils.SharedPrefManager;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class ScheduleServiceFragment extends Fragment {
 
     private final long[] selectedDateMillis = {0};
     private String selectedService = "";
+    private Object selectedLocationID = null;
+    private Object selectedServiceID = null;
 
     public ScheduleServiceFragment() {}
 
@@ -67,11 +59,19 @@ public class ScheduleServiceFragment extends Fragment {
         button.setTextColor(Color.BLACK);
     }
 
+    private String getServiceName(long id) {
+        switch ((int) id) {
+            case 1: return "First Piercing Experience";
+            case 2: return "The Quick And Simple Piercing Experience";
+            case 3: return "The Extra Piercing Experience";
+            case 4: return "Piercing Consulting Styling";
+            default: return "Unknown Service";
+        }
+    }
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_schedule_service, container, false);
 
         TextView txtScheduleSelectedTime = view.findViewById(R.id.txtScheduleSelectedTime);
@@ -83,71 +83,89 @@ public class ScheduleServiceFragment extends Fragment {
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
 
-            TimePickerDialog timePickerDialog = new TimePickerDialog(
-                    requireContext(),
-                    (TimePicker timePicker, int selectedHour, int selectedMinute) -> {
-                        String time = String.format("%02d:%02d", selectedHour, selectedMinute);
-                        txtScheduleSelectedTime.setText(time);
-                    },
-                    hour, minute, true
-            );
-            timePickerDialog.show();
+            new TimePickerDialog(requireContext(), (view1, h, m) -> {
+                txtScheduleSelectedTime.setText(String.format(Locale.getDefault(), "%02d:%02d", h, m));
+            }, hour, minute, true).show();
         });
+
+        Button btn1 = view.findViewById(R.id.btnScheduleSelected1);
+        Button btn2 = view.findViewById(R.id.btnScheduleSelected2);
+        Button btn3 = view.findViewById(R.id.btnScheduleSelected3);
+        Button btn4 = view.findViewById(R.id.btnScheduleSelected4);
+
+        View.OnClickListener serviceClickListener = v -> {
+            Button clicked = (Button) v;
+            selectedService = clicked.getText().toString();
+
+            setUnselectedServiceButton(btn1);
+            setUnselectedServiceButton(btn2);
+            setUnselectedServiceButton(btn3);
+            setUnselectedServiceButton(btn4);
+            setSelectedServiceButton(clicked);
+
+            if (clicked == btn1) selectedServiceID = 1L;
+            else if (clicked == btn2) selectedServiceID = 2L;
+            else if (clicked == btn3) selectedServiceID = 3L;
+            else if (clicked == btn4) selectedServiceID = 4L;
+        };
+
+        btn1.setOnClickListener(serviceClickListener);
+        btn2.setOnClickListener(serviceClickListener);
+        btn3.setOnClickListener(serviceClickListener);
+        btn4.setOnClickListener(serviceClickListener);
 
         btnScheduleBook.setOnClickListener(v -> {
             Customer currentCustomer = SharedPrefManager.getCurrentCustomer(requireContext());
             if (currentCustomer == null) {
-                Toast.makeText(requireContext(), getString(R.string.schedule_login_required), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Please log in to continue.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             String selectedTime = txtScheduleSelectedTime.getText().toString();
-
-            if (selectedDateMillis[0] == 0) {
-                Toast.makeText(requireContext(), getString(R.string.schedule_select_date), Toast.LENGTH_SHORT).show();
+            if (selectedDateMillis[0] == 0 || selectedTime.isEmpty() || selectedServiceID == null || selectedLocationID == null) {
+                Toast.makeText(requireContext(), "Please complete all fields.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (selectedTime.isEmpty()) {
-                Toast.makeText(requireContext(), getString(R.string.schedule_select_time), Toast.LENGTH_SHORT).show();
-                return;
-            }
+            String selectedDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    .format(new Date(selectedDateMillis[0]));
+            String bookingTime = selectedDate + " " + selectedTime;
 
-            if (selectedService.isEmpty()) {
-                Toast.makeText(requireContext(), getString(R.string.schedule_select_service), Toast.LENGTH_SHORT).show();
-                return;
-            }
+            FirebaseReservationManager.createBooking(
+                    requireContext(),
+                    currentCustomer,
+                    bookingTime,
+                    selectedLocationID,
+                    selectedServiceID,
+                    new FirebaseReservationManager.OnBookingCompleteListener() {
+                        @Override
+                        public void onComplete(long bookingID) {
+                            ReservationDialog dialog = ReservationDialog.newInstance(
+                                    selectedDate,
+                                    selectedTime,
+                                    ((Number) selectedServiceID).longValue(),
+                                    bookingID
+                            );
+                            dialog.show(requireActivity().getSupportFragmentManager(), "ReservationDialog");
 
-            Date date = new Date(selectedDateMillis[0]);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            String selectedDate = dateFormat.format(date);
+                            btnScheduleBook.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BEB488")));
+                            btnScheduleBook.setTextColor(Color.WHITE);
+                            btnScheduleBook.setStrokeWidth(0);
 
-            Reservation reservation = new Reservation(currentCustomer.getEmail(), selectedDate, selectedTime, selectedService);
-            SharedPrefManager.saveReservation(requireContext(), reservation);
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                btnScheduleBook.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+                                btnScheduleBook.setTextColor(Color.BLACK);
+                                btnScheduleBook.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#BEB488")));
+                                btnScheduleBook.setStrokeWidth(1);
+                            }, 300);
+                        }
 
-            NotificationItem notification = new NotificationItem(
-                    NotificationItem.TYPE_ITEM,
-                    getString(R.string.notification_appointment_title),
-                    getString(R.string.notification_appointment_message, selectedDate, selectedTime, selectedService),
-                    "",
-                    System.currentTimeMillis()
+                        @Override
+                        public void onError(String message) {
+                            Toast.makeText(getContext(), "Firebase Error: " + message, Toast.LENGTH_SHORT).show();
+                        }
+                    }
             );
-
-            NotificationStorage.saveNotification(requireContext(), currentCustomer.getEmail(), notification);
-
-            ReservationDialog dialog = ReservationDialog.newInstance(selectedDate, selectedTime, selectedService);
-            dialog.show(requireActivity().getSupportFragmentManager(), "ReservationDialog");
-
-            btnScheduleBook.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BEB488")));
-            btnScheduleBook.setTextColor(Color.WHITE);
-            btnScheduleBook.setStrokeWidth(0);
-
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                btnScheduleBook.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
-                btnScheduleBook.setTextColor(Color.BLACK);
-                btnScheduleBook.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#BEB488")));
-                btnScheduleBook.setStrokeWidth(1);
-            }, 300);
         });
 
         CalendarView calendarView = view.findViewById(R.id.calendarView);
@@ -172,6 +190,7 @@ public class ScheduleServiceFragment extends Fragment {
         ImageView imgBranch2 = view.findViewById(R.id.imgBranch2);
 
         btnHanoi.setOnClickListener(v -> {
+            selectedLocationID = 1L;
             List<BranchConnector> branches = BranchData.getHanoiBranches();
             if (branches.size() >= 2) {
                 txtBranch1.setText(branches.get(0).getName());
@@ -189,6 +208,7 @@ public class ScheduleServiceFragment extends Fragment {
         });
 
         btnHCM.setOnClickListener(v -> {
+            selectedLocationID = 2L;
             List<BranchConnector> branches = BranchData.getHCMBranches();
             if (branches.size() >= 2) {
                 txtBranch1.setText(branches.get(0).getName());
@@ -204,27 +224,6 @@ public class ScheduleServiceFragment extends Fragment {
             setSelectedButton(btnHCM);
             setUnselectedButton(btnHanoi);
         });
-
-        Button btn1 = view.findViewById(R.id.btnScheduleSelected1);
-        Button btn2 = view.findViewById(R.id.btnScheduleSelected2);
-        Button btn3 = view.findViewById(R.id.btnScheduleSelected3);
-        Button btn4 = view.findViewById(R.id.btnScheduleSelected4);
-
-        View.OnClickListener serviceClickListener = v -> {
-            Button clicked = (Button) v;
-            selectedService = clicked.getText().toString();
-
-            setUnselectedServiceButton(btn1);
-            setUnselectedServiceButton(btn2);
-            setUnselectedServiceButton(btn3);
-            setUnselectedServiceButton(btn4);
-            setSelectedServiceButton(clicked);
-        };
-
-        btn1.setOnClickListener(serviceClickListener);
-        btn2.setOnClickListener(serviceClickListener);
-        btn3.setOnClickListener(serviceClickListener);
-        btn4.setOnClickListener(serviceClickListener);
 
         imgBell.setOnClickListener(v -> {
             Customer currentCustomer = SharedPrefManager.getCurrentCustomer(requireContext());

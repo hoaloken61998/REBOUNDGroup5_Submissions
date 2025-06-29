@@ -19,18 +19,27 @@ import androidx.fragment.app.DialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
 
-import java.util.UUID;
-
 public class ReservationDialog extends DialogFragment {
 
-    public static ReservationDialog newInstance(String date, String time, String service) {
+    public static ReservationDialog newInstance(String date, String time, long serviceId, long bookingId) {
         ReservationDialog dialog = new ReservationDialog();
         Bundle args = new Bundle();
         args.putString("selectedDate", date);
         args.putString("selectedTime", time);
-        args.putString("selectedService", service);
+        args.putLong("serviceId", serviceId);
+        args.putLong("bookingId", bookingId);
         dialog.setArguments(args);
         return dialog;
+    }
+
+    private String getServiceName(long id) {
+        switch ((int) id) {
+            case 1: return "First Piercing Experience";
+            case 2: return "The Quick And Simple Piercing Experience";
+            case 3: return "The Extra Piercing Experience";
+            case 4: return "Piercing Consulting Styling";
+            default: return "Unknown Service";
+        }
     }
 
     @Nullable
@@ -47,21 +56,20 @@ public class ReservationDialog extends DialogFragment {
         if (args != null) {
             String selectedDate = args.getString("selectedDate", "");
             String selectedTime = args.getString("selectedTime", "");
-            String selectedService = args.getString("selectedService", "");
+            long serviceId = args.getLong("serviceId", 0);
+            long bookingId = args.getLong("bookingId", 0);
+
+            String selectedService = getServiceName(serviceId);
 
             TextView txtDate = view.findViewById(R.id.txtAppointmentDateValue);
             TextView txtTime = view.findViewById(R.id.txtAppointmentTimeValue);
             TextView txtService = view.findViewById(R.id.txtAppointmentServiceValue);
             TextView txtId = view.findViewById(R.id.txtAppointmentIdValue);
 
-            // ✅ Set dynamic content
-            txtDate.setText("Date: " + selectedDate);
-            txtTime.setText("Time: " + selectedTime);
-            txtService.setText(selectedService.isEmpty() ? "Not selected" : selectedService);
-
-            // ✅ Generate random ID
-            String appointmentId = "RES-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase(); // Ví dụ: "3fa85f64"
-            txtId.setText(appointmentId);
+            txtDate.setText(selectedDate);
+            txtTime.setText(selectedTime);
+            txtService.setText(selectedService);
+            txtId.setText("#" + bookingId);
         }
 
         MaterialButton btnRemindMe = view.findViewById(R.id.btnReservedSuccessfullyRemindMe);
