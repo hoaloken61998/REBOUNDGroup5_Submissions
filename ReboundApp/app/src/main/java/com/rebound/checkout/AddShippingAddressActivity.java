@@ -90,7 +90,7 @@ public class AddShippingAddressActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
-                        Toast.makeText(AddShippingAddressActivity.this, "Error: " + error, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(AddShippingAddressActivity.this, "Error: " + error, Toast.LENGTH_LONG).show();
                     }
                 });
             }

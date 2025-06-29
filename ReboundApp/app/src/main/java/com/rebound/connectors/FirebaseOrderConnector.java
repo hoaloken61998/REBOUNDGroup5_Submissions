@@ -14,6 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.rebound.callback.OrderFetchCallback;
 import com.rebound.main.OrdersActivity;
 import com.rebound.models.Orders.Order;
+import com.rebound.models.Orders.OrderItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class FirebaseOrderConnector {
                             Order order = orderSnap.getValue(Order.class);
                             if (order != null) {
                                 userOrders.add(order);
-                                Log.d(TAG, "Fetched order with UserID: " + order.UserID + ", Status: " + order.Status);
+                                Log.d(TAG, "Fetched order with UserID: " + order.getUserID() + ", Status: " + order.getStatus());
                             }
                         }
                         orderFetchCallback.onOrdersFetched(userOrders);
@@ -74,5 +75,48 @@ public class FirebaseOrderConnector {
                     if (onFailure != null) onFailure.run();
                 }
             });
+    }
+
+
+
+    public static void addOrder(Order order, String orderKey, final Runnable onSuccess, final Runnable onFailure) {
+        DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Order");
+        ordersRef.child(orderKey).setValue(order)
+            .addOnSuccessListener(aVoid -> {
+                if (onSuccess != null) onSuccess.run();
+            })
+            .addOnFailureListener(e -> {
+                if (onFailure != null) onFailure.run();
+            });
+    }
+
+    // Add an OrderItem to the 'OrderItem' node in Firebase
+    public static void addOrderItem(OrderItem orderItem, final Runnable onSuccess, final Runnable onFailure) {
+        DatabaseReference orderItemsRef = FirebaseDatabase.getInstance().getReference("OrderItem");
+        // Find the max numeric key
+        orderItemsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long maxKey = 0;
+                for (DataSnapshot itemSnap : snapshot.getChildren()) {
+                    try {
+                        long key = Long.parseLong(itemSnap.getKey());
+                        if (key > maxKey) maxKey = key;
+                    } catch (Exception ignore) {}
+                }
+                long nextKey = maxKey + 1;
+                orderItemsRef.child(String.valueOf(nextKey)).setValue(orderItem)
+                    .addOnSuccessListener(aVoid -> {
+                        if (onSuccess != null) onSuccess.run();
+                    })
+                    .addOnFailureListener(e -> {
+                        if (onFailure != null) onFailure.run();
+                    });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                if (onFailure != null) onFailure.run();
+            }
+        });
     }
 }

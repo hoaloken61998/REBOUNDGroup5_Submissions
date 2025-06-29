@@ -113,13 +113,20 @@ public class ShoppingCartActivity extends AppCompatActivity {
                             }
                         }
                         int qty = 1; // Default quantity
-                        Long stockQuantityLong = null;
                         try {
-                            stockQuantityLong = item.getProductStockQuantity();
+                            Long stockQuantityLong = item.getProductStockQuantity();
+                            if (stockQuantityLong != null) {
+                                if (stockQuantityLong > Integer.MAX_VALUE) {
+                                    qty = Integer.MAX_VALUE;
+                                } else if (stockQuantityLong < 1) {
+                                    qty = 1;
+                                } else {
+                                    qty = stockQuantityLong.intValue();
+                                }
+                            }
                         } catch (Exception e) {
-                            // This catch is if direct field access throws an error
+                            // quantity remains 1 (default)
                         }
-                        // You can use stockQuantityLong if needed
                         return unitPrice * qty;
                     } catch (Exception e) {
                         return 0;

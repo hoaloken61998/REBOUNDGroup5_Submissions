@@ -2,6 +2,7 @@ package com.rebound.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -164,7 +165,8 @@ public class CartManager {
         sharedPreferences.edit().putString(getCartKey(), json).apply();
     }
 
-    private void loadCart() {
+    // Make loadCart public so it can be called from other classes (e.g., CheckOutActivity)
+    public void loadCart() {
         cartItems.clear(); // clear cart trước khi load mới
         String json = sharedPreferences.getString(getCartKey(), null);
         if (json != null) {
@@ -176,4 +178,37 @@ public class CartManager {
         this.userEmail = email;
         loadCart(); // Load lại cart của user này
     }
+
+    // Set the quantity of a product in the cart directly
+    public void setProductQuantity(ProductItem newItem, long quantity) {
+        if (newItem == null || newItem.getProductID() == null) {
+            return;
+        }
+        for (ProductItem existingItem : cartItems) {
+            if (existingItem.getProductID() != null && existingItem.getProductID().equals(newItem.getProductID())) {
+                existingItem.setProductStockQuantity(quantity);
+                saveCart();
+                return;
+            }
+        }
+        // If not found, add as new
+        newItem.setProductStockQuantity(quantity);
+        cartItems.add(newItem);
+        saveCart();
+    }
+
+    public int getProductQuantity(Long productId) {
+        for (ProductItem item : cartItems) {
+            if (item.getProductID() != null && item.getProductID().equals(productId)) {
+                Log.d("CartManager", "getProductQuantity: Found ProductID=" + productId + ", ProductStockQuantity=" + item.getProductStockQuantity());
+                // Use ProductStockQuantity as the source of truth for quantity from SharedPreferences
+                if (item.getProductStockQuantity() != null) {
+                    return item.getProductStockQuantity().intValue();
+                }
+            }
+        }
+        Log.d("CartManager", "getProductQuantity: ProductID=" + productId + " not found in cartItems");
+        return 0;
+    }
+
 }

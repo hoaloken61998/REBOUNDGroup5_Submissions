@@ -56,7 +56,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.txtStatus.setText(status);
         // Format TotalAmount with thousands separator and VND
         final String TOTAL_AMOUNT_LABEL = context.getString(R.string.total_amount_label); // Use string resource
-        String formattedAmount = String.format("%,d", order.TotalAmount).replace(',', '.');
+        String formattedAmount = String.format("%,d", order.getTotalAmount()).replace(',', '.');
         holder.txtTotal.setText(TOTAL_AMOUNT_LABEL+": " + formattedAmount + " đ");
         holder.groupToReceive.setVisibility(View.GONE);
         holder.groupShipped.setVisibility(View.GONE);
@@ -94,7 +94,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         if (screenType.equals("ongoing")) {
             holder.groupToReceive.setVisibility(View.VISIBLE);
 
-            boolean isToReceive = "To Receive".equals(order.Status);
+            boolean isToReceive = "To Receive".equals(order.getStatus());
             holder.btnOrderReceived.setEnabled(isToReceive);
             holder.btnOrderReceived.setBackgroundResource(isToReceive ? R.drawable.button_outline : R.drawable.button_disabled);
             holder.btnOrderReceived.setTextColor(ContextCompat.getColor(context, isToReceive ? R.color.outline_text : android.R.color.darker_gray));

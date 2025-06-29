@@ -167,19 +167,17 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
             CartManager.getInstance().setUserEmail(currentCustomer.getEmail());
             if (currentItem != null) {
-                for (int i = 0; i < quantity; i++) {
-                    ProductItem itemCopy = new ProductItem();
-                    itemCopy.setProductName(currentItem.getProductName());
-                    itemCopy.setProductPrice(formatPrice(currentItem.getProductPrice()));
-                    itemCopy.setImageLink(currentItem.getImageLink());
-                    itemCopy.setProductDescription(currentItem.getProductDescription());
-                    itemCopy.setProductID(currentItem.getProductID());
-                    itemCopy.setCategoryID(currentItem.getCategoryID());
-                    itemCopy.setProductStockQuantity(1L);
-                    itemCopy.setStatusID(currentItem.getStatusID());
-                    CartManager.getInstance().addToCart(itemCopy);
-                }
-                Toast.makeText(this, "Item added to cart", Toast.LENGTH_SHORT).show();
+                ProductItem itemCopy = new ProductItem();
+                itemCopy.setProductName(currentItem.getProductName());
+                itemCopy.setProductPrice(currentItem.getProductPrice());
+                itemCopy.setImageLink(currentItem.getImageLink());
+                itemCopy.setProductDescription(currentItem.getProductDescription());
+                itemCopy.setProductID(currentItem.getProductID());
+                itemCopy.setCategoryID(currentItem.getCategoryID());
+                itemCopy.setStatusID(currentItem.getStatusID());
+                // Set the quantity directly in the cart
+                CartManager.getInstance().setProductQuantity(itemCopy, quantity);
+                Toast.makeText(this, "Cart updated", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, ShoppingCartActivity.class));
             }
         });

@@ -59,7 +59,7 @@ public class OrdersActivity extends AppCompatActivity {
                 Log.d("OrdersActivity", "onOrdersFetched called, orders.size(): " + (orders != null ? orders.size() : 0));
                 if (orders != null) {
                     for (Order o : orders) {
-                        Log.d("OrdersActivity", "Fetched OrderID: " + o.OrderID + ", UserID: " + o.UserID + ", Status: " + o.Status);
+                        Log.d("OrdersActivity", "Fetched OrderID: " + o.getOrderID() + ", UserID: " + o.getUserID() + ", Status: " + o.getStatus());
                     }
                 }
                 allOrders = orders;
@@ -90,7 +90,7 @@ public class OrdersActivity extends AppCompatActivity {
     private void showOngoingOrders() {
         List<Order> ongoing = new ArrayList<>();
         for (Order o : allOrders) {
-            if (o.Status != null && (o.Status.equalsIgnoreCase("Pending") || o.Status.equalsIgnoreCase("Ongoing"))) {
+            if (o.getStatus() != null && (o.getStatus().equalsIgnoreCase("Pending") || o.getStatus().equalsIgnoreCase("Ongoing"))) {
                 ongoing.add(o);
             }
         }
@@ -103,7 +103,7 @@ public class OrdersActivity extends AppCompatActivity {
     private void showCompletedOrders() {
         List<Order> completed = new ArrayList<>();
         for (Order o : allOrders) {
-            if (o.Status != null && o.Status.equalsIgnoreCase("Completed")) {
+            if (o.getStatus() != null && o.getStatus().equalsIgnoreCase("Completed")) {
                 completed.add(o);
             }
         }

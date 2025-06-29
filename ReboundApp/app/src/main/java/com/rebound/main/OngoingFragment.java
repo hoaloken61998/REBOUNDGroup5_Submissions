@@ -83,7 +83,7 @@ public class OngoingFragment extends Fragment {
 
             orderList.clear(); // Xoá cũ
             for (Order o : allOrders) {
-                if ("To Receive".equals(o.Status)) {
+                if ("To Receive".equals(o.getStatus())) {
                     orderList.add(o);
                 }
             }
@@ -112,11 +112,11 @@ public class OngoingFragment extends Fragment {
         int count = 0;
         if (orders != null) {
             for (Order o : orders) {
-                if (o != null && o.Status != null) {
-                    android.util.Log.d("OngoingFragment", "OrderID: " + o.OrderID + ", Status: " + o.Status);
+                if (o != null && o.getStatus() != null) {
+                    android.util.Log.d("OngoingFragment", "OrderID: " + o.getOrderID() + ", Status: " + o.getStatus());
                 }
                 // Accept both "Pending" and "Ongoing" (or "To Receive")
-                if (o != null && o.Status != null && (o.Status.equalsIgnoreCase("Pending") || o.Status.equalsIgnoreCase("Ongoing") || o.Status.equalsIgnoreCase("To Receive"))) {
+                if (o != null && o.getStatus() != null && (o.getStatus().equalsIgnoreCase("Pending") || o.getStatus().equalsIgnoreCase("Ongoing") || o.getStatus().equalsIgnoreCase("To Receive"))) {
                     orderList.add(o);
                     currentOrders.add(o);
                     count++;

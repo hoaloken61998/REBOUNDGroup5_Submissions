@@ -48,7 +48,7 @@ public class CompletedFragment extends Fragment {
                         .setMessage("Are you sure you want to delete this order?")
                         .setPositiveButton("Delete", (dialog, which) -> {
                             // Delete from Firebase
-                            com.rebound.connectors.FirebaseOrderConnector.deleteOrderById(String.valueOf(order.OrderID),
+                            com.rebound.connectors.FirebaseOrderConnector.deleteOrderById(String.valueOf(order.getOrderID()),
                                 () -> {
                                     orderList.remove(order);
                                     OrderManager.getInstance().deleteOrder(order);

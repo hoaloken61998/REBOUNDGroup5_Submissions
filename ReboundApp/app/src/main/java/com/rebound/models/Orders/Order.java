@@ -2,45 +2,86 @@ package com.rebound.models.Orders;
 
 import com.google.firebase.database.PropertyName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Order {
+public class Order implements Serializable {
+    // All fields private
     @PropertyName("OrderID")
-    public Long OrderID;
+    private Long orderID;
     @PropertyName("UserID")
-    public Long UserID;
+    private Long userID;
     @PropertyName("PaymentMethodID")
-    public Long PaymentMethodID;
+    private Long paymentMethodID;
     @PropertyName("DeliveryFee")
-    public Long DeliveryFee;
+    private Long deliveryFee;
     @PropertyName("DiscountValue")
-    public Double DiscountValue;
+    private Double discountValue;
     @PropertyName("Subtotal")
-    public Long Subtotal;
+    private Long subtotal;
     @PropertyName("TotalAmount")
-    public Long TotalAmount;
+    private Long totalAmount;
     @PropertyName("UserPromotion")
-    public Long UserPromotion;
+    private Long userPromotion;
     @PropertyName("OrderDate")
-    public String OrderDate;
+    private String orderDate;
     @PropertyName("Status")
-    public String Status;
+    private String status;
 
-    public Order() {
-    }
+    public Order() {}
 
     public Order(Long orderID, Long userID, Long paymentMethodID, Long deliveryFee, Double discountValue, Long subtotal, Long totalAmount, Long userPromotion, String orderDate, String status) {
-        OrderID = orderID;
-        UserID = userID;
-        PaymentMethodID = paymentMethodID;
-        DeliveryFee = deliveryFee;
-        DiscountValue = discountValue;
-        Subtotal = subtotal;
-        TotalAmount = totalAmount;
-        UserPromotion = userPromotion;
-        OrderDate = orderDate;
-        Status = status;
+        this.orderID = orderID;
+        this.userID = userID;
+        this.paymentMethodID = paymentMethodID;
+        this.deliveryFee = deliveryFee;
+        this.discountValue = discountValue;
+        this.subtotal = subtotal;
+        this.totalAmount = totalAmount;
+        this.userPromotion = userPromotion;
+        this.orderDate = orderDate;
+        this.status = status;
     }
 
-
+    // Getters and setters for all fields
+    @PropertyName("OrderID")
+    public Long getOrderID() { return orderID; }
+    @PropertyName("OrderID")
+    public void setOrderID(Long orderID) { this.orderID = orderID; }
+    @PropertyName("UserID")
+    public Long getUserID() { return userID; }
+    @PropertyName("UserID")
+    public void setUserID(Long userID) { this.userID = userID; }
+    @PropertyName("PaymentMethodID")
+    public Long getPaymentMethodID() { return paymentMethodID; }
+    @PropertyName("PaymentMethodID")
+    public void setPaymentMethodID(Long paymentMethodID) { this.paymentMethodID = paymentMethodID; }
+    @PropertyName("DeliveryFee")
+    public Long getDeliveryFee() { return deliveryFee; }
+    @PropertyName("DeliveryFee")
+    public void setDeliveryFee(Long deliveryFee) { this.deliveryFee = deliveryFee; }
+    @PropertyName("DiscountValue")
+    public Double getDiscountValue() { return discountValue; }
+    @PropertyName("DiscountValue")
+    public void setDiscountValue(Double discountValue) { this.discountValue = discountValue; }
+    @PropertyName("Subtotal")
+    public Long getSubtotal() { return subtotal; }
+    @PropertyName("Subtotal")
+    public void setSubtotal(Long subtotal) { this.subtotal = subtotal; }
+    @PropertyName("TotalAmount")
+    public Long getTotalAmount() { return totalAmount; }
+    @PropertyName("TotalAmount")
+    public void setTotalAmount(Long totalAmount) { this.totalAmount = totalAmount; }
+    @PropertyName("UserPromotion")
+    public Long getUserPromotion() { return userPromotion; }
+    @PropertyName("UserPromotion")
+    public void setUserPromotion(Long userPromotion) { this.userPromotion = userPromotion; }
+    @PropertyName("OrderDate")
+    public String getOrderDate() { return orderDate; }
+    @PropertyName("OrderDate")
+    public void setOrderDate(String orderDate) { this.orderDate = orderDate; }
+    @PropertyName("Status")
+    public String getStatus() { return status; }
+    @PropertyName("Status")
+    public void setStatus(String status) { this.status = status; }
 }
