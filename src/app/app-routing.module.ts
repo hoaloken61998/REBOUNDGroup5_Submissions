@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LogInComponent } from './log-in/log-in.component';
+import { LoginComponent } from './log-in/log-in.component';
 import { LogOutComponent } from './log-out/log-out.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './auth.guard';
@@ -20,7 +20,7 @@ import { CustomerDetailComponent } from './customer-detail/customer-detail.compo
 const routes: Routes = [
 
   { path: 'log-out', component: LogOutComponent },
-  { path: 'log-in', component: LogInComponent },
+  { path: 'log-in', component: LoginComponent },
   { path: '', redirectTo: '/log-in', pathMatch: 'full' }, 
   { path: 'side-bar', component: SideBarComponent },
   { path: 'reservation-management', component: ReservationManagementComponent },

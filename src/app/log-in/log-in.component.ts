@@ -5,10 +5,11 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 // Import Firebase Authentication modules
-import { Auth, signInWithEmailAndPassword, setPersistence, sendPasswordResetEmail, User } from '@angular/fire/auth';
+import { Auth } from '@angular/fire/auth';
+import { signInWithEmailAndPassword, setPersistence, sendPasswordResetEmail, browserLocalPersistence, browserSessionPersistence, User } from 'firebase/auth';
 // QUAN TRỌNG: Import browserLocalPersistence và browserSessionPersistence TRỰC TIẾP từ 'firebase/auth'
 // Đây là nguồn chính xác và đáng tin cậy của các hằng số Persistence
-import { browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
+
 
 
 @Component({
