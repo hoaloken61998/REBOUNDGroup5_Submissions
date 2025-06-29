@@ -47,10 +47,16 @@ public class CompletedFragment extends Fragment {
                         .setTitle("Delete Order")
                         .setMessage("Are you sure you want to delete this order?")
                         .setPositiveButton("Delete", (dialog, which) -> {
-                            orderList.remove(order);
-                            OrderManager.getInstance().deleteOrder(order);
-                            adapter.notifyDataSetChanged();
-                            Toast.makeText(getContext(), "Order deleted", Toast.LENGTH_SHORT).show();
+                            // Delete from Firebase
+                            com.rebound.connectors.FirebaseOrderConnector.deleteOrderById(String.valueOf(order.OrderID),
+                                () -> {
+                                    orderList.remove(order);
+                                    OrderManager.getInstance().deleteOrder(order);
+                                    adapter.notifyDataSetChanged();
+                                    Toast.makeText(getContext(), "Order deleted", Toast.LENGTH_SHORT).show();
+                                },
+                                () -> Toast.makeText(getContext(), "Failed to delete order from database", Toast.LENGTH_SHORT).show()
+                            );
                         })
                         .setNegativeButton("Cancel", null)
                         .show();
@@ -58,14 +64,14 @@ public class CompletedFragment extends Fragment {
 
             @Override
             public void onBuyAgain(Order order) {
-                for (ProductItem product : order.getProductList()) {
-                    ProductItem item = new ProductItem();
-                    item.ProductName = product.ProductName;
-                    item.ProductPrice = product.ProductPrice;
-                    item.ImageLink = product.ImageLink;
-                    // Set other fields as needed
-                    CartManager.getInstance().addToCart(item);
-                }
+//                for (ProductItem product : order.getProductList()) {
+//                    ProductItem item = new ProductItem();
+//                    item.ProductName = product.ProductName;
+//                    item.ProductPrice = product.ProductPrice;
+//                    item.ImageLink = product.ImageLink;
+//                    // Set other fields as needed
+//                    CartManager.getInstance().addToCart(item);
+//                }
 
                 Toast.makeText(getContext(), "Added to cart", Toast.LENGTH_SHORT).show();
             }
@@ -86,30 +92,19 @@ public class CompletedFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        loadCompletedOrders();
+        // Deprecated: now handled by OrdersActivity via setOrders()
 
         return view;
     }
 
-    private void loadCompletedOrders() {
-        Customer current = SharedPrefManager.getCurrentCustomer(getContext());
-        if (current != null) {
-            OrderManager.getInstance().setUserEmail(current.getEmail());
-            List<Order> allOrders = OrderManager.getInstance().getOrders();
-
-            orderList.clear();
-            for (Order o : allOrders) {
-                if ("Shipped".equals(o.getStatus())) {
-                    orderList.add(o);
-                }
-            }
-
+    // Deprecated: now handled by OrdersActivity via setOrders()
+    public void setOrders(List<Order> orders) {
+        orderList.clear();
+        if (orders != null) {
+            orderList.addAll(orders);
+        }
+        if (adapter != null) {
             adapter.notifyDataSetChanged();
         }
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        loadCompletedOrders();
     }
 }

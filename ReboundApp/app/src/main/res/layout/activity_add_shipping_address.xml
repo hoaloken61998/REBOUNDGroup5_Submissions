@@ -128,19 +128,35 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Add Button -->
+            <!-- Select Address Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAddShippingAddress"
+                android:id="@+id/btnSelectLoadedAddress"
                 android:layout_width="0dp"
                 android:layout_height="56dp"
-                android:layout_marginTop="88dp"
-                android:text="@string/title_button_add_shipping_address"
+                android:layout_marginTop="16dp"
+                android:text="@string/title_selected_address"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
                 android:textSize="15sp"
                 app:backgroundTint="#89784B"
                 app:cornerRadius="100dp"
                 app:layout_constraintTop_toBottomOf="@id/edtAddShippingPhone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Add Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddShippingAddress"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/title_button_add_shipping_address"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                app:backgroundTint="#89784B"
+                app:cornerRadius="100dp"
+                app:layout_constraintTop_toBottomOf="@id/btnSelectLoadedAddress"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 

@@ -47,7 +47,7 @@ public class LastCollectionAdapter extends RecyclerView.Adapter<LastCollectionAd
 
         // Highlight keyword nếu có
         // Defensive conversion for Object field
-        String titleText = item.ProductName != null ? item.ProductName.toString() : "";
+        String titleText = item.getProductName() != null ? item.getProductName().toString() : "";
         String lowerTitleText = titleText.toLowerCase();
         if (!currentKeyword.isEmpty()) {
             int start = lowerTitleText.indexOf(currentKeyword.toLowerCase());
@@ -64,10 +64,34 @@ public class LastCollectionAdapter extends RecyclerView.Adapter<LastCollectionAd
             holder.title.setText(titleText);
         }
 
-        String priceText = item.ProductPrice != null ? item.ProductPrice.toString() : "";
-        holder.price.setText(priceText);
+        // Format price to ensure >= 1.000.000 VNĐ
+        String formattedPrice = "";
+        Object priceObj = item.getProductPrice();
+        if (priceObj != null) {
+            long priceValue = 0;
+            if (priceObj instanceof Number) {
+                priceValue = ((Number) priceObj).longValue();
+                if (priceValue <= 10000) {
+                    priceValue = priceValue * 1000;
+                }
+            } else if (priceObj instanceof String) {
+                try {
+                    String s = ((String) priceObj).replace(",", "").replace(".", "").trim();
+                    long parsed = Long.parseLong(s);
+                    if (parsed <= 10000) {
+                        priceValue = parsed * 1000;
+                    } else {
+                        priceValue = parsed;
+                    }
+                } catch (Exception e) {
+                    priceValue = 0;
+                }
+            }
+            formattedPrice = String.format("%,d VNĐ", priceValue).replace(",", ".");
+        }
+        holder.price.setText(formattedPrice);
         // Load image from URL using Glide
-        String imageLink = item.ImageLink != null ? item.ImageLink.toString() : "";
+        String imageLink = item.getImageLink() != null ? item.getImageLink().toString() : "";
         if (!imageLink.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                 .load(imageLink)
@@ -101,7 +125,7 @@ public class LastCollectionAdapter extends RecyclerView.Adapter<LastCollectionAd
         } else {
             String lowerKeyword = currentKeyword.toLowerCase();
             for (ProductItem item : originalList) {
-                if (item.ProductName != null && item.ProductName.toString().toLowerCase().contains(lowerKeyword)) {
+                if (item.getProductName() != null && item.getProductName().toString().toLowerCase().contains(lowerKeyword)) {
                     filteredList.add(item);
                 }
             }

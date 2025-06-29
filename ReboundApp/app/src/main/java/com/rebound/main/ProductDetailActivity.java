@@ -28,7 +28,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private FrameLayout goldColor, silverColor;
     private ImageView checkGold, checkSilver;
     private TextView productTitle, soldText, ratingText, productDetailsContent;
-    private TextView quantityValue, totalPriceValue;
+    private TextView productPriceText, quantityValue, totalPriceValue;
     private ImageView btnDecrease, btnPlus;
 
     private int quantity = 1;
@@ -51,6 +51,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         heartIcon = findViewById(R.id.imgProductdetailButtonHeart);
 
         productTitle = findViewById(R.id.txtProductdetailProductTitle);
+        productPriceText = findViewById(R.id.txtProductdetailProductPrice);
         soldText = findViewById(R.id.drawableProductImageSold);
         ratingText = findViewById(R.id.txtProductdetailRatingText);
         productDetailsContent = findViewById(R.id.txtProductDetailContent);
@@ -64,11 +65,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         currentItem = (ProductItem) intent.getSerializableExtra("product");
 
         if (currentItem != null) {
-            productTitle.setText(currentItem.ProductName != null ? currentItem.ProductName.toString() : "");
+            productTitle.setText(currentItem.getProductName() != null ? currentItem.getProductName().toString() : "");
             soldText.setText(""); // You can load sold count from Firebase if needed
-            productDetailsContent.setText(currentItem.ProductDescription != null ? currentItem.ProductDescription.toString() : "");
+            productDetailsContent.setText(currentItem.getProductDescription() != null ? currentItem.getProductDescription().toString() : "");
             // Load image from URL using Glide
-            String imageLink = currentItem.ImageLink != null ? currentItem.ImageLink.toString() : null;
+            String imageLink = currentItem.getImageLink() != null ? currentItem.getImageLink().toString() : null;
             if (imageLink != null && !imageLink.isEmpty()) {
                 Glide.with(this)
                     .load(imageLink)
@@ -80,27 +81,30 @@ public class ProductDetailActivity extends AppCompatActivity {
             isGoldSelected = false;
 
             // Show rating instantly from ProductItem
-            if (currentItem.Rating != null) {
-                ratingText.setText("Rating: " + currentItem.Rating);
+            if (currentItem.getRating() != null) {
+                ratingText.setText("Rating: " + currentItem.getRating());
             } else {
                 ratingText.setText("Rating: N/A");
             }
 
             // Show number of sold for this product instantly from ProductItem
-            if (currentItem.SoldQuantity != null) {
-                soldText.setText("Sold: " + currentItem.SoldQuantity);
+            if (currentItem.getSoldQuantity() != null) {
+                soldText.setText("Sold: " + currentItem.getSoldQuantity());
             } else {
                 soldText.setText("Sold: 0");
             }
 
+            // Show price formatted
+            if (currentItem.getProductPrice() != null) {
+                productPriceText.setText(formatPrice(currentItem.getProductPrice()));
+            } else {
+                productPriceText.setText("");
+            }
+
             try {
                 String cleaned = "0";
-                if (currentItem.ProductPrice != null) {
-                    String priceStr = currentItem.ProductPrice.toString();
-                    cleaned = priceStr.replace(".", "")
-                        .replace(" VND", "")
-                        .replace("vnd", "")
-                        .trim();
+                if (currentItem.getProductPrice() != null) {
+                    cleaned = formatPrice(currentItem.getProductPrice()).replace(".", "").replace(" VNĐ", "");
                 }
                 pricePerItem = Integer.parseInt(cleaned);
             } catch (Exception e) {
@@ -136,7 +140,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             } else {
                 heartIcon.setImageResource(R.mipmap.ic_heart);
                 // Convert ProductName to String for removeFromWishlist
-                WishlistManager.getInstance(this).removeFromWishlist(currentItem.ProductName != null ? currentItem.ProductName.toString() : "");
+                WishlistManager.getInstance(this).removeFromWishlist(currentItem.getProductName() != null ? currentItem.getProductName().toString() : "");
                 Toast.makeText(this, "Removed from wishlist", Toast.LENGTH_SHORT).show();
             }
         });
@@ -165,15 +169,14 @@ public class ProductDetailActivity extends AppCompatActivity {
             if (currentItem != null) {
                 for (int i = 0; i < quantity; i++) {
                     ProductItem itemCopy = new ProductItem();
-                    itemCopy.ProductName = currentItem.ProductName;
-                    itemCopy.ProductPrice = currentItem.ProductPrice;
-                    itemCopy.ImageLink = currentItem.ImageLink;
-                    itemCopy.ProductDescription = currentItem.ProductDescription;
-                    itemCopy.ProductID = currentItem.ProductID;
-                    // When copying CategoryID, use the Long field directly
-                    itemCopy.CategoryID = currentItem.CategoryID;
-                    itemCopy.ProductStockQuantity = 1L;
-                    itemCopy.StatusID = currentItem.StatusID;
+                    itemCopy.setProductName(currentItem.getProductName());
+                    itemCopy.setProductPrice(formatPrice(currentItem.getProductPrice()));
+                    itemCopy.setImageLink(currentItem.getImageLink());
+                    itemCopy.setProductDescription(currentItem.getProductDescription());
+                    itemCopy.setProductID(currentItem.getProductID());
+                    itemCopy.setCategoryID(currentItem.getCategoryID());
+                    itemCopy.setProductStockQuantity(1L);
+                    itemCopy.setStatusID(currentItem.getStatusID());
                     CartManager.getInstance().addToCart(itemCopy);
                 }
                 Toast.makeText(this, "Item added to cart", Toast.LENGTH_SHORT).show();
@@ -184,7 +187,32 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void updateTotalPrice() {
         int totalPrice = pricePerItem * quantity;
-        String priceText = String.format("%,d", totalPrice).replace(',', '.') + " VND";
+        String priceText = formatPrice(totalPrice);
         totalPriceValue.setText(priceText);
+    }
+
+    private static String formatPrice(Object priceObj) {
+        long priceValue = 0;
+        if (priceObj != null) {
+            if (priceObj instanceof Number) {
+                priceValue = ((Number) priceObj).longValue();
+                if (priceValue <= 10000) {
+                    priceValue = priceValue * 1000;
+                }
+            } else if (priceObj instanceof String) {
+                try {
+                    String s = ((String) priceObj).replace(",", "").replace(".", "").replace("VND", "").replace("VNĐ", "").replace("₫", "").trim();
+                    long parsed = Long.parseLong(s);
+                    if (parsed <= 10000) {
+                        priceValue = parsed * 1000;
+                    } else {
+                        priceValue = parsed;
+                    }
+                } catch (Exception e) {
+                    priceValue = 0;
+                }
+            }
+        }
+        return String.format("%,d VNĐ", priceValue).replace(",", ".");
     }
 }

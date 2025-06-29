@@ -1,6 +1,7 @@
 package com.rebound.checkout;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -10,15 +11,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
+import com.rebound.callback.AddressCallback;
+import com.rebound.connectors.AddressConnector;
 import com.rebound.models.Customer.Customer;
+import com.rebound.models.Cart.Address;
 import com.rebound.models.Cart.ShippingAddress;
 import com.rebound.utils.SharedPrefManager;
 
 public class AddShippingAddressActivity extends AppCompatActivity {
 
     ImageView imgBack;
-    MaterialButton btnAddShippingAddress;
+    MaterialButton btnAddShippingAddress, btnSelectLoadedAddress;
     EditText edtName, edtAddress, edtCity, edtDistrict, edtWard, edtPhone;
+    Address loadedAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,7 @@ public class AddShippingAddressActivity extends AppCompatActivity {
         // Ánh xạ view
         imgBack = findViewById(R.id.imgBackAddShippingAddress);
         btnAddShippingAddress = findViewById(R.id.btnAddShippingAddress);
+        btnSelectLoadedAddress = findViewById(R.id.btnSelectLoadedAddress);
 
         edtName = findViewById(R.id.edtAddShippingAddressName);
         edtAddress = findViewById(R.id.edtAddShippingAddress);
@@ -35,6 +41,60 @@ public class AddShippingAddressActivity extends AppCompatActivity {
         edtDistrict = findViewById(R.id.edtAddShippingDistrict);
         edtWard = findViewById(R.id.edtAddShippingWard);
         edtPhone = findViewById(R.id.edtAddShippingPhone);
+
+        // Load address from AddressConnector for logged-in user
+        Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
+        if (currentCustomer != null) {
+            Long userId = null;
+            Object userIdObj = currentCustomer.getUserID();
+            if (userIdObj instanceof Long) {
+                userId = (Long) userIdObj;
+            } else if (userIdObj instanceof String) {
+                String userIdStr = (String) userIdObj;
+                if (userIdStr == null || userIdStr.trim().isEmpty()) {
+                    Toast.makeText(this, "UserID is empty or null", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                try {
+                    // Try parsing as Long first
+                    userId = Long.parseLong(userIdStr);
+                } catch (NumberFormatException e1) {
+                    try {
+                        // Try parsing as Double and then convert to Long (handles cases like "2.0")
+                        Double d = Double.parseDouble(userIdStr);
+                        userId = d.longValue();
+                    } catch (Exception e2) {
+                        Log.e("AddShippingAddress", "Failed to parse userId: '" + userIdStr + "'", e2);
+                        Toast.makeText(this, "UserID is not a valid integer: '" + userIdStr + "'", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
+            }
+            if (userId != null) {
+                AddressConnector addressConnector = new AddressConnector();
+                addressConnector.getDefaultAddressForUser(this, userId, new AddressCallback() {
+                    @Override
+                    public void onAddressLoaded(Address address) {
+                        if (address != null) {
+                            loadedAddress = address;
+                            edtName.setText(address.getReceiverName() != null ? address.getReceiverName() : "");
+                            edtAddress.setText(address.getStreet() != null ? address.getStreet() : "");
+                            edtCity.setText(address.getProvince() != null ? address.getProvince() : "");
+                            edtDistrict.setText(address.getDistrict() != null ? address.getDistrict() : "");
+                            edtWard.setText(address.getWard() != null ? String.valueOf(address.getWard()) : "");
+                            edtPhone.setText(address.getReceiverPhone() != null ? formatPhone(address.getReceiverPhone().toString()) : "");
+                        } else {
+                            Toast.makeText(AddShippingAddressActivity.this, "Address is null", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Toast.makeText(AddShippingAddressActivity.this, "Error: " + error, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
 
         imgBack.setOnClickListener(v -> finish());
 
@@ -52,8 +112,8 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                 return;
             }
 
-            Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
-            if (currentCustomer == null) {
+            Customer currentCustomer1 = SharedPrefManager.getCurrentCustomer(this);
+            if (currentCustomer1 == null) {
                 Toast.makeText(this, getString(R.string.checkout_add_address_user_not_logged_in), Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -64,12 +124,40 @@ public class AddShippingAddressActivity extends AppCompatActivity {
             ShippingAddress shippingAddress = new ShippingAddress(name, fullAddress, phone);
 
             // Lưu vào SharedPreferences
-            SharedPrefManager.saveShippingAddress(this, currentCustomer.getEmail(), shippingAddress);
+            SharedPrefManager.saveShippingAddress(this, currentCustomer1.getEmail(), shippingAddress);
 
             Toast.makeText(this, getString(R.string.checkout_add_address_saved_success), Toast.LENGTH_SHORT).show();
             finish();
         });
+
+        btnSelectLoadedAddress.setOnClickListener(v -> {
+            if (loadedAddress == null) {
+                Toast.makeText(this, "No address loaded to select.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // Mark the loaded address as selected (e.g., set IsDefault to "true" or "yes")
+            loadedAddress.setIsDefault("yes");
+            // Save the selected address as the shipping address for the user
+            Customer currentCustomer1 = SharedPrefManager.getCurrentCustomer(this);
+            if (currentCustomer1 != null) {
+                SharedPrefManager.saveShippingAddress(this, currentCustomer1.getEmail(),
+                        new ShippingAddress(
+                                loadedAddress.getReceiverName(),
+                                loadedAddress.getStreet(),
+                                String.valueOf(loadedAddress.getReceiverPhone())
+                        )
+                );
+            }
+            Toast.makeText(this, "Address selected!", Toast.LENGTH_SHORT).show();
+            // Return to previous screen
+            finish();
+        });
+    }
+
+    private String formatPhone(String phone) {
+        if (phone == null) return "";
+        phone = phone.replaceAll("[^0-9]", "");
+        if (phone.startsWith("0")) return phone;
+        return "0" + phone;
     }
 }
-
-

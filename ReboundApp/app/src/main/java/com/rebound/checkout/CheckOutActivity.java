@@ -153,9 +153,17 @@ public class CheckOutActivity extends AppCompatActivity {
 
                 String formattedTotal = String.format(java.util.Locale.US, "%,d VND", totalAmountFromIntent).replace(',', '.');
                 Order newOrder = new Order();
-                newOrder.productList = orderProducts;
-                newOrder.total = formattedTotal;
+//                newOrder.productList = orderProducts;
+                try {
+                    newOrder.TotalAmount = Long.parseLong(totalAmountFromIntent + "");
+                } catch (Exception e) {
+                    newOrder.TotalAmount = 0L;
+                }
+                // Also set Subtotal to match TotalAmount for display/consistency
+                newOrder.Subtotal = newOrder.TotalAmount;
                 newOrder.Status = "To Receive";
+                // Show formatted total in a Toast (or set to a TextView if needed)
+                Toast.makeText(this, "Total: " + formattedTotal, Toast.LENGTH_SHORT).show();
 
                 OrderManager.getInstance().setUserEmail(current.getEmail());
                 OrderManager.getInstance().addOrder(newOrder);

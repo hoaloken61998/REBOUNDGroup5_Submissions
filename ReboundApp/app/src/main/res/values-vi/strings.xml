@@ -519,5 +519,6 @@ Styling</string>
     <string name="title_terms_and_conditions">Điều khoản và điều kiện</string>
     <string name="title_save_information">Lưu thông tin đăng nhập</string>
     <string name="please_login">Làm ơn đăng nhập</string>
+    <string name="total_amount_label">Tổng đơn</string>
 
 </resources>

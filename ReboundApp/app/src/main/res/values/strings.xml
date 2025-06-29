@@ -566,5 +566,10 @@
     <string name="title_terms_and_conditions">Terms and Conditions</string>
     <string name="title_save_information">Save Login Information</string>
     <string name="please_login">Please Login</string>
+    <string name="total_amount_label">Total Amount</string>
+    <string name="title_selected_address">Select Address</string>
+    <string name="title_filter_price">Filter by Price</string>
+    <string name="title_filter_category">Filter by Category</string>
+    <string name="title_apply_filter">Apply Filter</string>
 
 </resources>

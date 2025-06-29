@@ -56,6 +56,37 @@ public class FirebaseProductConnector {
     }
 
     /**
+     * Fetches all products from a specified node (e.g., "Product").
+     * @param node The database node/table name.
+     * @param clazz The Class of the POJO to map the data to (e.g., ProductItem.class).
+     * @param callback The callback to be invoked with the result.
+     * @param <T> The generic type of the POJO.
+     */
+    public static <T> void getAllProducts(@NonNull String node, @NonNull final Class<T> clazz, @NonNull final FirebaseListCallback<T> callback) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(node);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<T> itemList = new ArrayList<>();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        T item = snapshot.getValue(clazz);
+                        if (item != null) {
+                            itemList.add(item);
+                        }
+                    }
+                }
+                callback.onSuccess(itemList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.onFailure(databaseError.getMessage());
+            }
+        });
+    }
+
+    /**
      * Fetches the count of sold products by ProductID.
      * @param productId The product ID to filter by.
      * @param callback The callback to be invoked with the sold count result.

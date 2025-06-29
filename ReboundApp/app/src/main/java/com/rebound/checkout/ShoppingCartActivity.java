@@ -106,8 +106,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
                     }
                     try {
                         int unitPrice = 0;
-                        if (item.ProductPrice != null) {
-                            String priceStr = item.ProductPrice.toString();
+                        if (item.getProductPrice() != null) {
+                            String priceStr = item.getProductPrice().toString();
                             if (!priceStr.isEmpty()) {
                                 unitPrice = Integer.parseInt(priceStr.replace(".", "").replace(" VND", "").trim());
                             }
@@ -115,7 +115,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                         int qty = 1; // Default quantity
                         Long stockQuantityLong = null;
                         try {
-                            stockQuantityLong = item.ProductStockQuantity;
+                            stockQuantityLong = item.getProductStockQuantity();
                         } catch (Exception e) {
                             // This catch is if direct field access throws an error
                         }

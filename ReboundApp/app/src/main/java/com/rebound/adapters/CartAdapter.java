@@ -66,11 +66,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         ProductItem item = cartList.get(position);
 
         // Defensive conversion for Object fields
-        holder.name.setText(item.ProductName != null ? item.ProductName.toString() : "");
+        holder.name.setText(item.getProductName() != null ? item.getProductName().toString() : "");
         // Variant: not available in new model, so leave blank or set a placeholder
         holder.variant.setText("");
         // Defensive conversion for ImageLink
-        String imageLink = item.ImageLink != null ? item.ImageLink.toString() : "";
+        String imageLink = item.getImageLink() != null ? item.getImageLink().toString() : "";
         if (!imageLink.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                 .load(imageLink)
@@ -80,11 +80,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             holder.image.setImageResource(R.drawable.ic_placeholder);
         }
         // Price calculation: parse ProductPrice (remove non-digits), multiply by quantity
-        String priceStr = item.ProductPrice != null ? item.ProductPrice.toString() : "";
+        String priceStr = item.getProductPrice() != null ? item.getProductPrice().toString() : "";
         int unitPrice = extractPrice(priceStr);
         int quantity = 1;
         try {
-            Long stockQuantityLong = item.ProductStockQuantity;
+            Long stockQuantityLong = item.getProductStockQuantity();
             if (stockQuantityLong != null) {
                 if (stockQuantityLong > Integer.MAX_VALUE) {
                     quantity = Integer.MAX_VALUE;
@@ -117,10 +117,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             final int pos = position;
             holder.btnPlus.setOnClickListener(v -> {
                 int newQty = quantityFinal + 1;
-                // Convert int to Long
-                finalItem.ProductStockQuantity = Long.valueOf(newQty);
-                // Alternatively, though Long.valueOf() is often preferred for clarity:
-                // finalItem.ProductStockQuantity = (long) newQty; // Cast to primitive long, then auto-box to Long
+                finalItem.setProductStockQuantity(Long.valueOf(newQty));
                 notifyItemChanged(pos);
                 if (updateTotal != null) updateTotal.run();
             });
@@ -128,10 +125,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             holder.btnMinus.setOnClickListener(v -> {
                 if (quantityFinal > 1) {
                     int newQty = quantityFinal - 1;
-                    // Convert int to Long
-                    finalItem.ProductStockQuantity = Long.valueOf(newQty); // THIS IS THE FIX for line 124
-                    // Alternatively:
-                    // finalItem.ProductStockQuantity = (long) newQty;
+                    finalItem.setProductStockQuantity(Long.valueOf(newQty));
                     notifyItemChanged(pos);
                     if (updateTotal != null) updateTotal.run();
                 } else {

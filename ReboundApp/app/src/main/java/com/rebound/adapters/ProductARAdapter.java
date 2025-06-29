@@ -38,8 +38,8 @@ public class ProductARAdapter extends RecyclerView.Adapter<ProductARAdapter.View
         ProductItem product = productList.get(position);
 
         // Gán hình và tên từ Firebase fields
-        holder.txtProductAR.setText(product.ProductName != null ? product.ProductName.toString() : "");
-        String imageLink = product.ImageLink != null ? product.ImageLink.toString() : null;
+        holder.txtProductAR.setText(product.getProductName() != null ? product.getProductName().toString() : "");
+        String imageLink = product.getImageLink() != null ? product.getImageLink().toString() : null;
         if (imageLink != null && !imageLink.isEmpty()) {
             Glide.with(context)
                 .load(imageLink)

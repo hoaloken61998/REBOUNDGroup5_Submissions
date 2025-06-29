@@ -25,9 +25,6 @@ import com.rebound.R;
 import com.rebound.adapters.LastCollectionAdapter;
 import com.rebound.utils.CartManager;
 import com.rebound.utils.OrderManager;
-import com.rebound.connectors.FirebaseConnector;
-import com.rebound.callback.FirebaseListCallback;
-import com.rebound.models.Cart.ProductItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +72,20 @@ public class MainPageFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
         adapter = new LastCollectionAdapter(new ArrayList<>());
         recyclerView.setAdapter(adapter);
+
+        // Load random products from Firebase for Latest Collection
+        FirebaseProductConnector.getAllProducts("Product", com.rebound.models.Cart.ProductItem.class, new com.rebound.callback.FirebaseListCallback<com.rebound.models.Cart.ProductItem>() {
+            @Override
+            public void onSuccess(ArrayList<com.rebound.models.Cart.ProductItem> result) {
+                java.util.Collections.shuffle(result); // Randomize order
+                adapter = new LastCollectionAdapter(result);
+                recyclerView.setAdapter(adapter);
+            }
+            @Override
+            public void onFailure(String errorMessage) {
+                // Handle error (optional: show a Toast or log)
+            }
+        });
 
         // Giỏ hàng
         ImageView imgCart = view.findViewById(R.id.imgMainPageShoppingCart);
@@ -125,28 +136,6 @@ public class MainPageFragment extends Fragment {
         return view;
     }
 
-    private void loadCategoryProducts(String category) {
-        // This method is now only used for the default display, not for button clicks
-        String categoryIdStr = CATEGORY_ID_MAP.get(category);
-        if (categoryIdStr == null) return;
-        long categoryId; // Use long for consistency with ProductItem.CategoryID
-        try {
-            categoryId = Long.parseLong(categoryIdStr);
-        } catch (NumberFormatException e) {
-            adapter.updateList(new ArrayList<>());
-            return;
-        }
-        FirebaseProductConnector.getProductsByCategoryNumber("Product", (int) categoryId, ProductItem.class, new FirebaseListCallback<ProductItem>() {
-            @Override
-            public void onSuccess(ArrayList<ProductItem> result) {
-                adapter.updateList(result);
-            }
-            @Override
-            public void onFailure(String errorMessage) {
-                adapter.updateList(new ArrayList<>());
-            }
-        });
-    }
 
     private void openCategory(String category) {
         Intent intent = new Intent(requireContext(), CategoryProductActivity.class);
@@ -154,10 +143,4 @@ public class MainPageFragment extends Fragment {
         startActivity(intent);
     }
 
-    // Kiểm tra xem có dữ liệu tìm kiếm gần đây không
-    private boolean checkIfHasSearchData() {
-        SharedPreferences prefs = requireContext().getSharedPreferences("search_prefs", Context.MODE_PRIVATE);
-        String recentRaw = prefs.getString("recent_keywords", "");
-        return !recentRaw.isEmpty();
-    }
 }

@@ -66,7 +66,7 @@ public class WishlistManager {
         Iterator<ProductItem> iterator = wishlist.iterator();
         while (iterator.hasNext()) {
             ProductItem item = iterator.next();
-            if (item.ProductName != null && item.ProductName.equals(productName)) {
+            if (item.getProductName() != null && item.getProductName().equals(productName)) {
                 iterator.remove();
                 break;
             }
@@ -77,7 +77,7 @@ public class WishlistManager {
     public boolean isInWishlist(String productName) {
         List<ProductItem> wishlist = getWishlist();
         for (ProductItem item : wishlist) {
-            if (item.ProductName != null && item.ProductName.equals(productName)) {
+            if (item.getProductName() != null && item.getProductName().equals(productName)) {
                 return true;
             }
         }

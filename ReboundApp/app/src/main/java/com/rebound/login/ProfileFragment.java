@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.rebound.R;
+import com.rebound.checkout.CreateNewCardActivity;
 import com.rebound.main.LanguageSelectorActivity;
 import com.rebound.main.OrdersActivity;
 import com.rebound.main.PrivacyPolicyActivity;
@@ -143,6 +144,7 @@ public class ProfileFragment extends Fragment {
         });
 
         optionMyOrders.setOnClickListener(v -> {
+            if (!isAdded() || getContext() == null || getFragmentManager() == null || getFragmentManager().isDestroyed()) return;
             currentCustomer = SharedPrefManager.getCurrentCustomer(requireContext());
             if (currentCustomer == null) {
                 Toast.makeText(getContext(), getString(R.string.please_login_orders), Toast.LENGTH_SHORT).show();
@@ -168,7 +170,7 @@ public class ProfileFragment extends Fragment {
                 return;
             }
 
-            Intent intent = new Intent(getActivity(), com.rebound.checkout.CreateNewCardActivity.class);
+            Intent intent = new Intent(getActivity(), CreateNewCardActivity.class);
             intent.putExtra("cardType", "Credit Card");
             intent.putExtra("from", "profile");
             startActivity(intent);
@@ -195,6 +197,7 @@ public class ProfileFragment extends Fragment {
             new com.rebound.callback.FirebaseListCallback<Customer>() {
                 @Override
                 public void onSuccess(java.util.ArrayList<Customer> customers) {
+                    if (!isAdded()) return;
                     for (Customer c : customers) {
                         if (c != null && c.getEmail() != null && c.getEmail().equalsIgnoreCase(currentCustomer.getEmail())) {
                             txtProfileUserName.setText(c.getFullName());

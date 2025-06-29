@@ -142,6 +142,15 @@ public class MainActivity extends AppCompatActivity {
                     editor.remove("password");
                     editor.apply();
                 }
+                // Save userId to SharedPreferences for order queries
+                SharedPreferences userPrefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+                long userId = -1;
+                try {
+                    userId = Long.parseLong(String.valueOf(customer.getUserID()));
+                } catch (Exception e) {
+                    // handle error or keep userId as -1
+                }
+                userPrefs.edit().putLong("user_id", userId).apply();
                 Intent intent = new Intent(MainActivity.this, NavBarActivity.class);
                 startActivity(intent);
                 finish();

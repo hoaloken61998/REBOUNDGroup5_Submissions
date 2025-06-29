@@ -61,7 +61,7 @@ public class OrderManager {
         List<Order> orders = getOrders();
         boolean updated = false;
         for (int i = 0; i < orders.size(); i++) {
-            if (updatedOrder.getOrderID() != null && updatedOrder.getOrderID().equals(orders.get(i).getOrderID())) {
+            if (updatedOrder.OrderID != null && updatedOrder.OrderID.equals(orders.get(i).OrderID)) {
                 orders.set(i, updatedOrder);
                 updated = true;
                 break;

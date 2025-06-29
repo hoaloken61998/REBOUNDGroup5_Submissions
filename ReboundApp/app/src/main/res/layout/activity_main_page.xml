@@ -52,8 +52,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/bg_search"
-                    android:iconifiedByDefault="false"
-                    android:queryHint="@string/title_search_hint" />
+                    app:iconifiedByDefault="false"
+                    app:queryHint="@string/title_search_hint" />
 
                 <ImageView
                     android:id="@+id/btnMainPageFilter"

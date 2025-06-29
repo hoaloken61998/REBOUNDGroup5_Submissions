@@ -39,7 +39,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         ProductItem item = wishlist.get(position);
 
         // Gán dữ liệu vào View từ Firebase fields
-        String imageLink = item.ImageLink != null ? item.ImageLink.toString() : null;
+        String imageLink = item.getImageLink() != null ? item.getImageLink().toString() : null;
         if (imageLink != null && !imageLink.isEmpty()) {
             Glide.with(context)
                 .load(imageLink)
@@ -48,8 +48,8 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
         } else {
             holder.imgProduct.setImageResource(R.drawable.ic_placeholder);
         }
-        holder.txtProduct.setText(item.ProductName != null ? item.ProductName.toString() : "");
-        holder.txtProductPrice.setText(item.ProductPrice != null ? item.ProductPrice.toString() : "");
+        holder.txtProduct.setText(item.getProductName() != null ? item.getProductName().toString() : "");
+        holder.txtProductPrice.setText(item.getProductPrice() != null ? item.getProductPrice().toString() : "");
         holder.txtProductRating.setText(""); // No rating in Firebase
 
         // Khi bấm vào sản phẩm

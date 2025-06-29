@@ -27,8 +27,9 @@ import java.util.List;
 public class OngoingFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private List<Order> orderList;
+    private List<Order> orderList = new ArrayList<>();
     private OrderAdapter adapter;
+    private List<Order> currentOrders = new ArrayList<>();
 
     @Nullable
     @Override
@@ -36,7 +37,6 @@ public class OngoingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_ongoing, container, false);
         recyclerView = view.findViewById(R.id.recyclerOngoingOrders);
 
-        orderList = new ArrayList<>();
 
         adapter = new OrderAdapter(getContext(), orderList, "ongoing", new OrderAdapter.OnOrderClickListener() {
             @Override
@@ -59,7 +59,7 @@ public class OngoingFragment extends Fragment {
 
             @Override
             public void onOrderReceived(Order order) {
-                order.setStatus("Shipped");
+//                order.setStatus("Shipped");
 
                 OrderManager.getInstance().updateOrderStatus(order); // 🔥 Lưu vào SharedPreferences
 
@@ -83,7 +83,7 @@ public class OngoingFragment extends Fragment {
 
             orderList.clear(); // Xoá cũ
             for (Order o : allOrders) {
-                if ("To Receive".equals(o.getStatus())) {
+                if ("To Receive".equals(o.Status)) {
                     orderList.add(o);
                 }
             }
@@ -95,6 +95,37 @@ public class OngoingFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadOngoingOrders();
+        // Only reload if currentOrders is empty (first load), otherwise keep currentOrders
+        if (currentOrders.isEmpty()) {
+            loadOngoingOrders();
+        } else {
+            orderList.clear();
+            orderList.addAll(currentOrders);
+            if (adapter != null) adapter.notifyDataSetChanged();
+        }
+    }
+
+    public void setOrders(List<Order> orders) {
+        if (orderList == null) orderList = new ArrayList<>();
+        orderList.clear();
+        currentOrders.clear();
+        int count = 0;
+        if (orders != null) {
+            for (Order o : orders) {
+                if (o != null && o.Status != null) {
+                    android.util.Log.d("OngoingFragment", "OrderID: " + o.OrderID + ", Status: " + o.Status);
+                }
+                // Accept both "Pending" and "Ongoing" (or "To Receive")
+                if (o != null && o.Status != null && (o.Status.equalsIgnoreCase("Pending") || o.Status.equalsIgnoreCase("Ongoing") || o.Status.equalsIgnoreCase("To Receive"))) {
+                    orderList.add(o);
+                    currentOrders.add(o);
+                    count++;
+                }
+            }
+        }
+        android.util.Log.d("OngoingFragment", "setOrders called, count: " + count);
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 }

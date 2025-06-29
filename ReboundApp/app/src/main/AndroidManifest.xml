@@ -46,9 +46,6 @@
             android:name=".ar.ARCameraProductActivity"
             android:exported="false" />
         <activity
-            android:name=".main.NewsActivity"
-            android:exported="false" />
-        <activity
             android:name=".main.MainPageActivity"
             android:exported="false" />
         <activity
@@ -65,7 +62,8 @@
             android:exported="false" />
         <activity
             android:name=".main.SearchActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.ReboundLogin" />
         <activity
             android:name=".main.ProductDetailActivity"
             android:exported="false" />
@@ -86,9 +84,6 @@
             android:exported="false" />
         <activity
             android:name=".checkout.CheckOutActivity"
-            android:exported="false" />
-        <activity
-            android:name=".checkout.CheckoutInfoActivity"
             android:exported="false" />
         <activity
             android:name=".checkout.CreateNewCardActivity"

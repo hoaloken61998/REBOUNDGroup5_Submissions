@@ -54,43 +54,47 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         String status = screenType.equals("ongoing") ? "To Receive" : "Shipped";
 
         holder.txtStatus.setText(status);
-        holder.txtTotal.setText("Total: " + order.getSubtotal());
+        // Format TotalAmount with thousands separator and VND
+        final String TOTAL_AMOUNT_LABEL = context.getString(R.string.total_amount_label); // Use string resource
+        String formattedAmount = String.format("%,d", order.TotalAmount).replace(',', '.');
+        holder.txtTotal.setText(TOTAL_AMOUNT_LABEL+": " + formattedAmount + " đ");
         holder.groupToReceive.setVisibility(View.GONE);
         holder.groupShipped.setVisibility(View.GONE);
         holder.layoutOrderItems.removeAllViews();
 
-        List<ProductItem> products = null;
-        try {
-            products = order.getProductList();
-        } catch (Exception e) {
-            // Ignore error temporarily
-        }
-        if (products != null) {
-            for (ProductItem product : products) {
-                View item = LayoutInflater.from(context).inflate(R.layout.item_product_order, holder.layoutOrderItems, false);
-                ((TextView) item.findViewById(R.id.txtProductName)).setText(product.ProductName != null ? product.ProductName.toString() : "");
-                ((TextView) item.findViewById(R.id.txtProductDesc)).setText(""); // Default value
-                String priceText = product.ProductPrice != null ? product.ProductPrice.toString() : "";
-                ((TextView) item.findViewById(R.id.txtProductPrice)).setText(priceText);
-                // Load image from URL using Glide
-                String imageUrl = product.ImageLink != null ? product.ImageLink.toString() : "";
-                ImageView imgView = item.findViewById(R.id.imgProduct);
-                if (!imageUrl.isEmpty()) {
-                    Glide.with(context)
-                        .load(imageUrl)
-                        .placeholder(R.drawable.ic_placeholder)
-                        .into(imgView);
-                } else {
-                    imgView.setImageResource(R.drawable.ic_placeholder);
-                }
-                holder.layoutOrderItems.addView(item);
-            }
-        }
+        // Temporarily skip product list
+//        List<ProductItem> products = null;
+//        try {
+//            products = order.getProductList();
+//        } catch (Exception e) {
+//            // Ignore error temporarily
+//        }
+//        if (products != null) {
+//            for (ProductItem product : products) {
+//                View item = LayoutInflater.from(context).inflate(R.layout.item_product_order, holder.layoutOrderItems, false);
+//                ((TextView) item.findViewById(R.id.txtProductName)).setText(product.ProductName != null ? product.ProductName.toString() : "");
+//                ((TextView) item.findViewById(R.id.txtProductDesc)).setText(""); // Default value
+//                String priceText = product.ProductPrice != null ? product.ProductPrice.toString() : "";
+//                ((TextView) item.findViewById(R.id.txtProductPrice)).setText(priceText);
+//                // Load image from URL using Glide
+//                String imageUrl = product.ImageLink != null ? product.ImageLink.toString() : "";
+//                ImageView imgView = item.findViewById(R.id.imgProduct);
+//                if (!imageUrl.isEmpty()) {
+//                    Glide.with(context)
+//                        .load(imageUrl)
+//                        .placeholder(R.drawable.ic_placeholder)
+//                        .into(imgView);
+//                } else {
+//                    imgView.setImageResource(R.drawable.ic_placeholder);
+//                }
+//                holder.layoutOrderItems.addView(item);
+//            }
+//        }
 
         if (screenType.equals("ongoing")) {
             holder.groupToReceive.setVisibility(View.VISIBLE);
 
-            boolean isToReceive = "To Receive".equals(order.getStatus());
+            boolean isToReceive = "To Receive".equals(order.Status);
             holder.btnOrderReceived.setEnabled(isToReceive);
             holder.btnOrderReceived.setBackgroundResource(isToReceive ? R.drawable.button_outline : R.drawable.button_disabled);
             holder.btnOrderReceived.setTextColor(ContextCompat.getColor(context, isToReceive ? R.color.outline_text : android.R.color.darker_gray));

@@ -11,9 +11,12 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.button.MaterialButton;
 import com.rebound.R;
 import com.rebound.adapters.ViewPaperAdapter;
+import com.rebound.connectors.CardConnector;
 import com.rebound.utils.SharedPrefManager;
 import com.rebound.models.Customer.Customer;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
+
+import java.util.List;
 
 public class CreateNewCardActivity extends AppCompatActivity {
 
@@ -59,6 +62,7 @@ public class CreateNewCardActivity extends AppCompatActivity {
             String nameOnCard = edtNameOnCard.getText().toString().trim();
             String cardNumber = edtCardNumber.getText().toString().trim();
             String expMonth = edtExpMonth.getText().toString().trim();
+            // Remove the first two letters from expYear if length > 2, and update the EditText
             String expYear = edtExpYear.getText().toString().trim();
             String cvv = edtCVV.getText().toString().trim();
 
@@ -112,5 +116,38 @@ public class CreateNewCardActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Lấy UserID từ SharedPreferences
+        long userId = getSharedPreferences("user_prefs", MODE_PRIVATE).getLong("user_id", -1L);
+        if (userId != -1L) {
+            CardConnector cardConnector = new CardConnector();
+            cardConnector.getCardInfoForUser(userId, new com.rebound.callback.CardInfoCallback() {
+                @Override
+                public void onCardInfoLoaded(List<com.rebound.models.Cart.CardInfo> cardList) {
+                    if (!cardList.isEmpty()) {
+                        // Populate the EditText fields with the first card's info
+                        com.rebound.models.Cart.CardInfo card = cardList.get(0);
+                        edtNameOnCard.setText(card.getCardHolderName());
+                        edtCardNumber.setText(String.valueOf(card.getCardNumber()));
+                        edtExpMonth.setText(String.valueOf(card.getExpMonth()));
+                        edtExpYear.setText(formatExpYear(String.valueOf(card.getExpYear())));
+                        edtCVV.setText(String.valueOf(card.getCVV()));
+                    }
+                }
+
+                @Override
+                public void onError(String error) {
+                    // Handle error (e.g., show a Toast)
+                }
+            });
+        }
+    }
+
+    private String formatExpYear(String expYear) {
+        if (expYear == null) return "";
+        if (expYear.length() > 2) {
+            return expYear.substring(2);
+        }
+        return expYear;
     }
 }

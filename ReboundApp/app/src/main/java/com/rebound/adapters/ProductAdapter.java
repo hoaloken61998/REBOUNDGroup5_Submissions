@@ -41,15 +41,43 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ProductItem item = list.get(position);
-        holder.title.setText(item.ProductName != null ? item.ProductName.toString() : "");
-        holder.price.setText(item.ProductPrice != null ? item.ProductPrice.toString() : "");
+        holder.title.setText(item.getProductName() != null ? item.getProductName().toString() : "");
+        // Format price correctly for all values
+        String formattedPrice = "";
+        Object priceObj = item.getProductPrice();
+        if (priceObj != null) {
+            long priceValue = 0;
+            if (priceObj instanceof Number) {
+                priceValue = ((Number) priceObj).longValue();
+                // If priceValue <= 10000, treat as thousands (e.g., 950 -> 950000)
+                if (priceValue <= 10000) {
+                    priceValue = priceValue * 1000;
+                }
+            } else if (priceObj instanceof String) {
+                try {
+                    String s = ((String) priceObj).replace(",", "").replace(".", "").trim();
+                    long parsed = Long.parseLong(s);
+                    // If parsed <= 10000, treat as thousands (e.g., 950 -> 950000)
+                    if (parsed <= 10000) {
+                        priceValue = parsed * 1000;
+                    } else {
+                        priceValue = parsed;
+                    }
+                } catch (Exception e) {
+                    priceValue = 0;
+                }
+            }
+            // Format with dot as thousands separator
+            formattedPrice = String.format("%,d VNĐ", priceValue).replace(",", ".");
+        }
+        holder.price.setText(formattedPrice);
         // Show rating instantly from ProductItem if available
-        if (item.Rating != null) {
-            holder.rating.setText(item.Rating.toString());
+        if (item.getRating() != null) {
+            holder.rating.setText(item.getRating().toString());
         } else {
             holder.rating.setText("");
         }
-        String imageLink = item.ImageLink != null ? item.ImageLink.toString() : null;
+        String imageLink = item.getImageLink() != null ? item.getImageLink().toString() : null;
         if (imageLink != null && !imageLink.isEmpty()) {
             Glide.with(holder.itemView.getContext())
                 .load(imageLink)

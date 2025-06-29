@@ -6,76 +6,41 @@ import java.util.List;
 
 public class Order {
     @PropertyName("OrderID")
-    public Object OrderID;
+    public Long OrderID;
     @PropertyName("UserID")
-    public Object UserID;
+    public Long UserID;
     @PropertyName("PaymentMethodID")
-    public Object PaymentMethodID;
+    public Long PaymentMethodID;
     @PropertyName("DeliveryFee")
-    public Object DeliveryFee;
+    public Long DeliveryFee;
     @PropertyName("DiscountValue")
-    public Object DiscountValue;
+    public Double DiscountValue;
     @PropertyName("Subtotal")
-    public Object Subtotal;
+    public Long Subtotal;
     @PropertyName("TotalAmount")
-    public Object TotalAmount;
+    public Long TotalAmount;
     @PropertyName("UserPromotion")
-    public Object UserPromotion;
+    public Long UserPromotion;
     @PropertyName("OrderDate")
-    public Object OrderDate;
+    public String OrderDate;
     @PropertyName("Status")
-    public Object Status;
-    @PropertyName("productList")
-    public List<com.rebound.models.Cart.ProductItem> productList;
-    @PropertyName("total")
-    public Object total;
+    public String Status;
 
-    public Order() {}
-
-    public String getOrderID() {
-        return objectToString(OrderID);
-    }
-    public String getUserID() {
-        return objectToString(UserID);
-    }
-    public String getPaymentMethodID() {
-        return objectToString(PaymentMethodID);
-    }
-    public String getDeliveryFee() {
-        return objectToString(DeliveryFee);
-    }
-    public String getDiscountValue() {
-        return objectToString(DiscountValue);
-    }
-    public String getSubtotal() {
-        return objectToString(Subtotal);
-    }
-    public String getTotalAmount() {
-        return objectToString(TotalAmount);
-    }
-    public String getUserPromotion() {
-        return objectToString(UserPromotion);
-    }
-    public String getOrderDate() {
-        return objectToString(OrderDate);
-    }
-    public String getStatus() {
-        return objectToString(Status);
-    }
-    public void setStatus(String status) {
-        this.Status = status;
-    }
-    public List<com.rebound.models.Cart.ProductItem> getProductList() {
-        return productList;
-    }
-    public void setProductList(List<com.rebound.models.Cart.ProductItem> productList) {
-        this.productList = productList;
+    public Order() {
     }
 
-    private String objectToString(Object obj) {
-        if (obj == null) return null;
-        if (obj instanceof String) return (String) obj;
-        if (obj instanceof Number) return String.valueOf(obj);
-        return obj.toString();
+    public Order(Long orderID, Long userID, Long paymentMethodID, Long deliveryFee, Double discountValue, Long subtotal, Long totalAmount, Long userPromotion, String orderDate, String status) {
+        OrderID = orderID;
+        UserID = userID;
+        PaymentMethodID = paymentMethodID;
+        DeliveryFee = deliveryFee;
+        DiscountValue = discountValue;
+        Subtotal = subtotal;
+        TotalAmount = totalAmount;
+        UserPromotion = userPromotion;
+        OrderDate = orderDate;
+        Status = status;
     }
+
+
 }
