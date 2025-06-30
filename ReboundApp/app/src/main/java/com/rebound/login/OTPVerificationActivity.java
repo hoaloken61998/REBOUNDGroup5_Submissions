@@ -23,7 +23,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
 
     TextView txtResend;
 
-    String receivedOTP, email;
+    String receivedOTP, email, phone;
     EditText edtOTP1, edtOTP2, edtOTP3, edtOTP4;
     ListCustomer listCustomer;
 
@@ -36,6 +36,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
 
         email = getIntent().getStringExtra("email");
         receivedOTP = getIntent().getStringExtra("otp");
+        phone = getIntent().getStringExtra("phone");
 
         // ✅ Load listCustomer từ SharedPreferences
         listCustomer = SharedPrefManager.getCustomerList(this);
@@ -134,9 +135,20 @@ public class OTPVerificationActivity extends AppCompatActivity {
         if (userInputOTP.equals(receivedOTP)) {
             Toast.makeText(this, "OTP Verified", Toast.LENGTH_SHORT).show();
 
+            // Find email by phone in listCustomer
+            String foundEmail = null;
+            if (listCustomer != null) {
+                for (com.rebound.models.Customer.Customer c : listCustomer.getCustomers()) {
+                    String cPhone = c.getPhoneNumber() != null ? c.getPhoneNumber().toString() : "";
+                    String inputPhone = phone.startsWith("0") ? phone.substring(1) : phone;
+                    if (cPhone.equals(inputPhone) || cPhone.equals(phone)) {
+                        foundEmail = c.getEmail();
+                        break;
+                    }
+                }
+            }
             Intent intent = new Intent(OTPVerificationActivity.this, CreateNewPasswordActivity.class);
-            intent.putExtra("email", email);
-            intent.putExtra("listCustomer", listCustomer); // ✅ Bắt buộc phải có dòng này
+            intent.putExtra("email", foundEmail);
             startActivity(intent);
         } else {
             Toast.makeText(this, "Incorrect OTP!", Toast.LENGTH_SHORT).show();

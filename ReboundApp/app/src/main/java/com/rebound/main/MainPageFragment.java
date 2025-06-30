@@ -25,6 +25,7 @@ import com.rebound.R;
 import com.rebound.adapters.LastCollectionAdapter;
 import com.rebound.utils.CartManager;
 import com.rebound.utils.OrderManager;
+import com.rebound.utils.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,10 +51,13 @@ public class MainPageFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         OrderManager.init(requireContext());
+        CartManager.init(requireContext());
+        Customer currentCustomer = SharedPrefManager.getCurrentCustomer(requireContext());
+        if (currentCustomer != null) {
+            CartManager.getInstance().setUserEmail(currentCustomer.getUsername());
+        }
 
         View view = inflater.inflate(R.layout.activity_main_page, container, false);
-
-        CartManager.init(requireContext());
 
         ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -97,9 +101,9 @@ public class MainPageFragment extends Fragment {
         // Chuông thông báo
         ImageView imgBell = view.findViewById(R.id.imgBell);
         imgBell.setOnClickListener(v -> {
-            Customer currentCustomer = com.rebound.utils.SharedPrefManager.getCurrentCustomer(requireContext());
+            Customer customer = SharedPrefManager.getCurrentCustomer(requireContext());
             Intent intent;
-            if (currentCustomer != null) {
+            if (customer != null) {
                 // Đã đăng nhập
                 intent = new Intent(requireContext(), NotificationActivity.class);
             } else {

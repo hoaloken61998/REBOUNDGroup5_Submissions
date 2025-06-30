@@ -14,6 +14,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.rebound.R;
+import com.rebound.callback.FirebaseSingleCallback;
+import com.rebound.connectors.CustomerConnector;
 import com.rebound.models.Customer.Customer;
 import com.rebound.models.Customer.ListCustomer;
 import com.rebound.utils.SharedPrefManager;
@@ -33,7 +35,6 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
 
         email = getIntent().getStringExtra("email");
         listCustomer = SharedPrefManager.getCustomerList(this);
-
         if (listCustomer == null) {
             listCustomer = new ListCustomer();
             SharedPrefManager.saveCustomerList(this, listCustomer);
@@ -77,6 +78,7 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
         }
 
         boolean updated = false;
+        Customer updatedCustomer = null;
         for (Customer customer : listCustomer.getCustomers()) {
             if (customer.getEmail().equalsIgnoreCase(email)) {
                 try {
@@ -85,6 +87,7 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
                     customer.setPassword(0L);
                 }
                 updated = true;
+                updatedCustomer = customer;
 
                 getSharedPreferences("user_data", MODE_PRIVATE)
                         .edit()
@@ -97,8 +100,20 @@ public class CreateNewPasswordActivity extends AppCompatActivity {
 
         if (updated) {
             SharedPrefManager.saveCustomerList(this, listCustomer);
-            Toast.makeText(this, getString(R.string.create_password_success), Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, PasswordChangedActivity.class));
+            // Update password in Firebase
+            CustomerConnector customerConnector = new CustomerConnector();
+            customerConnector.updateCustomerInFirebase(updatedCustomer, new FirebaseSingleCallback<Void>() {
+                @Override
+                public void onSuccess(Void result) {
+                    Toast.makeText(CreateNewPasswordActivity.this, getString(R.string.create_password_success), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(CreateNewPasswordActivity.this, PasswordChangedActivity.class));
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    Toast.makeText(CreateNewPasswordActivity.this, "Failed to update password in Firebase: " + errorMessage, Toast.LENGTH_LONG).show();
+                }
+            });
         } else {
             Toast.makeText(this, getString(R.string.create_password_user_not_found), Toast.LENGTH_SHORT).show();
         }

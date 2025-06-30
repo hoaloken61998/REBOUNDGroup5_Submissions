@@ -1,7 +1,10 @@
 package com.rebound.login;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.rebound.utils.GmailSender;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -90,21 +93,23 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     public void do_send_code(View view) {
         String phone = edtForgotPasswordPhone.getText().toString().trim();
         String phoneForCompare = phone.startsWith("0") ? phone.substring(1) : phone;
-
-        if (!phone.matches("^0?\\d{9,14}$")) {
+        Long phoneForCompareLong = null;
+        try {
+            phoneForCompareLong = Long.parseLong(phoneForCompare);
+        } catch (NumberFormatException e) {
             Toast.makeText(this, "Invalid phone number format", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Query Firebase for PhoneNumber (without leading zero)
-        com.google.firebase.database.DatabaseReference userRef = com.google.firebase.database.FirebaseDatabase.getInstance().getReference("User");
-        userRef.orderByChild("PhoneNumber").equalTo(Long.parseLong(phoneForCompare))
+        // Query Firebase for PhoneNumber (without leading zero) as String
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User");
+        userRef.orderByChild("PhoneNumber").equalTo(phoneForCompare)
             .limitToFirst(1)
             .get()
             .addOnSuccessListener(snapshot -> {
                 if (snapshot.exists()) {
                     String otp = generateOTP();
-                    android.telephony.SmsManager smsManager = android.telephony.SmsManager.getDefault();
+                    SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(phone, null, "Your OTP code is: " + otp, null, null);
                     Toast.makeText(this, "OTP sent to phone: " + phone, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(ForgotPasswordActivity.this, OTPVerificationActivity.class);
