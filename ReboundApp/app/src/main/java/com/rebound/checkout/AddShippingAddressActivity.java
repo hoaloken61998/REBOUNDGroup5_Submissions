@@ -79,8 +79,8 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                             edtName.setText(address.getReceiverName() != null ? address.getReceiverName() : "");
                             edtAddress.setText(address.getStreet() != null ? address.getStreet() : "");
                             edtCity.setText(address.getProvince() != null ? address.getProvince() : "");
-                            edtDistrict.setText(address.getDistrict() != null ? address.getDistrict() : "");
-                            edtWard.setText(address.getWard() != null ? String.valueOf(address.getWard()) : "");
+                            edtDistrict.setText(address.getDistrict() != null ? address.getDistrict().toString() : "");
+                            edtWard.setText(address.getWard() != null ? address.getWard().toString() : "");
                             edtPhone.setText(address.getReceiverPhone() != null ? formatPhone(address.getReceiverPhone().toString()) : "");
                         } else {
                             Toast.makeText(AddShippingAddressActivity.this, "No default address found. You can add a new one.", Toast.LENGTH_LONG).show();
@@ -101,11 +101,11 @@ public class AddShippingAddressActivity extends AppCompatActivity {
             String name = edtName.getText().toString().trim();
             String address = edtAddress.getText().toString().trim();
             String city = edtCity.getText().toString().trim();
-            String district = edtDistrict.getText().toString().trim();
-            String ward = edtWard.getText().toString().trim();
+            String districtStr = edtDistrict.getText().toString().trim();
+            String wardStr = edtWard.getText().toString().trim();
             String phone = edtPhone.getText().toString().trim();
 
-            if (name.isEmpty() || address.isEmpty() || city.isEmpty() || district.isEmpty() || ward.isEmpty() || phone.isEmpty()) {
+            if (name.isEmpty() || address.isEmpty() || city.isEmpty() || districtStr.isEmpty() || wardStr.isEmpty() || phone.isEmpty()) {
                 Toast.makeText(this, getString(R.string.checkout_add_address_fill_all_fields), Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -121,26 +121,15 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                 addressToSave = loadedAddress;
             } else {
                 addressToSave = new Address();
-                addressToSave.setUserID(currentUserId);
             }
 
             // Populate the address object with data from EditTexts
             addressToSave.setReceiverName(name);
             addressToSave.setStreet(address);
             addressToSave.setProvince(city);
-            addressToSave.setDistrict(district);
-            try {
-                addressToSave.setWard(Long.parseLong(ward));
-            } catch (Exception e) {
-                addressToSave.setWard(null);
-            }
-            try {
-                addressToSave.setReceiverPhone(Long.parseLong(phone));
-            } catch (Exception e) {
-                addressToSave.setReceiverPhone(null);
-            }
-            // You might want to set a new address as default
-            // addressToSave.setIsDefault("true");
+            addressToSave.setDistrict(districtStr); // If you have a District class, parse here
+            addressToSave.setWard(wardStr); // If you have a Ward class, parse here
+            addressToSave.setReceiverPhone(Long.parseLong(phone));
 
             AddressConnector addressConnector = new AddressConnector();
             addressConnector.updateAddress(addressToSave, new AddressCallback() {

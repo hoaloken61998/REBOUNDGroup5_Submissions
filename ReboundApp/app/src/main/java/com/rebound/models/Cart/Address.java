@@ -11,8 +11,8 @@ public class Address implements Serializable {
     private String receiverName;
     private Long receiverPhone;
     private String province;
-    private String district;
-    private Long ward;
+    private Object district;
+    private Object ward;
     private String street;
     private String details;
     private String isDefault;
@@ -64,19 +64,19 @@ public class Address implements Serializable {
         this.province = province;
     }
     @PropertyName("District")
-    public String getDistrict() {
+    public Object getDistrict() {
         return district;
     }
     @PropertyName("District")
-    public void setDistrict(String district) {
+    public void setDistrict(Object district) {
         this.district = district;
     }
     @PropertyName("Ward")
-    public Long getWard() {
+    public Object getWard() {
         return ward;
     }
     @PropertyName("Ward")
-    public void setWard(Long ward) {
+    public void setWard(Object ward) {
         this.ward = ward;
     }
     @PropertyName("Street")
