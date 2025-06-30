@@ -54,11 +54,14 @@
                 <td>{{ customer.PhoneNumber }}</td>
                 <td>
                     <div class="table-actions">
-                        <button type="button" [routerLink]="['/customer-detail', customer.id]" routerLinkActive="active-link">
-                          View Details
+                        <!-- Nút View Details với class="btn" -->
+                        <button type="button" class="btn" [routerLink]="['/customer-detail', customer.id]" aria-label="View customer details">
+                          View
                         </button>
-                        <button (click)="editCustomer(customer.id)" aria-label="Edit customer">Edit</button>
-                        <button (click)="deleteCustomer(customer.id)" aria-label="Delete customer">Delete</button>
+                        <!-- Nút Edit với class="btn" -->
+                        <button type="button" class="btn" (click)="editCustomer(customer.id)" aria-label="Edit customer">Edit</button>
+                        <!-- Nút Delete với class="btn" -->
+                        <button type="button" class="btn" (click)="deleteCustomer(customer.id)" aria-label="Delete customer">Delete</button>
                     </div>
                 </td>
             </tr>

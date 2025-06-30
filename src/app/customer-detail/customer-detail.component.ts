@@ -48,6 +48,7 @@ export interface OrderHistoryItem {
 export class CustomerDetailComponent implements OnInit, OnDestroy {
   customer: CustomerInterface = {};
   orders: OrderHistoryItem[] = [];
+  isLoading: boolean = true; // <-- ĐÃ THÊM THUỘC TÍNH isLoading Ở ĐÂY
 
   private customerFirebaseId: string | null = null;
   private ordersListenerCleanup: (() => void) | undefined;
@@ -72,18 +73,23 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
           } else {
             console.warn('Customer data does not contain UserID. Cannot fetch orders.');
             this.orders = [];
+            this.isLoading = false; // <-- Đảm bảo isLoading được đặt false ngay cả khi không có UserID
           }
           console.log('Customer (User) data loaded:', this.customer);
         } else {
           console.warn('Không tìm thấy khách hàng (người dùng) với ID:', this.customerFirebaseId);
           this.customer = {};
           this.orders = [];
+          this.isLoading = false; // <-- Đặt isLoading false khi không tìm thấy khách hàng
         }
       }).catch((error) => {
         console.error('Lỗi khi lấy dữ liệu khách hàng (người dùng) từ Firebase:', error);
         this.customer = {};
         this.orders = [];
+        this.isLoading = false; // <-- Đặt isLoading false khi có lỗi
       });
+    } else {
+      this.isLoading = false; // <-- Đặt isLoading false nếu không có ID trong URL
     }
   }
 
@@ -115,10 +121,12 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
         });
       }
       this.orders = customerOrders;
+      this.isLoading = false; // <-- Đặt isLoading false sau khi tải xong đơn hàng
       console.log(`Orders for UserID ${customerInternalUserId} loaded and filtered:`, this.orders);
     }, (error) => {
       console.error('Lỗi khi tải và lọc đơn hàng cho khách hàng từ Firebase:', error);
       this.orders = [];
+      this.isLoading = false; // <-- Đặt isLoading false khi có lỗi tải đơn hàng
     });
   }
 

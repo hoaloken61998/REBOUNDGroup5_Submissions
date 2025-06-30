@@ -1,78 +1,92 @@
-<div class="form-container">
+<!-- src/app/customer-detail/customer-detail.component.html -->
+<div class="customer-detail-container">
   <h1>Customer Details</h1>
-  <fieldset>
-    <!-- Customer Information -->
-    <div class="customer-info-section">
-      <!-- User ID -->
-      <label><strong>User ID:</strong></label>
-      <p>{{ customer.UserID || 'N/A' }}</p>
 
-      <!-- Full Name -->
-      <label><strong>Full Name:</strong></label>
-      <p>{{ customer.FullName || 'N/A' }}</p>
+  <div *ngIf="isLoading" class="loading-indicator">Loading customer data...</div>
 
-      <!-- Phone Number -->
-      <label><strong>Phone Number:</strong></label>
-      <p>{{ customer.PhoneNumber || 'N/A' }}</p>
+  <div *ngIf="!isLoading && (!customer || !customer.UserID)">
+    <p class="no-data-message">No customer found for this ID.</p>
+  </div>
 
-      <!-- Email -->
-      <label><strong>Email:</strong></label>
-      <p>{{ customer.Email || 'N/A' }}</p>
+  <div *ngIf="!isLoading && customer && customer.UserID" class="detail-content">
+    
+    <!-- Customer Information Section -->
+    <section class="info-section customer-info-card">
+      <h2 class="section-title">Customer Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>User ID:</label>
+          <p>{{ customer.UserID || 'N/A' }}</p>
+        </div>
+        <div class="info-item">
+          <label>Full Name:</label>
+          <p>{{ customer.FullName || 'N/A' }}</p>
+        </div>
+        <div class="info-item">
+          <label>Phone Number:</label>
+          <p>{{ customer.PhoneNumber || 'N/A' }}</p>
+        </div>
+        <div class="info-item">
+          <label>Email:</label>
+          <p>{{ customer.Email || 'N/A' }}</p>
+        </div>
+        <div class="info-item">
+          <label>Date of Birth:</label>
+          <p>{{ customer.DateOfBirth ? (customer.DateOfBirth | date:'mediumDate') : 'N/A' }}</p>
+        </div>
+        <div class="info-item">
+          <label>User Ranking:</label>
+          <p>{{ customer.UserRanking || 'N/A' }}</p>
+        </div>
+        <div class="info-item">
+          <label>Registration Date:</label>
+          <p>{{ customer.RegistrationDate ? (customer.RegistrationDate | date:'medium') : 'N/A' }}</p>
+        </div>
+        <div class="info-item">
+          <label>Sex:</label>
+          <p>{{ customer.Sex || 'N/A' }}</p>
+        </div>
+      </div>
 
-      <!-- Date of Birth -->
-      <label><strong>Date of Birth:</strong></label>
-      <!-- Sửa lỗi "always truthy" -->
-      <p>{{ customer.DateOfBirth ? (customer.DateOfBirth | date:'mediumDate') : 'N/A' }}</p>
+      <div class="info-address">
+        <label>Default Address:</label>
+        <p>
+          {{ customer.Address?.Street || 'N/A' }},
+          {{ customer.Address?.Ward || 'N/A' }},
+          {{ customer.Address?.District || 'N/A' }},
+          {{ customer.Address?.Province || 'N/A' }}
+        </p>
+      </div>
+    </section>
 
-      <!-- User Ranking -->
-      <label><strong>User Ranking:</strong></label>
-      <p>{{ customer.UserRanking || 'N/A' }}</p>
-
-      <!-- Registration Date -->
-      <label><strong>Registration Date:</strong></label>
-      <!-- Sửa lỗi "always truthy" -->
-      <p>{{ customer.RegistrationDate ? (customer.RegistrationDate | date:'medium') : 'N/A' }}</p>
-
-      <!-- Sex -->
-      <label><strong>Sex:</strong></label>
-      <p>{{ customer.Sex || 'N/A' }}</p>
-
-      <!-- Default Address -->
-      <label><strong>Default Address:</strong></label>
-      <p>
-        {{ customer.Address?.Street || 'N/A' }},
-        {{ customer.Address?.Ward || 'N/A' }},
-        {{ customer.Address?.District || 'N/A' }},
-        {{ customer.Address?.Province || 'N/A' }}
-      </p>
-    </div>
-
-    <!-- Order History -->
-    <h2>Order History</h2>
-    <table *ngIf="orders.length > 0">
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Order Date</th>
-          <th>Status</th>
-          <th>Total Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let order of orders">
-          <td>{{ order.OrderID || 'N/A' }}</td>
-          <!-- formatDateTime và formatCurrency giờ đây đã có trong TS -->
-          <td>{{ formatDateTime(order.OrderDate) }}</td>
-          <td>{{ order.Status || 'N/A' }}</td>
-          <td>{{ formatCurrency(order.TotalAmount) }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <p *ngIf="orders.length === 0">No orders found for this customer.</p>
+    <!-- Order History Section -->
+    <section class="info-section order-history-card">
+      <h2 class="section-title">Order History</h2>
+      <table class="order-table" *ngIf="orders.length > 0">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Order Date</th>
+            <th>Status</th>
+            <th>Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders">
+            <td>{{ order.OrderID || 'N/A' }}</td>
+            <td>{{ formatDateTime(order.OrderDate) }}</td>
+            <td>{{ order.Status || 'N/A' }}</td>
+            <td>{{ formatCurrency(order.TotalAmount) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="orders.length === 0" class="no-data-message">No orders found for this customer.</p>
+    </section>
 
     <!-- Action Buttons -->
     <div class="action-buttons">
       <button class="btn back-button" (click)="goBack()">Back</button>
     </div>
-  </fieldset>
+
+  </div>
 </div>

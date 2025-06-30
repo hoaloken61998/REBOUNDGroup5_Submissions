@@ -1,175 +1,401 @@
- /* Import Montserrat font from Google Fonts */
- @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+/* src/app/reservation-management/reservation-management.component.css */
 
-  /* Global styles */
- * {
-     box-sizing: border-box;
-     font-family: 'Montserrat', sans-serif; /* Apply Montserrat globally */
- }
- 
- body {
-     color: #595031;
-     background-color: #F4F2EB;
- }
- 
- .service-table {
-     width: 100%;
-     border-collapse: collapse;
- }
- 
- .service-table-header {
-     background-color: #A89D6E;
-     color: white;
- }
- 
- .service-table th, .service-table td {
-     padding: 12px 15px;
-     text-align: center;
-     border-bottom: 1px solid #e0e0e0;
- }
- 
- .service-table-row {
-     background-color: white;
- }
- 
- .service-table-row:hover {
-     background-color: #f5f5f5;
- }
- 
- .table-actions {
-     display: flex;
-     gap: 10px;
-     justify-content: center;
- }
- 
- button {
-     border: none;
-     background: none;
-     outline: none;
-     cursor: pointer;
- }
- 
- /* Delete button styling */
- .delete-button {
-     background-color: #ddd7c0;
-     color: #4b3d2d;
-     border: none;
-     border-radius: 5px;
-     padding: 12px 30px;
-     font-family: 'Montserrat', sans-serif;
-     font-weight: bold;
-     font-size: 15px;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     cursor: pointer;
-     transition: background-color 0.3s ease, transform 0.3s ease;
-     width: 137px;
-     height: 42px;
-     margin: 20px auto;
-     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
- }
- 
- .delete-button:hover {
-     background-color: #b1a681;
-     transform: translateY(-2px);
- }
- 
- .delete-button:focus {
-     outline: none;
- }
- 
- /* Add button styling */
- .add-button {
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     gap: 8px;
-     width: 103px;
-     height: 40px;
-     background-color: #C4B79D;
-     border-radius: 15px;
-     color: white;
-     cursor: pointer;
-     border: none;
-     position: absolute;
-     right: 5px;
-     top: calc(100% - 80px);
-     margin-top: 10px;
-     font-weight: bold;
-     font-size: 16px;
- }
- 
- .header h1 {
-     font-size: 32px;
-     margin-bottom: 7px;
-     padding: 0;
-     color: #595031;
-     font-weight: bold;
- }
- 
- .header h3 {
-     font-size: 24px;
-     margin-bottom: 82px;
-     padding: 0;
-     color: #595031;
- }
- 
- .header {
-     display: flex;
-     justify-content: space-between;
-     align-items: center;
-     background-color: #F4F2EB;
-     padding: 20px;
-     position: relative;
- }
- 
- .header div {
-     display: flex;
-     flex-direction: column;
- }
- 
- /* Search Box Styling */
- .search-box {
-     display: flex;
-     align-items: center;
-     background: white;
-     border: 1px solid #A89D6E;
-     border-radius: 20px;
-     padding: 8px 15px;
-     width: 100%;
-     margin: 15px auto;
-     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
- }
- 
- .search-box input {
-     flex: 1;
-     border: none;
-     outline: none;
-     font-size: 14px;
-     padding: 5px;
-     color: #595031;
- }
- 
- .search-box button {
-     border: none;
-     background: none;
-     cursor: pointer;
-     font-size: 16px;
-     color: #A89D6E;
- }
- 
- .search-box button:hover {
-     color: #595031;
- }
+/* Import Montserrat font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
- /* Style the checkbox itself */
+/* Global styles */
+* {
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif; /* Apply Montserrat globally */
+}
+ 
+body {
+    color: #595031;
+    background-color: #F4F2EB;
+}
+ 
+/* Main container */
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #F4F2EB;
+    color: #595031;
+}
+
+/* Header Section */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #F4F2EB;
+    padding: 20px 0; /* Adjusted padding to fit container padding */
+    position: relative;
+    margin-bottom: 20px;
+}
+ 
+.header div {
+    display: flex;
+    flex-direction: column;
+}
+ 
+.header h1 {
+    font-size: 32px;
+    margin-bottom: 7px;
+    padding: 0;
+    color: #595031;
+    font-weight: bold;
+}
+ 
+.header h3 {
+    font-size: 24px;
+    margin-bottom: 0; /* Adjusted to remove large whitespace */
+    padding: 0;
+    color: #595031;
+}
+ 
+/* Add button styling */
+.add-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 103px;
+    height: 40px;
+    background-color: #C4B79D;
+    border-radius: 15px;
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    font-size: 16px;
+    /* Adjusted positioning for flexibility in header */
+    margin-left: auto; /* Push to the right */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Added shadow for consistency */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: #A89D6E;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.add-button svg {
+    fill: white;
+}
+ 
+/* Search Box Styling */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #A89D6E;
+    border-radius: 20px;
+    padding: 8px 15px;
+    width: 100%;
+    margin: 15px auto;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+ 
+.search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 5px;
+    color: #595031;
+}
+ 
+.search-box button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #A89D6E;
+}
+ 
+.search-box button:hover {
+    color: #595031;
+}
+
+/* Date Filter Section Styling */
+.filter-date-section {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Space between date inputs */
+    margin-bottom: 20px;
+    background: white;
+    border: 1px solid #A89D6E;
+    border-radius: 20px;
+    padding: 8px 15px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.filter-date-section label {
+    font-size: 14px;
+    color: #595031;
+    font-weight: 600;
+}
+
+.filter-date-section input[type="date"],
+.filter-date-section select { /* Apply styling to select as well */
+    flex: 1;
+    min-width: 150px; /* Minimum width for date input */
+    border: 1px solid #D1CBB8;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 14px;
+    color: #4b3d2d;
+    outline: none;
+    background-color: white; /* Ensure background for select */
+    cursor: pointer;
+}
+
+.filter-date-section input[type="date"]:disabled,
+.filter-date-section select:disabled {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+ 
+/* Table Styling */
+.service-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: white; /* Ensure table background is white */
+    border-radius: 10px; /* Rounded corners for the table */
+    overflow: hidden; /* Ensures rounded corners clip content */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Subtle shadow for the table */
+}
+ 
+.service-table-header {
+    background-color: #A89D6E;
+    color: white;
+}
+ 
+.service-table th, .service-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+ 
+.service-table-row {
+    background-color: white;
+}
+ 
+.service-table-row:hover {
+    background-color: #f5f5f5;
+}
+ 
+/* Table Actions (for Edit/Delete buttons) */
+.table-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center; /* Vertically align items in the middle */
+}
+ 
+/* General button reset (for all <button> elements) */
+button {
+    border: none;
+    background: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* Style for .btn class used on Edit/Delete buttons */
+.table-actions .btn {
+    background-color: #C4B79D; /* Consistent color */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    padding: 10px 20px; /* Adjusted padding for text + icon */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow */
+    text-decoration: none;
+    display: inline-flex; /* Use flex to align icon and text */
+    align-items: center; /* Center content vertically */
+    gap: 5px; /* Space between icon and text */
+}
+
+.table-actions .btn svg {
+    fill: white; /* Ensure SVG icons are white */
+    width: 16px; /* Adjust SVG size */
+    height: 16px;
+}
+ 
+.table-actions .btn:hover {
+    background-color: #A89D6E;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Delete button styling (for the main delete selected button) */
+.delete-button {
+    background-color: #ddd7c0;
+    color: #4b3d2d;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: 137px;
+    height: 42px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+ 
+.delete-button:hover {
+    background-color: #b1a681;
+    transform: translateY(-2px);
+}
+ 
+.delete-button:focus {
+    outline: none;
+}
+ 
+/* Checkbox Styling */
 input[type="checkbox"] {
     width: 15px;
     height: 15px;
     cursor: pointer;
-    border: 2px solid #A89D6E; /* Default border color */
+    border: 2px solid #A89D6E;
     border-radius: 4px;
-    background-color: #fff; /* Unchecked background */
-    transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transitions for background and border */
+    background-color: #fff;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    -webkit-appearance: none; /* Hide default checkbox */
+    -moz-appearance: none;
+    appearance: none;
+    position: relative; /* For custom checkmark */
+}
+
+input[type="checkbox"]:checked {
+    background-color: #A89D6E;
+    border-color: #A89D6E;
+}
+
+input[type="checkbox"]:checked::after {
+    content: '✔'; /* Custom checkmark */
+    font-size: 10px;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Status Button Styling */
+.status-confirmed, .status-pending, .status-cancelled {
+    border-radius: 5px;
+    padding: 6px 12px; /* Slightly more padding */
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for status buttons */
+}
+
+.status-confirmed {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.status-pending {
+    background-color: #FFC107; /* Amber/Yellow */
+    color: #333; /* Darker text for better contrast on light background */
+}
+
+.status-cancelled {
+    background-color: #F44336; /* Red */
+    color: white;
+}
+
+.status-confirmed:hover, .status-pending:hover, .status-cancelled:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .header h1 {
+        font-size: 28px;
+    }
+
+    .header h3 {
+        font-size: 20px;
+    }
+
+    .add-button {
+        position: static; /* Remove absolute positioning on small screens */
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .search-box {
+        margin: 10px auto;
+    }
+
+    .filter-date-section {
+        flex-direction: column; /* Stack date filters vertically */
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .filter-date-section input[type="date"],
+    .filter-date-section select { /* Adjust select for small screens */
+        width: 100%;
+    }
+
+    .service-table th, .service-table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .table-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .table-actions .btn {
+        width: 100%;
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+
+    .delete-button {
+        width: 100%;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .status-confirmed, .status-pending, .status-cancelled {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
 }

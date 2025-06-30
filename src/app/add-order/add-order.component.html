@@ -1,20 +1,71 @@
 <div class="form-container">
     <h1>Add Order</h1>
     <fieldset>
+        <!-- Customer Information -->
         <h2>Customer Information</h2>
-        <div>
-            <label>Customer Name</label>
-            <input type="text" autocomplete="off">
-            <label>Phone Number</label>
-            <input type="text" autocomplete="off">
-            <label>Address</label>
-            <input type="text" autocomplete="off">
-            <label>Special Note/Request</label>
-            <textarea placeholder="Enter special request..."></textarea>
+        <div class="customer-selection-section">
+            <!-- Customer Search Input and Results -->
+            <div *ngIf="!selectedCustomer()">
+                <label for="customer-search">Search Customer (Name/Phone/Email)</label>
+                <input type="text" 
+                       id="customer-search" 
+                       [(ngModel)]="customerSearchTerm" 
+                       (input)="searchCustomers()" 
+                       placeholder="Enter customer name or phone..." 
+                       autocomplete="off">
+                <div class="search-results" *ngIf="customerSearchTerm().length >= 2 && customerSearchResults().length > 0">
+                    <div *ngFor="let user of customerSearchResults()" class="search-result-item">
+                        {{ user.FullName }} ({{ user.PhoneNumber }}) - {{ user.Email }}
+                        <button class="btn-select" (click)="selectCustomer(user)">Select</button>
+                    </div>
+                </div>
+                <p *ngIf="customerSearchTerm().length >= 2 && customerSearchResults().length === 0">No customers found.</p>
+            </div>
+            
+            <!-- Display Selected Customer Info -->
+            <div *ngIf="selectedCustomer()" class="selected-customer-info">
+                <label>Selected Customer:</label>
+                <p><strong>Name:</strong> {{ selectedCustomer()?.FullName || 'N/A' }}</p>
+                <p><strong>Phone:</strong> {{ selectedCustomer()?.PhoneNumber || 'N/A' }}</p>
+                <p><strong>Email:</strong> {{ selectedCustomer()?.Email || 'N/A' }}</p>
+                <button class="btn-remove-customer" (click)="removeSelectedCustomer()">Remove Customer</button>
+            </div>
         </div>
-        <h2>Product Lists</h2>
-        <input type="text" id="product-search" placeholder="Search product...">
-        <table>
+
+        <label for="customer-address">Delivery Address</label>
+        <input type="text" 
+               id="customer-address" 
+               [(ngModel)]="customerAddress" 
+               placeholder="Enter delivery address" 
+               autocomplete="off">
+
+        <label for="special-note">Special Note/Request</label>
+        <textarea id="special-note" 
+                  [(ngModel)]="specialNote" 
+                  placeholder="Enter special request..."></textarea>
+    </fieldset>
+
+    <fieldset>
+        <h2>Product List</h2>
+        <div class="product-search-section">
+            <label for="product-search">Search Product</label>
+            <input type="text" 
+                   id="product-search" 
+                   [(ngModel)]="productSearchTerm" 
+                   (input)="searchProducts()" 
+                   placeholder="Search product by name or description..." 
+                   autocomplete="off">
+            <div class="search-results" *ngIf="productSearchTerm().length >= 2 && productSearchResults().length > 0">
+                <div *ngFor="let product of productSearchResults()" class="search-result-item">
+                    <!-- Đã sửa: Gọi phương thức từ component để xử lý parsing và định dạng -->
+                    {{ product.ProductName || 'N/A' }} ({{ getFormattedProductDisplayPrice(product) }})
+                    <button class="btn-add" (click)="addProductToOrder(product)">Add</button>
+                </div>
+            </div>
+            <p *ngIf="productSearchTerm().length >= 2 && productSearchResults().length === 0">No products found.</p>
+        </div>
+
+        <table class="product-order-table">
             <thead>
                 <tr>
                     <th>Product Name</th>
@@ -24,26 +75,41 @@
                     <th>Remove</th>
                 </tr>
             </thead>
-            <tbody id="product-list"></tbody>
+            <tbody>
+                <tr *ngFor="let item of selectedProducts()">
+                    <td>{{ item.ProductName }}</td>
+                    <td>
+                        <input type="number" 
+                               [ngModel]="item.Quantity" 
+                               (ngModelChange)="updateItemQuantity(item, $event)"
+                               min="1">
+                    </td>
+                    <td>{{ formatCurrencyDisplay(item.UnitPrice) }}</td>
+                    <td>{{ formatCurrencyDisplay(item.ItemSubTotal) }}</td>
+                    <td><button class="btn-remove" (click)="removeItemFromOrder(item)">–</button></td>
+                </tr>
+                <tr *ngIf="selectedProducts().length === 0">
+                    <td colspan="5" style="text-align: center;">No products added to order.</td>
+                </tr>
+            </tbody>
         </table>
-        <p>Total amount: <span id="total">0</span> (VND)</p>
-        <label>Shipping Method</label>
-        <select>
-            <option value="standard">Standard Shipping</option>
-            <option value="express">Express Shipping</option>
-            <option value="pickup">Store Pickup</option>
+
+        <p class="total-amount-display">Total amount: <span id="total">{{ formatCurrencyDisplay(totalAmount()) }}</span></p>
+        
+        <label for="shipping-method">Shipping Method</label>
+        <select id="shipping-method" [(ngModel)]="shippingMethod">
+            <option *ngFor="let method of shippingMethodsOptions" [value]="method.value">{{ method.name }}</option>
         </select>
-        <label>Payment Method</label>
-        <select>
-            <option value="cash">Cash on Delivery</option>
-            <option value="card">Credit Card</option>
-            <option value="momo">Momo</option>
+        
+        <label for="payment-method">Payment Method</label>
+        <select id="payment-method" [(ngModel)]="paymentMethod">
+            <option *ngFor="let method of paymentMethodsOptions" [value]="method.value">{{ method.name }}</option>
         </select>
+
         <div class="action-buttons">
             <button class="btn" (click)="goBack()">Back</button>
             <button class="btn" (click)="clearForm()">Clear</button>
-            <button class="btn" (click)="confirmOrder()">Confirm Order</button>
-            <button class="btn">Save</button>
+            <button class="btn confirm-order-button" (click)="confirmOrder()">Confirm Order</button>
         </div>
     </fieldset>
 </div>

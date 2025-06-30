@@ -1,68 +1,76 @@
 <div class="form-container">
     <h1>Add New Reservation</h1>
+    
     <fieldset>
         <legend class="header-table">Customer Information</legend>
-        <div class="row">
-            <div class="col">
-                <label for="customerName">Customer Name</label>
-                <input type="text" id="customerName" [(ngModel)]="reservation.customerName" placeholder="Customer Name"/>
+        <div class="customer-selection-section">
+            <!-- Customer Search Input and Results -->
+            <div *ngIf="!selectedCustomer()">
+                <label for="customer-search">Search Customer (Name/Phone/Email)</label>
+                <input type="text" 
+                       id="customer-search" 
+                       [(ngModel)]="customerSearchTerm" 
+                       (input)="searchCustomers()" 
+                       placeholder="Enter customer name or phone..." 
+                       autocomplete="off">
+                <div class="search-results" *ngIf="customerSearchTerm().length >= 2 && customerSearchResults().length > 0">
+                    <div *ngFor="let user of customerSearchResults()" class="search-result-item">
+                        {{ user.FullName }} ({{ user.PhoneNumber }}) - {{ user.Email }}
+                        <button class="btn-select" (click)="selectCustomer(user)">Select</button>
+                    </div>
+                </div>
+                <p *ngIf="customerSearchTerm().length >= 2 && customerSearchResults().length === 0">No customers found.</p>
             </div>
-            <div class="col">
-                <label for="phoneNumber">Phone Number</label>
-                <input type="tel" id="phoneNumber" [(ngModel)]="reservation.phoneNumber" placeholder="Phone Number"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" [(ngModel)]="reservation.email" placeholder="Email Address"/>
-            </div>
-            <div class="col">
-                <label for="dob">Date of Birth</label>
-                <input type="date" id="dob" [(ngModel)]="reservation.dob"/>
+            
+            <!-- Display Selected Customer Info -->
+            <div *ngIf="selectedCustomer()" class="selected-customer-info">
+                <label>Selected Customer:</label>
+                <p><strong>Name:</strong> {{ selectedCustomer()?.FullName || 'N/A' }}</p>
+                <p><strong>Phone:</strong> {{ selectedCustomer()?.PhoneNumber || 'N/A' }}</p>
+                <p><strong>Email:</strong> {{ selectedCustomer()?.Email || 'N/A' }}</p>
+                <p><strong>User ID:</strong> {{ selectedCustomer()?.UserID || 'N/A' }}</p>
+                <button class="btn-remove-customer" (click)="removeSelectedCustomer()">Remove Customer</button>
             </div>
         </div>
     </fieldset>
+
     <fieldset>
         <legend class="header-table">Reservation Details</legend>
         <div class="row">
             <div class="col">
                 <label for="appointmentDate">Appointment Date & Time</label>
-                <input type="datetime-local" id="appointmentDate" [(ngModel)]="reservation.appointmentDate"/>
+                <input type="datetime-local" id="appointmentDate" [(ngModel)]="appointmentDateTime"/>
             </div>
             <div class="col">
                 <label for="serviceType">Service Type</label>
-                <select id="serviceType" [(ngModel)]="reservation.serviceType">
-                    <option>Piercing Service</option>
-                    <option>After-care Service</option>
+                <select id="serviceType" [(ngModel)]="selectedServiceId">
+                    <option [ngValue]="undefined" disabled>Select a Service</option>
+                    <option *ngFor="let service of services" [ngValue]="service.ServiceID">{{ service.ServiceType }}</option>
                 </select>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <label for="reservationLocation">Rebound Branch</label>
-                <select id="reservationLocation" [(ngModel)]="reservation.reservationLocation">
-                    <option>Rebound Cao Ba Quat - Ha Noi</option>
-                    <option>Rebound Tam Khuong - Ha Noi</option>
-                    <option>Rebound Ly Tu Trong - Ho Chi Minh</option>
-                    <option>Rebound Dien Bien Phu - Ho Chi Minh</option>
+                <label for="reservationBranch">Rebound Branch</label>
+                <!-- Changed to selectedBranchId and branches -->
+                <select id="reservationBranch" [(ngModel)]="selectedBranchId">
+                    <option [ngValue]="undefined" disabled>Select a Branch</option>
+                    <option *ngFor="let branch of branches" [ngValue]="branch.BranchID">{{ branch.BranchDisplayName }}</option>
                 </select>
             </div>
             <div class="col">
                 <label for="jewelryType">Jewelry Type</label>
-                <select id="jewelryType" [(ngModel)]="reservation.jewelryType">
-                    <option>Ear Piercing Jewelry</option>
-                    <option>Body Piercing Jewelry</option>
-                    <option>Other</option>
+                <select id="jewelryType" [(ngModel)]="jewelryType">
+                    <option *ngFor="let type of jewelryTypesOptions" [ngValue]="type">{{ type }}</option>
                 </select>
             </div>
         </div>
         <label for="specialRequests">Special Requests/Notes</label>
-        <textarea id="specialRequests" rows="4" [(ngModel)]="reservation.specialRequests" placeholder="Enter any special requests or notes here"></textarea>
+        <textarea id="specialRequests" rows="4" [(ngModel)]="specialRequests" placeholder="Enter any special requests or notes here"></textarea>
     </fieldset>
     <div class="action-buttons">
         <button type="button" class="btn" (click)="goBack()">Back</button>
         <button type="button" class="btn" (click)="clear()">Clear</button>
-        <button class="btn" (click)="setReservation()">Set</button>
+        <button type="submit" class="btn" (click)="addReservation()">Add Reservation</button>
     </div>
 </div>

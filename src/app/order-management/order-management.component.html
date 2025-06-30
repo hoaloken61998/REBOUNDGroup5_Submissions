@@ -18,6 +18,17 @@
                 <option value="Cancelled">Cancelled</option>
             </select>
         </div>
+
+        <!-- NEW: Filter by Date -->
+        <div class="filter-box">
+            <label for="dateFilter">Filter by date:</label>
+            <select id="dateFilter" [(ngModel)]="selectedDateFilter">
+                <option value="All">All Dates</option>
+                <option value="Today">Today</option>
+                <option value="Last 7 Days">Last 7 Days</option>
+                <option value="Last 30 Days">Last 30 Days</option>
+            </select>
+        </div>
     </div>
     <div class="header">
         <div>
@@ -61,10 +72,7 @@
                     <button class="btn" [routerLink]="['/order-detail', order.id]" aria-label="View Order Details">
                         View
                     </button>
-                    <!-- Edit Button -->
-                    <button class="btn" [routerLink]="['/order-detail', order.id]" aria-label="Edit Order">
-                        Edit
-                    </button>
+                
                     <!-- Delete Button -->
                     <button class="btn" (click)="deleteOrder(order.id)" aria-label="Delete Order">
                         Delete

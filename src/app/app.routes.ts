@@ -10,8 +10,10 @@ import { CustomerDetailComponent } from './customer-detail/customer-detail.compo
 import { EditCustomerComponent } from './edit-customer/edit-customer.component';
 import { AddProductComponent } from './add-product/add-product.component';
 import { AddReservationComponent } from './add-reservation/add-reservation.component';
-import { ReservationDetailComponent } from './reservation-detail/reservation-detail.component';
 import { EditProductComponent } from './edit-product/edit-product.component';
+import { OrderDetailComponent } from './order-detail/order-detail.component';
+import { AddOrderComponent } from './add-order/add-order.component';
+
 
 // Import LogOutComponent
 import { LogOutComponent } from './log-out/log-out.component';
@@ -49,8 +51,10 @@ export const routes: Routes = [
       { path: 'order-management', component: OrderManagementComponent },
       { path: 'reservation-management', component: ReservationManagementComponent },
       { path: 'add-reservation', component: AddReservationComponent },
-      { path: 'reservation-detail/:id', component: ReservationDetailComponent },
       { path: 'edit-product/:id', component: EditProductComponent },
+      { path: 'order-detail/:id', component: OrderDetailComponent },
+      { path: 'add-order', component: AddOrderComponent },
+    
       // Các route khác của ứng dụng chính sẽ nằm ở đây
       { path: '**', redirectTo: 'dashboard' } // Bất kỳ đường dẫn con không khớp nào sẽ về dashboard
     ]

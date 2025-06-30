@@ -13,7 +13,7 @@
       <div class="image-upload-preview">
         <img [src]="newProduct.ImageLink" alt="Product Image Preview" class="product-image-preview">
         <input type="file" id="productImage" (change)="onFileSelected($event)" accept="image/*" />
-        <p class="image-upload-note">Note: Image upload functionality requires Firebase Storage integration.</p>
+        <!-- <p class="image-upload-note">Note: Image upload functionality requires Firebase Storage integration.</p> -->
       </div>
 
       <div class="row">
@@ -68,7 +68,7 @@
 
     <div class="action-buttons">
       <button type="button" class="btn" (click)="goBack()">Back</button>
-      <button type="button" class="btn" (click)="clearForm()">Clear</button> <!-- Changed type to button and added click handler -->
+      <button type="button" class="btn" (click)="clearForm()">Clear</button>
       <button type="submit" class="btn">Save</button>
     </div>
   </form>

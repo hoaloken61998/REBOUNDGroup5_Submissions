@@ -1,52 +1,95 @@
 <div class="form-container">
     <h1>Edit Product</h1>
 
-    <fieldset>
-        <legend class="info">Product Information</legend>
-        <div class="row">
-            <div class="col">
-                <label for="productName">Product Name</label>
-                <input type="text" id="productName" [(ngModel)]="product.name" />
-            </div>
-            <div class="col">
-                <label for="productCategory">Category</label>
-                <input type="text" id="productCategory" [(ngModel)]="product.category" />
-            </div>
-        </div>
+    <div *ngIf="isLoading" class="loading-indicator">Loading product data...</div>
 
-        <div class="row">
-            <div class="col">
-                <label for="productPrice">Price</label>
-                <input type="number" id="productPrice" [(ngModel)]="product.price" />
-            </div>
-            <div class="col">
-                <label for="productStock">Stock Quantity</label>
-                <input type="number" id="productStock" [(ngModel)]="product.stock" />
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col">
-                <label for="productImage">Product Image</label>
-                <input type="file" id="productImage" (change)="previewImage($event)" />
-                <img [src]="imagePreview" alt="Product Image" id="productImgPreview" width="150" />
-            </div>
-        </div>
-    </fieldset>
-
-    <fieldset>
-        <legend class="info">Product Description</legend>
-        <div class="row">
-            <div class="col">
-                <label for="productDescription">Description</label>
-                <textarea id="productDescription" rows="4" [(ngModel)]="product.description"></textarea>
-            </div>
-        </div>
-    </fieldset>
-
-    <div class="action-buttons">
-        <button class="btn" (click)="goBack()">Back</button>
-        <button type="reset" class="btn">Clear</button>
-        <button class="btn" (click)="saveProduct()">Save</button>
+    <div *ngIf="!isLoading && (!product || !product.id)">
+        <p>No product found for this ID.</p>
     </div>
+
+    <form *ngIf="!isLoading && product && product.id" (ngSubmit)="save()">
+        <fieldset>
+            <legend class="info">Product Information</legend>
+            <div class="row">
+                <div class="col">
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" [(ngModel)]="product.ProductName" name="ProductName" placeholder="Enter product name" required />
+                </div>
+                <div class="col">
+                    <label for="productCategory">Category</label>
+                    <select id="productCategory" [(ngModel)]="product.CategoryID" name="CategoryID" required>
+                        <option [ngValue]="undefined" disabled>Select a category</option>
+                        <option *ngFor="let category of categories" [ngValue]="category.CategoryID">{{ category.CategoryName }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="productPrice">Price</label>
+                    <!-- Type="text" để dùng hàm formatPriceInput -->
+                    <input type="text" id="productPrice" [(ngModel)]="product.ProductPrice" (input)="formatPriceInput($event)" name="ProductPrice" placeholder="Price" required />
+                </div>
+                <div class="col">
+                    <label for="productStock">Stock Quantity</label>
+                    <input type="number" id="productStock" [(ngModel)]="product.ProductStockQuantity" name="ProductStockQuantity" placeholder="Stock" required min="0" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <label for="productImage">Product Image</label>
+                    <input type="file" id="productImage" (change)="onFileSelected($event)" accept="image/*" />
+                    <!-- Sử dụng ImageLink từ product để hiển thị ảnh -->
+                    <img [src]="product.ImageLink || 'https://placehold.co/150x150/eeeeee/black?text=No+Image'" alt="Product Image" class="product-image-preview" />
+                    <!-- <p class="image-upload-note">Note: Image upload functionality requires Firebase Storage integration.</p> -->
+                </div>
+                <div class="col">
+                    <label for="productStatus">Status</label>
+                    <select id="productStatus" [(ngModel)]="product.StatusID" name="StatusID" required>
+                        <option [ngValue]="undefined" disabled>Select a status</option>
+                        <option *ngFor="let status of productStatuses" [ngValue]="status.StatusID">{{ status.StatusName }}</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <label for="productOrigin">Origin</label>
+                    <input type="text" id="productOrigin" [(ngModel)]="product.Origin" name="Origin" placeholder="Origin">
+                </div>
+                <div class="col">
+                    <label for="productCustomize">Customize</label>
+                    <input type="text" id="productCustomize" [(ngModel)]="product.Customize" name="Customize" placeholder="Customize">
+                </div>
+            </div>
+            <div class="row">
+                 <div class="col">
+                    <label for="productRating">Rating</label>
+                    <input type="number" id="productRating" [(ngModel)]="product.Rating" name="Rating" placeholder="Rating (1-5)" min="1" max="5">
+                </div>
+                <div class="col">
+                    <label for="productSoldQuantity">Sold Quantity</label>
+                    <input type="number" id="productSoldQuantity" [(ngModel)]="product.SoldQuantity" name="SoldQuantity" placeholder="Sold Quantity" min="0">
+                </div>
+            </div>
+
+        </fieldset>
+
+        <fieldset>
+            <legend class="info">Product Description</legend>
+            <div class="row">
+                <div class="col">
+                    <label for="productDescription">Description</label>
+                    <textarea id="productDescription" rows="4" [(ngModel)]="product.ProductDescription" name="ProductDescription" placeholder="Write description here..."></textarea>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="action-buttons">
+            <button type="button" class="btn" (click)="goBack()">Back</button>
+            <button type="button" class="btn" (click)="clear()">Clear</button>
+            <button type="submit" class="btn">Save</button>
+        </div>
+    </form>
 </div>

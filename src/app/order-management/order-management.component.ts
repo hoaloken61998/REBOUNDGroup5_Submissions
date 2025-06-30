@@ -34,6 +34,8 @@ export class OrderManagementComponent implements OnInit, OnDestroy {
   orders: OrderInterface[] = [];
   searchTerm: string = '';
   selectedStatusFilter: string = 'All'; // Biến mới để lưu trạng thái lọc, mặc định là 'All'
+  selectedDateFilter: string = 'All'; // NEW: Biến mới để lưu bộ lọc ngày, mặc định là 'All'
+
   private ordersListenerCleanup: (() => void) | undefined;
 
   constructor(private router: Router, private db: Database, @Inject(LOCALE_ID) private locale: string) {}
@@ -52,6 +54,7 @@ export class OrderManagementComponent implements OnInit, OnDestroy {
             selected: false
           });
         });
+        // Sắp xếp đơn hàng theo ngày giảm dần (đơn hàng mới nhất lên đầu)
         loadedOrders.sort((a, b) => {
           const dateA = new Date(a.OrderDate || '').getTime();
           const dateB = new Date(b.OrderDate || '').getTime();
@@ -144,7 +147,28 @@ export class OrderManagementComponent implements OnInit, OnDestroy {
     this.searchTerm = inputElement.value.trim().toLowerCase();
   }
 
-  // Phương thức để lọc orders dựa trên searchTerm VÀ selectedStatusFilter
+  // NEW: Phương thức trợ giúp để lấy ngày bắt đầu của một khoảng thời gian
+  private getStartDate(filter: string): Date | null {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Đặt về đầu ngày
+
+    switch (filter) {
+      case 'Today':
+        return today;
+      case 'Last 7 Days':
+        const last7Days = new Date(today);
+        last7Days.setDate(today.getDate() - 6); // Hôm nay + 6 ngày trước
+        return last7Days;
+      case 'Last 30 Days':
+        const last30Days = new Date(today);
+        last30Days.setDate(today.getDate() - 29); // Hôm nay + 29 ngày trước
+        return last30Days;
+      default:
+        return null; // 'All' hoặc filter không hợp lệ
+    }
+  }
+
+  // Phương thức để lọc orders dựa trên searchTerm, selectedStatusFilter VÀ selectedDateFilter
   get filteredOrders(): OrderInterface[] {
     let filtered = this.orders;
 
@@ -164,6 +188,21 @@ export class OrderManagementComponent implements OnInit, OnDestroy {
       filtered = filtered.filter(order =>
         order.Status?.toLowerCase() === this.selectedStatusFilter.toLowerCase()
       );
+    }
+
+    // NEW: Lọc theo ngày
+    if (this.selectedDateFilter && this.selectedDateFilter !== 'All') {
+      const startDate = this.getStartDate(this.selectedDateFilter);
+      if (startDate) {
+        filtered = filtered.filter(order => {
+          if (order.OrderDate) {
+            const orderDate = new Date(order.OrderDate.replace(' ', 'T').split('.')[0]); // Chuyển đổi sang Date object
+            orderDate.setHours(0, 0, 0, 0); // Đặt về đầu ngày để so sánh chính xác ngày
+            return orderDate.getTime() >= startDate.getTime();
+          }
+          return false;
+        });
+      }
     }
 
     return filtered;

@@ -94,6 +94,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
       }
       this.categories = loadedCategories;
       // Chọn category đầu tiên làm mặc định nếu có và chưa được chọn
+      // Cẩn thận với trường hợp mảng rỗng
       if (this.categories.length > 0 && this.newProduct.CategoryID === undefined) {
         this.newProduct.CategoryID = this.categories[0].CategoryID;
       }
@@ -118,6 +119,7 @@ export class AddProductComponent implements OnInit, OnDestroy {
       }
       this.productStatuses = loadedStatuses;
       // Chọn status đầu tiên làm mặc định nếu có và chưa được chọn
+      // Cẩn thận với trường hợp mảng rỗng
       if (this.productStatuses.length > 0 && this.newProduct.StatusID === undefined) {
         this.newProduct.StatusID = this.productStatuses[0].StatusID;
       }
@@ -141,7 +143,6 @@ export class AddProductComponent implements OnInit, OnDestroy {
       };
       reader.readAsDataURL(file);
       console.log('Selected file:', file.name);
-      alert('Tải ảnh lên Firebase Storage cần tích hợp thêm API.');
     }
   }
 
@@ -217,8 +218,10 @@ export class AddProductComponent implements OnInit, OnDestroy {
     this.newProduct = {
       ProductName: '',
       ImageLink: 'https://placehold.co/150x150/eeeeee/black?text=Product+Image',
-      CategoryID: this.categories.length > 0 ? this.categories[0].CategoryID : undefined, // Đặt lại về mặc định
-      StatusID: this.productStatuses.length > 0 ? this.productStatuses[0].StatusID : undefined, // Đặt lại về mặc định
+      // Đảm bảo rằng CategoryID và StatusID được đặt lại về undefined hoặc category/status đầu tiên
+      // sau khi kiểm tra mảng categories/productStatuses có rỗng không
+      CategoryID: this.categories.length > 0 ? this.categories[0].CategoryID : undefined,
+      StatusID: this.productStatuses.length > 0 ? this.productStatuses[0].StatusID : undefined,
       ProductDescription: '',
       ProductPrice: '',
       ProductStockQuantity: undefined,

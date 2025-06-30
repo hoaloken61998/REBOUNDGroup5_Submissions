@@ -2,33 +2,71 @@
 import { Component, OnInit, OnDestroy, Inject, LOCALE_ID, signal } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { Database, ref, onValue, off, update, remove, DataSnapshot } from '@angular/fire/database';
+import { FormsModule } from '@angular/forms'; // Thêm FormsModule
+import { Database, ref, onValue, off, update, remove, DataSnapshot, get } from '@angular/fire/database';
 
-// Cập nhật giao diện ReservationInterface để khớp chính xác với Firebase BookingSchedule
+// Cập nhật giao diện ReservationInterface để bao gồm thông tin chi tiết từ các node khác
 export interface ReservationInterface {
   id?: string; // Firebase key (chẳng hạn như '0' trong ví dụ của bạn, hoặc ID tự động tạo)
-  BookingID?: number; // Thay vì Reservation_ID
+  BookingID?: number;
   BookingTime?: string; // Chuỗi ngày giờ từ Firebase, thay vì Appoinment_Time
   LocationID?: number;
   ServiceID?: number;
   Status?: 'Confirmed' | 'Cancelled' | 'Pending' | string; // Cho phép các giá trị khác hoặc là string
-  UserID?: number; // Thay vì Customer_Name (bạn sẽ cần tìm tên khách hàng từ UserID nếu muốn hiển thị tên)
+  UserID?: number;
+
+  // Các trường mới để hiển thị thông tin liên quan
+  CustomerFullName?: string;
+  CustomerPhoneNumber?: string;
+  ServiceTypeName?: string; // Tên dịch vụ, sẽ lấy từ ServiceType
+  BranchDisplayName?: string; // Tên chi nhánh đầy đủ (kết hợp từ Details, Street, District hoặc BranchName)
+
   selected?: boolean; // Để phục vụ chức năng chọn/bỏ chọn
-  // Nếu bạn muốn hiển thị Customer_Name hoặc Service_Type, bạn sẽ cần lấy dữ liệu từ các node khác (User, Service)
-  // hoặc đảm bảo dữ liệu này được nhúng vào BookingSchedule trên Firebase.
-  // Nếu không, bạn chỉ có thể hiển thị UserID và ServiceID.
+}
+
+// Giao diện cho dữ liệu người dùng từ node "User"
+export interface UserData {
+  id?: string; // Firebase key (UID)
+  UserID?: number; // Internal ID
+  FullName?: string;
+  PhoneNumber?: string;
+  Email?: string;
+  // ... các trường khác
+}
+
+// Giao diện cho dữ liệu dịch vụ từ node "Service"
+export interface ServiceData {
+  id?: string; // Firebase key
+  ServiceID?: number;
+  ServiceType?: string; // ĐÃ THAY ĐỔI TỪ Service_Name THÀNH ServiceType để khớp Firebase
+}
+
+// Giao diện cho dữ liệu địa điểm từ node "Branch"
+export interface BranchData {
+  id?: string; // Firebase key
+  BranchID?: number;
+  BranchName?: string;
+  Details?: string; // Thêm trường Details
+  District?: string;
+  Street?: string;
+  // ... các trường khác
 }
 
 @Component({
-  selector: 'app-reservation-management', // Selector đúng
+  selector: 'app-reservation-management',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule], // Thêm FormsModule
   templateUrl: './reservation-management.component.html',
   styleUrls: ['./reservation-management.component.css']
 })
-export class ReservationManagementComponent implements OnInit, OnDestroy { // Đảm bảo tên class là ReservationManagementComponent
+export class ReservationManagementComponent implements OnInit, OnDestroy {
   reservations = signal<ReservationInterface[]>([]);
   searchQuery = signal('');
+  selectedStatusFilter: string = 'All'; // Thêm thuộc tính mới cho bộ lọc trạng thái, mặc định là 'All'
+  private allUsers: UserData[] = [];
+  private allServices: ServiceData[] = [];
+  private allBranches: BranchData[] = [];
+  private reservationsListenerCleanup: (() => void) | undefined;
 
   constructor(
     @Inject(LOCALE_ID) private locale: string,
@@ -37,50 +75,122 @@ export class ReservationManagementComponent implements OnInit, OnDestroy { // Đ
   ) { }
 
   ngOnInit(): void {
-    const reservationsRef = ref(this.db, 'BookingSchedule');
-
-    onValue(reservationsRef, (snapshot: DataSnapshot) => {
-      const data = snapshot.val();
-      const loadedReservations: ReservationInterface[] = [];
-      if (data) {
-        // Firebase Realtime Database có thể trả về mảng nếu các key là số liên tiếp
-        // hoặc object nếu các key là string (ID ngẫu nhiên)
-        // Chúng ta xử lý cả hai trường hợp bằng cách lặp qua các keys
-        Object.keys(data).forEach(key => {
-          loadedReservations.push({
-            id: key, // Lưu key từ Firebase làm ID
-            ...data[key],
-            selected: false
+    // Tải tất cả dữ liệu tham chiếu trước
+    this.loadAllReferenceData().then(() => {
+      // Sau khi dữ liệu tham chiếu có sẵn, lắng nghe sự thay đổi của BookingSchedule
+      const reservationsRef = ref(this.db, 'BookingSchedule');
+      this.reservationsListenerCleanup = onValue(reservationsRef, (snapshot: DataSnapshot) => {
+        const data = snapshot.val();
+        const loadedReservations: ReservationInterface[] = [];
+        if (data) {
+          Object.keys(data).forEach(key => {
+            const reservation = { id: key, ...data[key] } as ReservationInterface;
+            // Gắn thông tin User, Service, Branch vào reservation
+            this.mapReferenceDataToReservation(reservation);
+            loadedReservations.push(reservation);
           });
-        });
-      }
-      this.reservations.set(loadedReservations);
-      console.log('Reservations loaded from Firebase:', this.reservations());
-    }, (error) => {
-      console.error('Lỗi khi tải đặt chỗ từ Firebase:', error);
+        }
+        this.reservations.set(loadedReservations);
+        console.log('Đặt chỗ đã tải từ Firebase:', this.reservations());
+      }, (error) => {
+        console.error('Lỗi khi tải đặt chỗ từ Firebase:', error);
+      });
+    }).catch(error => {
+      console.error('Lỗi khi tải dữ liệu tham chiếu:', error);
     });
   }
 
   ngOnDestroy(): void {
-    // off(ref(this.db, 'BookingSchedule')); // Hủy lắng nghe khi component bị hủy
-  }
-
-  formatDate(dateString: string | undefined): string { // Chuyển từ Date sang string | undefined
-    if (!dateString) return 'N/A';
-    try {
-      // Firebase lưu BookingTime là "YYYY-MM-DD HH:mm:ss"
-      // Cần tạo đối tượng Date từ chuỗi này
-      const date = new Date(dateString.replace(' ', 'T')); // Thay ' ' bằng 'T' để Date parser hiểu đúng định dạng ISO
-      if (isNaN(date.getTime())) { // Kiểm tra ngày hợp lệ
-          return 'Invalid Date';
-      }
-      return formatDate(date, 'medium', this.locale); // 'medium' sẽ hiển thị cả ngày và giờ
-    } catch (e) {
-      console.error('Lỗi định dạng ngày:', dateString, e);
-      return 'Invalid Date';
+    if (this.reservationsListenerCleanup) {
+      this.reservationsListenerCleanup();
     }
   }
 
+  // Tải tất cả dữ liệu tham chiếu (User, Service, Branch) một lần
+  private async loadAllReferenceData(): Promise<void> {
+    try {
+      const userSnapshot = await get(ref(this.db, 'User'));
+      if (userSnapshot.exists()) {
+        this.allUsers = Object.values(userSnapshot.val());
+      } else {
+        console.warn('Node "User" không tồn tại hoặc rỗng.');
+      }
+
+      const serviceSnapshot = await get(ref(this.db, 'Service'));
+      if (serviceSnapshot.exists()) {
+        // Đảm bảo dữ liệu từ snapshot được gán đúng cách
+        this.allServices = Object.values(serviceSnapshot.val());
+      } else {
+        console.warn('Node "Service" không tồn tại hoặc rỗng.');
+      }
+
+      const branchSnapshot = await get(ref(this.db, 'Branch'));
+      if (branchSnapshot.exists()) {
+        this.allBranches = Object.values(branchSnapshot.val());
+      } else {
+        console.warn('Node "Branch" không tồn tại hoặc rỗng.');
+      }
+      console.log('Dữ liệu tham chiếu đã tải:', { users: this.allUsers, services: this.allServices, branches: this.allBranches });
+    } catch (error) {
+      console.error('Không thể tải dữ liệu tham chiếu:', error);
+      throw error;
+    }
+  }
+
+  // Phương thức để gắn thông tin tham chiếu vào một đặt chỗ
+  private mapReferenceDataToReservation(reservation: ReservationInterface): void {
+    // Gắn thông tin khách hàng
+    if (reservation.UserID !== undefined) {
+      const customer = this.allUsers.find(u => u.UserID === reservation.UserID);
+      reservation.CustomerFullName = customer?.FullName || 'N/A';
+      reservation.CustomerPhoneNumber = customer?.PhoneNumber || 'N/A';
+    } else {
+      reservation.CustomerFullName = 'N/A';
+      reservation.CustomerPhoneNumber = 'N/A';
+    }
+
+    // Gắn thông tin dịch vụ
+    if (reservation.ServiceID !== undefined) {
+      const service = this.allServices.find(s => s.ServiceID === reservation.ServiceID);
+      // ĐÃ CẬP NHẬT: Lấy từ service?.ServiceType
+      reservation.ServiceTypeName = service?.ServiceType || 'N/A';
+    } else {
+      reservation.ServiceTypeName = 'N/A';
+    }
+
+    // Gắn thông tin chi nhánh
+    if (reservation.LocationID !== undefined) {
+      const branch = this.allBranches.find(b => b.BranchID === reservation.LocationID);
+      if (branch) {
+        // Ưu tiên BranchName nếu có, nếu không thì kết hợp Details, Street và District
+        reservation.BranchDisplayName = branch.BranchName || 
+                                        `${branch.Details ? branch.Details + ', ' : ''}${branch.Street || ''}, ${branch.District || ''}`;
+        
+        // Xử lý trường hợp chuỗi chỉ chứa dấu phẩy sau khi kết hợp
+        if (reservation.BranchDisplayName.trim() === ',' || reservation.BranchDisplayName.trim() === ',,') {
+          reservation.BranchDisplayName = 'N/A'; 
+        }
+      } else {
+        reservation.BranchDisplayName = 'N/A';
+      }
+    } else {
+      reservation.BranchDisplayName = 'N/A';
+    }
+  }
+
+  formatDate(dateString: string | undefined): string {
+    if (!dateString) return 'N/A';
+    try {
+      const date = new Date(dateString.replace(' ', 'T'));
+      if (isNaN(date.getTime())) {
+          return 'Ngày không hợp lệ';
+      }
+      return formatDate(date, 'medium', this.locale);
+    } catch (e) {
+      console.error('Lỗi định dạng ngày:', dateString, e);
+      return 'Ngày không hợp lệ';
+    }
+  }
 
   updateSearchQuery(event: Event) {
     const inputElement = event.target as HTMLInputElement;
@@ -88,42 +198,49 @@ export class ReservationManagementComponent implements OnInit, OnDestroy { // Đ
   }
 
   get filteredReservations(): ReservationInterface[] {
+    let filtered = this.reservations(); // Bắt đầu với tất cả các đặt chỗ
+
+    // Lọc theo tìm kiếm (searchQuery)
     const query = this.searchQuery();
-    if (!query) {
-      return this.reservations();
+    if (query) {
+      filtered = filtered.filter(reservation =>
+        reservation.id?.toLowerCase().includes(query) ||
+        reservation.BookingID?.toString().includes(query) ||
+        reservation.Status?.toLowerCase().includes(query) ||
+        reservation.BookingTime?.toLowerCase().includes(query) ||
+        reservation.UserID?.toString().includes(query) ||
+        reservation.CustomerFullName?.toLowerCase().includes(query) ||
+        reservation.CustomerPhoneNumber?.toLowerCase().includes(query) ||
+        reservation.ServiceTypeName?.toLowerCase().includes(query) ||
+        reservation.BranchDisplayName?.toLowerCase().includes(query)
+      );
     }
-    return this.reservations().filter(reservation =>
-      reservation.id?.toLowerCase().includes(query) ||
-      reservation.BookingID?.toString().includes(query) || // Tìm kiếm theo BookingID
-      reservation.Status?.toLowerCase().includes(query) ||
-      reservation.BookingTime?.toLowerCase().includes(query) || // Tìm kiếm theo BookingTime
-      reservation.UserID?.toString().includes(query) // Tìm kiếm theo UserID
-      // Thêm các trường khác nếu bạn muốn
-    );
+
+    // Lọc theo trạng thái (selectedStatusFilter)
+    if (this.selectedStatusFilter && this.selectedStatusFilter !== 'All') {
+      filtered = filtered.filter(reservation =>
+        reservation.Status?.toLowerCase() === this.selectedStatusFilter.toLowerCase()
+      );
+    }
+
+    return filtered;
   }
 
-  async toggleStatus(reservation: ReservationInterface): Promise<void> {
-    if (!reservation.id) {
-      console.error('Reservation ID is undefined, cannot update status.');
-      return;
-    }
+  // ĐÃ CẬP NHẬT: Phương thức updateStatus nhận Event và xử lý giá trị bên trong
+  async updateStatus(reservation: ReservationInterface, event: Event): Promise<void> {
+    const selectElement = event.target as HTMLSelectElement;
+    const newStatus = selectElement.value; // Lấy giá trị từ dropdown
 
-    // Đảo ngược trạng thái
-    let newStatus: string;
-    if (reservation.Status === 'Confirmed') {
-        newStatus = 'Cancelled';
-    } else if (reservation.Status === 'Cancelled') {
-        newStatus = 'Confirmed';
-    } else {
-        newStatus = 'Confirmed'; // Mặc định chuyển sang Confirmed nếu trạng thái khác
+    if (!reservation.id) {
+      console.error('ID đặt chỗ không xác định, không thể cập nhật trạng thái.');
+      return;
     }
 
     const reservationRef = ref(this.db, `BookingSchedule/${reservation.id}`);
 
     try {
       await update(reservationRef, { Status: newStatus });
-      console.log(`Reservation ${reservation.id} status updated to ${newStatus} in Firebase.`);
-      // Signal sẽ được cập nhật tự động bởi onValue listener
+      console.log(`Trạng thái đặt chỗ ${reservation.id} đã được cập nhật thành ${newStatus} trong Firebase.`);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái đặt chỗ trong Firebase:', error);
       alert('Đã xảy ra lỗi khi cập nhật trạng thái đặt chỗ.');
@@ -132,9 +249,9 @@ export class ReservationManagementComponent implements OnInit, OnDestroy { // Đ
 
   editReservation(reservation: ReservationInterface): void {
     if (reservation.id) {
-      this.router.navigate(['/reservation-detail', reservation.id]);
+      console.log('Chức năng chỉnh sửa đang được phát triển. Reservation ID:', reservation.id);
     } else {
-      console.warn('Reservation ID is undefined, cannot edit.');
+      console.warn('ID đặt chỗ không xác định, không thể chỉnh sửa.');
     }
   }
 
@@ -153,7 +270,7 @@ export class ReservationManagementComponent implements OnInit, OnDestroy { // Đ
 
   deleteReservation(reservationId: string | undefined): void {
     if (!reservationId) {
-      console.error('Reservation ID is undefined, cannot delete.');
+      console.error('ID đặt chỗ không xác định, không thể xóa.');
       return;
     }
     if (confirm('Bạn có chắc muốn xóa đặt chỗ này không?')) {

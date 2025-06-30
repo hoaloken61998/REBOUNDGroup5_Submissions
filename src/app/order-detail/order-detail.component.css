@@ -90,3 +90,21 @@ fieldset h2 {
     font-size: 20px;
     margin-top: 20px;
 }
+
+/* CSS cho trạng thái */
+.status-confirmed {
+  color: green;
+}
+
+.status-cancelled {
+  color: red;
+}
+
+.status-pending {
+  color: orange;
+}
+
+.cancel-button {
+    background-color: #FF6347; /* Tomato */
+    color: white;
+}
