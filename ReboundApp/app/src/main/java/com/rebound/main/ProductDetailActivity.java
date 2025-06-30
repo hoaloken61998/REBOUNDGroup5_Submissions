@@ -165,7 +165,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please log in to add items to your cart", Toast.LENGTH_SHORT).show();
                 return;
             }
-            CartManager.getInstance().setUserEmail(currentCustomer.getEmail());
+            CartManager.getInstance().setUserEmail(currentCustomer.getUsername());
             if (currentItem != null) {
                 ProductItem itemCopy = new ProductItem();
                 itemCopy.setProductName(currentItem.getProductName());
