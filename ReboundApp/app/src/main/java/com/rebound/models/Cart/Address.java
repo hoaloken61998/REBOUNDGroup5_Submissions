@@ -1,17 +1,28 @@
 package com.rebound.models.Cart;
 
 import java.io.Serializable;
+import com.google.gson.annotations.SerializedName;
 
 public class Address implements Serializable {
+    @SerializedName("AddressID")
     private Long AddressID;
+    @SerializedName("UserID")
     private Long UserID;
+    @SerializedName("ReceiverName")
     private String ReceiverName;
+    @SerializedName("ReceiverPhone")
     private Long ReceiverPhone;
+    @SerializedName("Province")
     private String Province;
+    @SerializedName("District")
     private Object District;
+    @SerializedName("Ward")
     private Object Ward;
+    @SerializedName("Street")
     private String Street;
+    @SerializedName("Details")
     private String Details;
+    @SerializedName("IsDefault")
     private String IsDefault;
 
     public Address() {}

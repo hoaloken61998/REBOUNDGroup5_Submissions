@@ -49,7 +49,7 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
     private var modelDisplayFragment: ModelDisplayFragment? = null
     private lateinit var fragmentContainer: FrameLayout
     private var currentLensFacing = CameraSelector.LENS_FACING_FRONT
-    private var currentModelName = "21.glb" // Default model
+    private var currentModelName: String? = null
     private var isCameraProviderInitialized = false
 
     // --- UI and Business Logic Variables ---
@@ -62,8 +62,8 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
     // Scaling and positioning constants
     companion object {
         private const val TAG = "ArCameraActivity"
-        private const val UNIFIED_SCALE_FACTOR_FRONT = 25.0f
-        private const val UNIFIED_SCALE_FACTOR_BACK = 40.0f
+        private const val UNIFIED_SCALE_FACTOR_FRONT = 20.0f
+        private const val UNIFIED_SCALE_FACTOR_BACK = 32.0f
         private const val RING_FINGER_DIAMETER_RATIO = 0.22f
         private const val Z_MODULATION_SENSITIVITY = -0.1f
         private const val POSITION_SCALE_FACTOR_FRONT = 0.4f
@@ -86,7 +86,7 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_ar_camera) // This layout MUST have a PreviewView and FrameLayout
+        setContentView(R.layout.activity_ar_camera)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -104,11 +104,11 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
         btnSwitchCamera = findViewById(R.id.btnSwitchCamera)
         categoryIconsLayout = findViewById(R.id.categoryIconsLayout)
         recyclerProductAR = findViewById(R.id.recyclerProductAR)
-        fragmentContainer = findViewById(R.id.fragment_container) // From modified layout
+        fragmentContainer = findViewById(R.id.fragment_container)
+        fragmentContainer.visibility = View.GONE
     }
 
     private fun initializeArComponents() {
-        // Setup the fragment that will display the 3D model
         if (supportFragmentManager.findFragmentById(R.id.fragment_container) == null) {
             modelDisplayFragment = ModelDisplayFragment.newInstance()
             supportFragmentManager.beginTransaction()
@@ -118,7 +118,6 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
             modelDisplayFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as? ModelDisplayFragment
         }
 
-        // Setup the hand landmarker
         cameraExecutor = Executors.newSingleThreadExecutor()
         handLandmarkerHelper = HandLandmarkerHelper(
             context = this,
@@ -147,16 +146,12 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
             categoryIconsLayout.visibility = View.VISIBLE
         }
 
-        // --- Category Selection Logic as per your request ---
-        // Find category icons
         val imgARNecklaces: ImageView = findViewById(R.id.imgARNecklaces)
         val imgAREarrings: ImageView = findViewById(R.id.imgAREarrings)
         val imgARRings: ImageView = findViewById(R.id.imgARRings)
         val imgARBodyPiercing: ImageView = findViewById(R.id.imgARBodyPiercing)
 
-        // Only allow Rings, others show Toast
         imgARRings.setOnClickListener {
-            // Fetch products from Firebase and filter for ProductID 21, 23, 27
             FirebaseProductConnector.getAllProducts(
                 "Product",
                 ProductItem::class.java,
@@ -164,21 +159,21 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
                     override fun onSuccess(productList: ArrayList<ProductItem>) {
                         val filteredProducts = productList.filter {
                             it.getProductID() == 21L || it.getProductID() == 23L || it.getProductID() == 27L
-                        } //
-                        showProducts(filteredProducts) //
+                        }
+                        showProducts(filteredProducts)
                     }
                     override fun onFailure(errorMessage: String?) {
-                        Toast.makeText(this@ArCameraActivity, "Failed to load products", Toast.LENGTH_SHORT).show() //
+                        Toast.makeText(this@ArCameraActivity, "Failed to load products", Toast.LENGTH_SHORT).show()
                     }
                 }
             )
         }
         val unsupportedCategoryListener = View.OnClickListener {
-            Toast.makeText(this, "This Category is not supported", Toast.LENGTH_SHORT).show() //
+            Toast.makeText(this, "This Category is not supported", Toast.LENGTH_SHORT).show()
         }
-        imgARNecklaces.setOnClickListener(unsupportedCategoryListener) //
-        imgAREarrings.setOnClickListener(unsupportedCategoryListener) //
-        imgARBodyPiercing.setOnClickListener(unsupportedCategoryListener) //
+        imgARNecklaces.setOnClickListener(unsupportedCategoryListener)
+        imgAREarrings.setOnClickListener(unsupportedCategoryListener)
+        imgARBodyPiercing.setOnClickListener(unsupportedCategoryListener)
     }
 
     private fun setupProductRecyclerView() {
@@ -211,20 +206,26 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
     private fun loadModel(modelName: String) {
         currentModelName = modelName
         fragmentContainer.visibility = View.GONE
-        modelDisplayFragment?.reinitializeFilamentBridgeAndLoadModel(currentModelName) {
+        modelDisplayFragment?.reinitializeFilamentBridgeAndLoadModel(currentModelName!!) {
             Log.d(TAG, "Filament reinitialization complete for model $currentModelName.")
             bindCameraUseCases()
         }
     }
 
     private fun switchCamera() {
-        fragmentContainer.visibility = View.GONE
-        modelDisplayFragment?.reinitializeFilamentBridgeAndLoadModel(currentModelName) {
-            currentLensFacing = if (currentLensFacing == CameraSelector.LENS_FACING_BACK) {
-                CameraSelector.LENS_FACING_FRONT
-            } else {
-                CameraSelector.LENS_FACING_BACK
+        currentLensFacing = if (currentLensFacing == CameraSelector.LENS_FACING_BACK) {
+            CameraSelector.LENS_FACING_FRONT
+        } else {
+            CameraSelector.LENS_FACING_BACK
+        }
+
+        currentModelName?.let { model ->
+            fragmentContainer.visibility = View.GONE
+            modelDisplayFragment?.reinitializeFilamentBridgeAndLoadModel(model) {
+                Log.d(TAG, "Re-initialized model for camera switch.")
+                bindCameraUseCases()
             }
+        } ?: run {
             bindCameraUseCases()
         }
     }
@@ -252,7 +253,6 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
             }
         }
     }
-
 
     private fun ensureCameraIsSetupAndRunning() {
         if (handLandmarkerHelper.isClose()) {
@@ -317,17 +317,86 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
         )
     }
 
+    // --- NEW: Full implementation for model transformation ---
     override fun onResults(resultBundle: HandLandmarkerHelper.ResultBundle) {
         runOnUiThread {
-            if (resultBundle.results.isNotEmpty() && resultBundle.results.first().landmarks().isNotEmpty()) {
-                fragmentContainer.visibility = View.VISIBLE
-                // --- Transformation logic remains the same as MainActivity ---
-                // (Omitted for brevity, but it is the same as the previous response)
+            // Only process if a model is selected and hand landmarks are available
+            if (currentModelName != null && resultBundle.results.isNotEmpty() && resultBundle.results.first().landmarks().isNotEmpty()) {
+                val handLandmarkerResult = resultBundle.results.first()
+
+                // Check for sufficient landmarks for the ring finger, including world landmarks
+                // NOTE: This assumes HandLandmarkerHelper has been modified to include MIN_WORLD_LANDMARKS_FOR_DIAMETER
+                if (handLandmarkerResult.landmarks().first().size > 15 &&
+                    handLandmarkerResult.worldLandmarks().isNotEmpty() &&
+                    handLandmarkerResult.worldLandmarks().first().size >= 21) { // 21 is the number of landmarks
+
+                    fragmentContainer.visibility = View.VISIBLE
+
+                    val landmarks = handLandmarkerResult.landmarks().first()
+                    val worldLandmarks = handLandmarkerResult.worldLandmarks().first()
+
+                    val pip_screen = landmarks[14] // RING_FINGER_PIP
+                    val dip_screen = landmarks[15] // RING_FINGER_DIP
+                    val anchorXNorm = (pip_screen.x() + dip_screen.x()) / 2f
+                    val anchorYNorm = (pip_screen.y() + dip_screen.y()) / 2f
+                    val anchorZNorm = (pip_screen.z() + dip_screen.z()) / 2f
+
+                    val positionScaleFactor: Float
+                    val yOffset: Float
+                    val baseModelSpecificScaleFactor: Float
+
+                    if (currentLensFacing == CameraSelector.LENS_FACING_FRONT) {
+                        positionScaleFactor = POSITION_SCALE_FACTOR_FRONT
+                        yOffset = Y_OFFSET_FRONT
+                        baseModelSpecificScaleFactor = UNIFIED_SCALE_FACTOR_FRONT
+                    } else {
+                        positionScaleFactor = POSITION_SCALE_FACTOR_BACK
+                        yOffset = Y_OFFSET_BACK
+                        baseModelSpecificScaleFactor = UNIFIED_SCALE_FACTOR_BACK
+                    }
+
+                    val imageAspectRatio = resultBundle.inputImageWidth.toFloat() / resultBundle.inputImageHeight.toFloat()
+                    val landmarkZ = anchorZNorm
+                    val zModulation = 1.0f + (landmarkZ - 0.5f) * Z_MODULATION_SENSITIVITY
+                    val dynamicModelSpecificScaleFactor = baseModelSpecificScaleFactor * zModulation.coerceIn(0.8f, 1.2f)
+
+                    val x = (anchorXNorm - 0.5f) * positionScaleFactor * imageAspectRatio
+                    val y = ((0.5f - anchorYNorm) * positionScaleFactor) + yOffset
+                    val z = landmarkZ * DEPTH_SCALE_FACTOR
+
+                    val pip_world = worldLandmarks[14]
+                    val dip_world = worldLandmarks[15]
+                    var fingerDirX = dip_world.x() - pip_world.x()
+                    var fingerDirY = dip_world.y() - pip_world.y()
+                    var fingerDirZ = dip_world.z() - pip_world.z()
+
+                    val len = sqrt(fingerDirX * fingerDirX + fingerDirY * fingerDirY + fingerDirZ * fingerDirZ)
+                    if (len > 0.0001f) {
+                        fingerDirX /= len
+                        fingerDirY /= len
+                        fingerDirZ /= len
+                    } else {
+                        fingerDirX = 0f; fingerDirY = 1f; fingerDirZ = 0f
+                    }
+
+                    // NOTE: This assumes HandLandmarkerHelper has a static method 'estimateFingerDiameter'
+                    val estimatedFingerDiameter = HandLandmarkerHelper.estimateFingerDiameter(worldLandmarks, RING_FINGER_DIAMETER_RATIO)
+                    val dynamicScale = estimatedFingerDiameter * dynamicModelSpecificScaleFactor
+
+                    val transformMatrix = calculateTransformMatrix(x, y, z, dynamicScale, fingerDirX, fingerDirY, fingerDirZ, currentModelName!!)
+                    Log.d(TAG, "Ring Finger. Est. Diameter: ${"%.4f".format(estimatedFingerDiameter)}m, Final DynScale: ${"%.4f".format(dynamicScale)}")
+                    modelDisplayFragment?.updateModelTransform(transformMatrix)
+
+                } else {
+                    Log.d(TAG, "Not enough landmarks detected for ring finger, hiding model.")
+                    fragmentContainer.visibility = View.GONE
+                }
             } else {
                 fragmentContainer.visibility = View.GONE
             }
         }
     }
+
 
     override fun onError(error: String, errorCode: Int) {
         runOnUiThread {
@@ -336,9 +405,6 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
             fragmentContainer.visibility = View.GONE
         }
     }
-
-    // --- Lifecycle, Matrix Calculation, and Helper methods ---
-    // (Omitted for brevity, but they are the same as the previous response)
 
     override fun onResume() {
         super.onResume()
@@ -354,7 +420,127 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
         cameraProvider?.unbindAll()
     }
 
-    // NOTE: All matrix calculation methods (`calculateTransformMatrix`, `calculateTransformMatrixFor21`, etc.)
-    // and the vector math helpers (`dot`, `normalize`, `cross`) must be included here for the code to work.
-    // They are identical to the versions in previous responses.
+    // --- NEW: Helper methods for matrix calculation and vector math ---
+    private fun calculateTransformMatrix(x: Float, y: Float, z: Float, dynamicScale: Float, fingerDirX: Float, fingerDirY: Float, fingerDirZ: Float, modelName: String): FloatArray {
+        val modelY_aligned = normalize(floatArrayOf(fingerDirX, fingerDirY, fingerDirZ))
+        val upVector = floatArrayOf(0f, 1f, 0f)
+
+        val dotProd = dot(upVector, modelY_aligned)
+        val projectedZ = floatArrayOf(
+            upVector[0] - dotProd * modelY_aligned[0],
+            upVector[1] - dotProd * modelY_aligned[1],
+            upVector[2] - dotProd * modelY_aligned[2]
+        )
+
+        var modelZ_aligned: FloatArray
+        val lenSq = projectedZ[0] * projectedZ[0] + projectedZ[1] * projectedZ[1] + projectedZ[2] * projectedZ[2]
+        if (lenSq < 0.00001f) {
+            val alternativeUp = floatArrayOf(1f, 0f, 0f)
+            val dotProd2 = dot(alternativeUp, modelY_aligned)
+            val projectedZ2 = floatArrayOf(
+                alternativeUp[0] - dotProd2 * modelY_aligned[0],
+                alternativeUp[1] - dotProd2 * modelY_aligned[1],
+                alternativeUp[2] - dotProd2 * modelY_aligned[2]
+            )
+            modelZ_aligned = normalize(projectedZ2)
+        } else {
+            modelZ_aligned = normalize(projectedZ)
+        }
+
+        val modelX_aligned = normalize(cross(modelY_aligned, modelZ_aligned))
+        val baseX = modelY_aligned
+        val baseY = modelX_aligned
+        val baseZ = modelZ_aligned
+
+        return when (modelName) {
+            "21.glb" -> calculateTransformMatrixFor21(x, y, z, dynamicScale, baseX, baseY, baseZ)
+            "23.glb" -> calculateTransformMatrixFor23(x, y, z, dynamicScale, baseX, baseY, baseZ)
+            "27.glb" -> calculateTransformMatrixFor27(x, y, z, dynamicScale, baseX, baseY, baseZ)
+            else -> FloatArray(16) { if (it % 5 == 0) 1f else 0f }
+        }
+    }
+
+    private fun calculateTransformMatrixFor21(x: Float, y: Float, z: Float, dynamicScale: Float, baseX: FloatArray, baseY: FloatArray, baseZ: FloatArray): FloatArray {
+        fun scale(v: FloatArray, s: Float): FloatArray = floatArrayOf(v[0] * s, v[1] * s, v[2] * s)
+        fun add(v1: FloatArray, v2: FloatArray): FloatArray = floatArrayOf(v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2])
+        val pitchRadians = -10f * (Math.PI.toFloat() / 180f)
+        val cosP = kotlin.math.cos(pitchRadians); val sinP = kotlin.math.sin(pitchRadians)
+        val y1 = add(scale(baseY, cosP), scale(baseZ, -sinP)); val z1 = add(scale(baseY, sinP), scale(baseZ, cosP)); val x1 = baseX
+        val x2 = scale(x1, -1f); val y2 = y1; val z2 = z1
+        val yawRadians = 5f * (Math.PI.toFloat() / 180f)
+        val cosY = kotlin.math.cos(yawRadians); val sinY = kotlin.math.sin(yawRadians)
+        val x3 = add(scale(x2, cosY), scale(z2, sinY)); val z3 = add(scale(x2, -sinY), scale(z2, cosY)); val y3 = y2
+        val rollRadians = 20f * (Math.PI.toFloat() / 180f)
+        val cosR = kotlin.math.cos(rollRadians); val sinR = kotlin.math.sin(rollRadians)
+        val x4 = add(scale(x3, cosR), scale(y3, -sinR)); val y4 = add(scale(x3, sinR), scale(y3, cosR)); val z4 = z3
+        val z5 = scale(z4, -1f); val x5 = x4; val y5 = y4
+        val finalPitchRad = 54f * (Math.PI.toFloat() / 180f)
+        val cosC = kotlin.math.cos(finalPitchRad); val sinC = kotlin.math.sin(finalPitchRad)
+        val y6 = add(scale(y5, cosC), scale(z5, -sinC)); val z6 = add(scale(y5, sinC), scale(z5, cosC)); val x6 = x5
+        val finalX = x6; val finalY = y6; val finalZ = z6
+        val s = dynamicScale
+        return floatArrayOf(s*finalX[0],s*finalX[1],s*finalX[2],0f,s*finalY[0],s*finalY[1],s*finalY[2],0f,s*finalZ[0],s*finalZ[1],s*finalZ[2],0f,x,y,z,1f)
+    }
+
+    private fun calculateTransformMatrixFor23(x: Float, y: Float, z: Float, dynamicScale: Float, baseX: FloatArray, baseY: FloatArray, baseZ: FloatArray): FloatArray {
+        fun scale(v: FloatArray, s: Float): FloatArray = floatArrayOf(v[0] * s, v[1] * s, v[2] * s)
+        fun add(v1: FloatArray, v2: FloatArray): FloatArray = floatArrayOf(v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2])
+        val pitchRadians = -10f * (Math.PI.toFloat() / 180f)
+        val cosP = kotlin.math.cos(pitchRadians); val sinP = kotlin.math.sin(pitchRadians)
+        val y1 = add(scale(baseY, cosP), scale(baseZ, -sinP)); val z1 = add(scale(baseY, sinP), scale(baseZ, cosP)); val x1 = baseX
+        val x2 = scale(x1, -1f); val y2 = y1; val z2 = z1
+        val yawRadians = 20f * (Math.PI.toFloat() / 180f)
+        val cosY = kotlin.math.cos(yawRadians); val sinY = kotlin.math.sin(yawRadians)
+        val x3 = add(scale(x2, cosY), scale(z2, sinY)); val z3 = add(scale(x2, -sinY), scale(z2, cosY)); val y3 = y2
+        val rollRadians = 20f * (Math.PI.toFloat() / 180f)
+        val cosR = kotlin.math.cos(rollRadians); val sinR = kotlin.math.sin(rollRadians)
+        val x4 = add(scale(x3, cosR), scale(y3, -sinR)); val y4 = add(scale(x3, sinR), scale(y3, cosR)); val z4 = z3
+        val z5 = scale(z4, -1.1f); val x5 = x4; val y5 = y4
+        val finalPitchRad = 170f * (Math.PI.toFloat() / 180f)
+        val cosC = kotlin.math.cos(finalPitchRad); val sinC = kotlin.math.sin(finalPitchRad)
+        val y6 = add(scale(y5, cosC), scale(z5, -sinC)); val z6 = add(scale(y5, sinC), scale(z5, cosC)); val x6 = x5
+        val finalX = x6; val finalY = y6; val finalZ = z6
+        val s = dynamicScale
+        return floatArrayOf(s*finalX[0],s*finalX[1],s*finalX[2],0f,s*finalY[0],s*finalY[1],s*finalY[2],0f,s*finalZ[0],s*finalZ[1],s*finalZ[2],0f,x,y,z,1f)
+    }
+
+    private fun calculateTransformMatrixFor27(x: Float, y: Float, z: Float, dynamicScale: Float, baseX: FloatArray, baseY: FloatArray, baseZ: FloatArray): FloatArray {
+        fun scale(v: FloatArray, s: Float): FloatArray = floatArrayOf(v[0] * s, v[1] * s, v[2] * s)
+        fun add(v1: FloatArray, v2: FloatArray): FloatArray = floatArrayOf(v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2])
+        val pitchRadians = -10f * (Math.PI.toFloat() / 180f)
+        val cosP = kotlin.math.cos(pitchRadians); val sinP = kotlin.math.sin(pitchRadians)
+        val y1 = add(scale(baseY, cosP), scale(baseZ, -sinP)); val z1 = add(scale(baseY, sinP), scale(baseZ, cosP)); val x1 = baseX
+        val x2 = scale(x1, -1f); val y2 = y1; val z2 = z1
+        val yawRadians = 80f * (Math.PI.toFloat() / 180f)
+        val cosY = kotlin.math.cos(yawRadians); val sinY = kotlin.math.sin(yawRadians)
+        val x3 = add(scale(x2, cosY), scale(z2, sinY)); val z3 = add(scale(x2, -sinY), scale(z2, cosY)); val y3 = y2
+        val rollRadians = 20f * (Math.PI.toFloat() / 180f)
+        val cosR = kotlin.math.cos(rollRadians); val sinR = kotlin.math.sin(rollRadians)
+        val x4 = add(scale(x3, cosR), scale(y3, -sinR)); val y4 = add(scale(x3, sinR), scale(y3, cosR)); val z4 = z3
+        val z5 = scale(z4, -1f); val x5 = x4; val y5 = y4
+        val finalPitchRad = 120f * (Math.PI.toFloat() / 180f)
+        val cosC = kotlin.math.cos(finalPitchRad); val sinC = kotlin.math.sin(finalPitchRad)
+        val y6 = add(scale(y5, cosC), scale(z5, -sinC)); val z6 = add(scale(y5, sinC), scale(z5, cosC)); val x6 = x5
+        val finalX = x6; val finalY = y6; val finalZ = z6
+        val s = dynamicScale * 1.2f
+        return floatArrayOf(s*finalX[0],s*finalX[1],s*finalX[2],0f,s*finalY[0],s*finalY[1],s*finalY[2],0f,s*finalZ[0],s*finalZ[1],s*finalZ[2],0f,x,y,z,1f)
+    }
+
+    private fun dot(a: FloatArray, b: FloatArray): Float {
+        return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+    }
+
+    private fun normalize(v: FloatArray): FloatArray {
+        val len = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+        if (len == 0f) return floatArrayOf(0f, 0f, 0f)
+        return floatArrayOf(v[0] / len, v[1] / len, v[2] / len)
+    }
+
+    private fun cross(a: FloatArray, b: FloatArray): FloatArray {
+        return floatArrayOf(
+            a[1] * b[2] - a[2] * b[1],
+            a[2] * b[0] - a[0] * b[2],
+            a[0] * b[1] - a[1] * b[0]
+        )
+    }
 }
