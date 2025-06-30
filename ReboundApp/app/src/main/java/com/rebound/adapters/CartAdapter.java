@@ -61,6 +61,35 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         return new ViewHolder(v);
     }
 
+    private int extractPrice(Object priceObj) {
+        long priceValue = 0;
+        if (priceObj != null) {
+            if (priceObj instanceof Number) {
+                priceValue = ((Number) priceObj).longValue();
+                if (priceValue <= 10000) {
+                    priceValue = priceValue * 1000;
+                }
+            } else if (priceObj instanceof String) {
+                try {
+                    String s = ((String) priceObj).replace(",", "").replace(".", "").replace("VND", "").replace("VNĐ", "").replace("₫", "").trim();
+                    long parsed = Long.parseLong(s);
+                    if (parsed <= 10000) {
+                        priceValue = parsed * 1000;
+                    } else {
+                        priceValue = parsed;
+                    }
+                } catch (Exception e) {
+                    priceValue = 0;
+                }
+            }
+        }
+        return (int) priceValue;
+    }
+
+    private String formatPrice(int amount) {
+        return String.format("%,d VND", amount).replace(',', '.');
+    }
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ProductItem item = cartList.get(position);
@@ -80,8 +109,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             holder.image.setImageResource(R.drawable.ic_placeholder);
         }
         // Price calculation: parse ProductPrice (remove non-digits), multiply by quantity
-        String priceStr = item.getProductPrice() != null ? item.getProductPrice().toString() : "";
-        int unitPrice = extractPrice(priceStr);
+        int unitPrice = extractPrice(item.getProductPrice());
         int quantity = 1;
         try {
             Long stockQuantityLong = item.getProductStockQuantity();
@@ -101,7 +129,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             quantity = 1;
         }
         int totalPrice = unitPrice * quantity;
-        holder.price.setText(String.format("%,d VND", totalPrice).replace(',', '.'));
+        holder.price.setText(formatPrice(totalPrice));
 
         if (isReadOnly) {
             holder.btnPlus.setVisibility(View.GONE);
@@ -161,13 +189,5 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return cartList.size();
-    }
-
-    private int extractPrice(String priceString) {
-        try {
-            return Integer.parseInt(priceString.replace(".", "").replace(" VND", "").trim());
-        } catch (Exception e) {
-            return 0;
-        }
     }
 }

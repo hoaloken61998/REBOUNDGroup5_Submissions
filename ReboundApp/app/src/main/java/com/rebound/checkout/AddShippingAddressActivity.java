@@ -42,7 +42,7 @@ public class AddShippingAddressActivity extends AppCompatActivity {
         edtWard = findViewById(R.id.edtAddShippingWard);
         edtPhone = findViewById(R.id.edtAddShippingPhone);
 
-        // Load address from AddressConnector for logged-in user
+        // Load address from AddressConnector for loggAdd the logic for update the Address of the correspond AddressID into Firebase for btnAddShippingAddressed-in user
         Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
         if (currentCustomer != null) {
             Long userId = null;
@@ -117,17 +117,44 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.checkout_add_address_user_not_logged_in), Toast.LENGTH_SHORT).show();
                 return;
             }
-            // Gộp địa chỉ đầy đủ (nếu muốn)
-            String fullAddress = address + ", " + ward + ", " + district + ", " + city;
 
-            // Tạo đối tượng ShippingAddress
-            ShippingAddress shippingAddress = new ShippingAddress(name, fullAddress, phone);
+            // If loadedAddress exists, update it, else show error
+            if (loadedAddress != null && loadedAddress.getAddressID() != null) {
+                loadedAddress.setReceiverName(name);
+                loadedAddress.setStreet(address);
+                loadedAddress.setProvince(city);
+                loadedAddress.setDistrict(district);
+                // Parse ward to Long
+                try {
+                    Long wardLong = Long.parseLong(ward);
+                    loadedAddress.setWard(wardLong);
+                } catch (Exception e) {
+                    loadedAddress.setWard(null);
+                }
+                // Parse phone to Long
+                try {
+                    Long phoneLong = Long.parseLong(phone);
+                    loadedAddress.setReceiverPhone(phoneLong);
+                } catch (Exception e) {
+                    loadedAddress.setReceiverPhone(null);
+                }
+                // Optionally update isDefault, etc.
+                AddressConnector addressConnector = new AddressConnector();
+                addressConnector.updateAddress(loadedAddress, new AddressCallback() {
+                    @Override
+                    public void onAddressLoaded(Address address) {
+                        Toast.makeText(AddShippingAddressActivity.this, "Address updated successfully!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
 
-            // Lưu vào SharedPreferences
-            SharedPrefManager.saveShippingAddress(this, currentCustomer1.getEmail(), shippingAddress);
-
-            Toast.makeText(this, getString(R.string.checkout_add_address_saved_success), Toast.LENGTH_SHORT).show();
-            finish();
+                    @Override
+                    public void onError(String error) {
+                        Toast.makeText(AddShippingAddressActivity.this, "Failed to update address: " + error, Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else {
+                Toast.makeText(this, "No address loaded to update.", Toast.LENGTH_SHORT).show();
+            }
         });
 
         btnSelectLoadedAddress.setOnClickListener(v -> {

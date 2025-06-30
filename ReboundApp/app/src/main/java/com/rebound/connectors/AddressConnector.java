@@ -60,4 +60,39 @@ public class AddressConnector {
         });
     }
 
+    public void updateAddress(Address address, AddressCallback callback) {
+        if (address == null || address.getAddressID() == null) {
+            if (callback != null) callback.onError("Address or AddressID is null");
+            return;
+        }
+        DatabaseReference addressRef = FirebaseDatabase.getInstance().getReference("Address");
+        addressRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean updated = false;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Object idObj = snapshot.child("AddressID").getValue();
+                    if (idObj != null && String.valueOf(idObj).equals(String.valueOf(address.getAddressID()))) {
+                        snapshot.getRef().setValue(address)
+                            .addOnSuccessListener(aVoid -> {
+                                if (callback != null) callback.onAddressLoaded(address);
+                            })
+                            .addOnFailureListener(e -> {
+                                if (callback != null) callback.onError(e.getMessage());
+                            });
+                        updated = true;
+                        break;
+                    }
+                }
+                if (!updated && callback != null) {
+                    callback.onError("No address node found with AddressID: " + address.getAddressID());
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                if (callback != null) callback.onError(databaseError.getMessage());
+            }
+        });
+    }
+
 }

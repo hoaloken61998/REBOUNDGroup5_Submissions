@@ -95,6 +95,31 @@ public class ShoppingCartActivity extends AppCompatActivity {
         txtTotal.setText(format(getTotal()));
     }
 
+    private int extractPrice(Object priceObj) {
+        long priceValue = 0;
+        if (priceObj != null) {
+            if (priceObj instanceof Number) {
+                priceValue = ((Number) priceObj).longValue();
+                if (priceValue <= 10000) {
+                    priceValue = priceValue * 1000;
+                }
+            } else if (priceObj instanceof String) {
+                try {
+                    String s = ((String) priceObj).replace(",", "").replace(".", "").replace("VND", "").replace("VNĐ", "").replace("₫", "").trim();
+                    long parsed = Long.parseLong(s);
+                    if (parsed <= 10000) {
+                        priceValue = parsed * 1000;
+                    } else {
+                        priceValue = parsed;
+                    }
+                } catch (Exception e) {
+                    priceValue = 0;
+                }
+            }
+        }
+        return (int) priceValue;
+    }
+
     private int getSubTotal() {
         if (cartItems == null) {
             return 0;
@@ -105,14 +130,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
                         return 0;
                     }
                     try {
-                        int unitPrice = 0;
-                        if (item.getProductPrice() != null) {
-                            String priceStr = item.getProductPrice().toString();
-                            if (!priceStr.isEmpty()) {
-                                unitPrice = Integer.parseInt(priceStr.replace(".", "").replace(" VND", "").trim());
-                            }
-                        }
-                        int qty = 1; // Default quantity
+                        int unitPrice = extractPrice(item.getProductPrice());
+                        int qty = 1;
                         try {
                             Long stockQuantityLong = item.getProductStockQuantity();
                             if (stockQuantityLong != null) {
@@ -125,7 +144,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                                 }
                             }
                         } catch (Exception e) {
-                            // quantity remains 1 (default)
+                            qty = 1;
                         }
                         return unitPrice * qty;
                     } catch (Exception e) {

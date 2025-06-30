@@ -105,60 +105,6 @@ public class CartManager {
         return cartItems.size();
     }
 
-    // In CartManager.java
-
-    public int getTotalPrice() {
-        int total = 0;
-        for (ProductItem item : cartItems) {
-            int unitPrice = 0; // Initialize unitPrice here, outside the inner try
-            int quantity = 1;  // Initialize quantity here
-
-            try {
-                // Price parsing
-                if (item.getProductPrice() != null && !item.getProductPrice().toString().isEmpty()) {
-                    String cleanedPrice = item.getProductPrice().toString().replace(".", "").replace(" VND", "").trim();
-                    unitPrice = Integer.parseInt(cleanedPrice); // Assign to the outer scope unitPrice
-                } else {
-                    // Handle case where price is null or empty, perhaps log it or default differently
-                    System.err.println("Warning: ProductPrice is null or empty for item: " + (item.getProductName() != null ? item.getProductName() : "Unknown"));
-                    // unitPrice remains 0, so this item won't add to total if price is invalid
-                }
-
-                // Quantity retrieval and conversion
-                try {
-                    Long stockQuantityLong = item.getProductStockQuantity();
-                    if (stockQuantityLong != null) {
-                        if (stockQuantityLong > Integer.MAX_VALUE) {
-                            quantity = Integer.MAX_VALUE;
-                        } else if (stockQuantityLong < Integer.MIN_VALUE) {
-                            quantity = Integer.MIN_VALUE;
-                        } else {
-                            quantity = stockQuantityLong.intValue();
-                        }
-                        if (quantity < 1) {
-                            quantity = 1;
-                        }
-                    }
-                } catch (Exception e) {
-                    System.err.println("Error retrieving quantity for item: " + (item.getProductName() != null ? item.getProductName() : "null item") + " - " + e.getMessage());
-                    // quantity remains 1 (default)
-                }
-
-                total += unitPrice * quantity; // Now unitPrice is in scope
-
-            } catch (NumberFormatException e) {
-                // This specifically catches errors from Integer.parseInt(cleanedPrice)
-                System.err.println("Error parsing price for item: " + (item.getProductName() != null ? item.getProductName() : "Unknown") + " - " + e.getMessage());
-                // This item effectively adds 0 to the total if its price can't be parsed
-            } catch (Exception e) {
-                // Catch-all for any other unexpected error with this item
-                System.err.println("Unexpected error processing item for total price: " + (item.getProductName() != null ? item.getProductName() : "Unknown") + " - " + e.getMessage());
-                // This item also effectively adds 0 to the total in case of other errors
-            }
-        }
-        return total;
-    }
-
 
     private void saveCart() {
         String json = gson.toJson(cartItems);
@@ -196,19 +142,4 @@ public class CartManager {
         cartItems.add(newItem);
         saveCart();
     }
-
-    public int getProductQuantity(Long productId) {
-        for (ProductItem item : cartItems) {
-            if (item.getProductID() != null && item.getProductID().equals(productId)) {
-                Log.d("CartManager", "getProductQuantity: Found ProductID=" + productId + ", ProductStockQuantity=" + item.getProductStockQuantity());
-                // Use ProductStockQuantity as the source of truth for quantity from SharedPreferences
-                if (item.getProductStockQuantity() != null) {
-                    return item.getProductStockQuantity().intValue();
-                }
-            }
-        }
-        Log.d("CartManager", "getProductQuantity: ProductID=" + productId + " not found in cartItems");
-        return 0;
-    }
-
 }
