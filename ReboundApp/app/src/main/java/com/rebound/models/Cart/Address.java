@@ -1,124 +1,106 @@
 package com.rebound.models.Cart;
 
+import com.google.firebase.database.PropertyName;
 import java.io.Serializable;
-import com.google.gson.annotations.SerializedName;
 
 public class Address implements Serializable {
-    @SerializedName("AddressID")
-    private Long AddressID;
-    @SerializedName("UserID")
-    private Long UserID;
-    @SerializedName("ReceiverName")
-    private String ReceiverName;
-    @SerializedName("ReceiverPhone")
-    private Long ReceiverPhone;
-    @SerializedName("Province")
-    private String Province;
-    @SerializedName("District")
-    private Object District;
-    @SerializedName("Ward")
-    private Object Ward;
-    @SerializedName("Street")
-    private String Street;
-    @SerializedName("Details")
-    private String Details;
-    @SerializedName("IsDefault")
-    private String IsDefault;
 
-    public Address() {}
+    // All private fields are now camelCase to follow Java conventions
+    private Long addressID;
+    private Long userID;
+    private String receiverName;
+    private Long receiverPhone;
+    private String province;
+    private String district;
+    private Long ward;
+    private String street;
+    private String details;
+    private String isDefault;
 
-    public Address(Long addressID, Long userID, String receiverName, Long receiverPhone, String province, Object district, Long ward, String street, String details, String isDefault) {
-        AddressID = addressID;
-        UserID = userID;
-        ReceiverName = receiverName;
-        ReceiverPhone = receiverPhone;
-        Province = province;
-        District = district;
-        Ward = ward;
-        Street = street;
-        Details = details;
-        IsDefault = isDefault;
+    public Address() {
+        // Default constructor is required by Firebase
     }
 
+
+    // Getters have @PropertyName to control the database key names (PascalCase)
+    @PropertyName("AddressID")
     public Long getAddressID() {
-        return AddressID;
+        return addressID;
     }
-
+    @PropertyName("AddressID")
     public void setAddressID(Long addressID) {
-        AddressID = addressID;
+        this.addressID = addressID;
     }
-
+    @PropertyName("UserID")
     public Long getUserID() {
-        return UserID;
+        return userID;
     }
-
+    @PropertyName("UserID")
     public void setUserID(Long userID) {
-        UserID = userID;
+        this.userID = userID;
     }
-
+    @PropertyName("ReceiverName")
     public String getReceiverName() {
-        return ReceiverName;
+        return receiverName;
     }
-
+    @PropertyName("ReceiverName")
     public void setReceiverName(String receiverName) {
-        ReceiverName = receiverName;
+        this.receiverName = receiverName;
     }
-
+    @PropertyName("ReceiverPhone")
     public Long getReceiverPhone() {
-        return ReceiverPhone;
+        return receiverPhone;
     }
-
+    @PropertyName("ReceiverPhone")
     public void setReceiverPhone(Long receiverPhone) {
-        ReceiverPhone = receiverPhone;
+        this.receiverPhone = receiverPhone;
     }
-
+    @PropertyName("Province")
     public String getProvince() {
-        return Province;
+        return province;
     }
-
+    @PropertyName("Province")
     public void setProvince(String province) {
-        Province = province;
+        this.province = province;
     }
-
+    @PropertyName("District")
     public String getDistrict() {
-        if (District == null) return null;
-        if (District instanceof String) return (String) District;
-        return String.valueOf(District);
+        return district;
     }
-
-    public void setDistrict(Object district) {
-        this.District = district;
+    @PropertyName("District")
+    public void setDistrict(String district) {
+        this.district = district;
     }
-
-    public Object getWard() {
-        return Ward;
+    @PropertyName("Ward")
+    public Long getWard() {
+        return ward;
     }
-
+    @PropertyName("Ward")
     public void setWard(Long ward) {
-        Ward = ward;
+        this.ward = ward;
     }
-
+    @PropertyName("Street")
     public String getStreet() {
-        return Street;
+        return street;
     }
-
+    @PropertyName("Street")
     public void setStreet(String street) {
-        Street = street;
+        this.street = street;
     }
-
+    @PropertyName("Details")
     public String getDetails() {
-        return Details;
+        return details;
     }
-
+    @PropertyName("Details")
     public void setDetails(String details) {
-        Details = details;
+        this.details = details;
     }
-
+    @PropertyName("IsDefault")
     public String getIsDefault() {
-        return IsDefault;
+        return isDefault;
     }
-
+    @PropertyName("IsDefault")
     public void setIsDefault(String isDefault) {
-        IsDefault = isDefault;
+        this.isDefault = isDefault;
     }
 }

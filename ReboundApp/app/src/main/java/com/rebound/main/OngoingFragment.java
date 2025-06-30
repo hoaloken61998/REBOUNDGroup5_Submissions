@@ -1,6 +1,7 @@
 package com.rebound.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rebound.R;
 import com.rebound.adapters.OrderAdapter;
-import com.rebound.models.Customer.Customer;
+import com.rebound.connectors.FirebaseOrderConnector;
 import com.rebound.models.Orders.Order;
-import com.rebound.models.Cart.ProductItem;
+import com.rebound.callback.OrderFetchCallback;
 import com.rebound.utils.OrderManager;
-import com.rebound.utils.SharedPrefManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,21 +76,20 @@ public class OngoingFragment extends Fragment {
     }
 
     private void loadOngoingOrders() {
-        Customer current = SharedPrefManager.getCurrentCustomer(getContext());
-        if (current != null) {
-            OrderManager.getInstance().setUserEmail(current.getEmail());
-            List<Order> allOrders = OrderManager.getInstance().getOrders();
-
-            orderList.clear(); // Xoá cũ
-            for (Order o : allOrders) {
-                if ("To Receive".equals(o.getStatus())) {
-                    orderList.add(o);
+        Log.d("OngoingFragment", "loadOngoingOrders: called");
+        FirebaseOrderConnector.getOrdersForLoggedInUser(getContext(), new OrderFetchCallback() {
+            @Override
+            public void onOrdersFetched(List<Order> orders) {
+               Log.d("OngoingFragment", "onOrdersFetched: orders.size=" + (orders != null ? orders.size() : 0));
+                orderList.clear();
+                for (Order o : orders) {
+                    if (o != null && "Pending".equalsIgnoreCase(o.getStatus())) {
+                        orderList.add(o);
+                    }
                 }
+                adapter.notifyDataSetChanged();
             }
-
-
-            adapter.notifyDataSetChanged();
-        }
+        });
     }
     @Override
     public void onResume() {

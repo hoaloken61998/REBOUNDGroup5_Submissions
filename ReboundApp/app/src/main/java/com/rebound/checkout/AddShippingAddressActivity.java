@@ -1,5 +1,6 @@
 package com.rebound.checkout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,7 @@ public class AddShippingAddressActivity extends AppCompatActivity {
     MaterialButton btnAddShippingAddress, btnSelectLoadedAddress;
     EditText edtName, edtAddress, edtCity, edtDistrict, edtWard, edtPhone;
     Address loadedAddress;
+    private Long currentUserId; // Store user ID for later use
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +44,12 @@ public class AddShippingAddressActivity extends AppCompatActivity {
         edtWard = findViewById(R.id.edtAddShippingWard);
         edtPhone = findViewById(R.id.edtAddShippingPhone);
 
-        // Load address from AddressConnector for loggAdd the logic for update the Address of the correspond AddressID into Firebase for btnAddShippingAddressed-in user
+        // Load address from AddressConnector for logged-in user
         Customer currentCustomer = SharedPrefManager.getCurrentCustomer(this);
         if (currentCustomer != null) {
-            Long userId = null;
             Object userIdObj = currentCustomer.getUserID();
             if (userIdObj instanceof Long) {
-                userId = (Long) userIdObj;
+                currentUserId = (Long) userIdObj;
             } else if (userIdObj instanceof String) {
                 String userIdStr = (String) userIdObj;
                 if (userIdStr == null || userIdStr.trim().isEmpty()) {
@@ -56,13 +57,11 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                     return;
                 }
                 try {
-                    // Try parsing as Long first
-                    userId = Long.parseLong(userIdStr);
+                    currentUserId = Long.parseLong(userIdStr);
                 } catch (NumberFormatException e1) {
                     try {
-                        // Try parsing as Double and then convert to Long (handles cases like "2.0")
                         Double d = Double.parseDouble(userIdStr);
-                        userId = d.longValue();
+                        currentUserId = d.longValue();
                     } catch (Exception e2) {
                         Log.e("AddShippingAddress", "Failed to parse userId: '" + userIdStr + "'", e2);
                         Toast.makeText(this, "UserID is not a valid integer: '" + userIdStr + "'", Toast.LENGTH_LONG).show();
@@ -70,9 +69,9 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                     }
                 }
             }
-            if (userId != null) {
+            if (currentUserId != null) {
                 AddressConnector addressConnector = new AddressConnector();
-                addressConnector.getDefaultAddressForUser(this, userId, new AddressCallback() {
+                addressConnector.getDefaultAddressForUser(this, currentUserId, new AddressCallback() {
                     @Override
                     public void onAddressLoaded(Address address) {
                         if (address != null) {
@@ -84,7 +83,7 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                             edtWard.setText(address.getWard() != null ? String.valueOf(address.getWard()) : "");
                             edtPhone.setText(address.getReceiverPhone() != null ? formatPhone(address.getReceiverPhone().toString()) : "");
                         } else {
-                            Toast.makeText(AddShippingAddressActivity.this, "Address is null", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AddShippingAddressActivity.this, "No default address found. You can add a new one.", Toast.LENGTH_LONG).show();
                         }
                     }
 
@@ -106,55 +105,59 @@ public class AddShippingAddressActivity extends AppCompatActivity {
             String ward = edtWard.getText().toString().trim();
             String phone = edtPhone.getText().toString().trim();
 
-            // Kiểm tra thông tin
             if (name.isEmpty() || address.isEmpty() || city.isEmpty() || district.isEmpty() || ward.isEmpty() || phone.isEmpty()) {
                 Toast.makeText(this, getString(R.string.checkout_add_address_fill_all_fields), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            Customer currentCustomer1 = SharedPrefManager.getCurrentCustomer(this);
-            if (currentCustomer1 == null) {
+            if (currentUserId == null) {
                 Toast.makeText(this, getString(R.string.checkout_add_address_user_not_logged_in), Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // If loadedAddress exists, update it, else show error
-            if (loadedAddress != null && loadedAddress.getAddressID() != null) {
-                loadedAddress.setReceiverName(name);
-                loadedAddress.setStreet(address);
-                loadedAddress.setProvince(city);
-                loadedAddress.setDistrict(district);
-                // Parse ward to Long
-                try {
-                    Long wardLong = Long.parseLong(ward);
-                    loadedAddress.setWard(wardLong);
-                } catch (Exception e) {
-                    loadedAddress.setWard(null);
-                }
-                // Parse phone to Long
-                try {
-                    Long phoneLong = Long.parseLong(phone);
-                    loadedAddress.setReceiverPhone(phoneLong);
-                } catch (Exception e) {
-                    loadedAddress.setReceiverPhone(null);
-                }
-                // Optionally update isDefault, etc.
-                AddressConnector addressConnector = new AddressConnector();
-                addressConnector.updateAddress(loadedAddress, new AddressCallback() {
-                    @Override
-                    public void onAddressLoaded(Address address) {
-                        Toast.makeText(AddShippingAddressActivity.this, "Address updated successfully!", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        Toast.makeText(AddShippingAddressActivity.this, "Failed to update address: " + error, Toast.LENGTH_LONG).show();
-                    }
-                });
+            // If no address was loaded, create a new one. Otherwise, update the existing one.
+            Address addressToSave;
+            if (loadedAddress != null) {
+                addressToSave = loadedAddress;
             } else {
-                Toast.makeText(this, "No address loaded to update.", Toast.LENGTH_SHORT).show();
+                addressToSave = new Address();
+                addressToSave.setUserID(currentUserId);
             }
+
+            // Populate the address object with data from EditTexts
+            addressToSave.setReceiverName(name);
+            addressToSave.setStreet(address);
+            addressToSave.setProvince(city);
+            addressToSave.setDistrict(district);
+            try {
+                addressToSave.setWard(Long.parseLong(ward));
+            } catch (Exception e) {
+                addressToSave.setWard(null);
+            }
+            try {
+                addressToSave.setReceiverPhone(Long.parseLong(phone));
+            } catch (Exception e) {
+                addressToSave.setReceiverPhone(null);
+            }
+            // You might want to set a new address as default
+            // addressToSave.setIsDefault("true");
+
+            AddressConnector addressConnector = new AddressConnector();
+            addressConnector.updateAddress(addressToSave, new AddressCallback() {
+                @Override
+                public void onAddressLoaded(Address address) {
+                    // Return the added address to the calling activity
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("added_address", address);
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                }
+
+                @Override
+                public void onError(String error) {
+                    Toast.makeText(AddShippingAddressActivity.this, "Failed to save address: " + error, Toast.LENGTH_LONG).show();
+                }
+            });
         });
 
         btnSelectLoadedAddress.setOnClickListener(v -> {
@@ -162,9 +165,7 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                 Toast.makeText(this, "No address loaded to select.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            // Mark the loaded address as selected (e.g., set IsDefault to "true" or "yes")
             loadedAddress.setIsDefault("yes");
-            // Save the selected address as the shipping address for the user
             Customer currentCustomer1 = SharedPrefManager.getCurrentCustomer(this);
             if (currentCustomer1 != null) {
                 SharedPrefManager.saveShippingAddress(this, currentCustomer1.getEmail(),
@@ -176,7 +177,6 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                 );
             }
             Toast.makeText(this, "Address selected!", Toast.LENGTH_SHORT).show();
-            // Return to previous screen
             finish();
         });
     }

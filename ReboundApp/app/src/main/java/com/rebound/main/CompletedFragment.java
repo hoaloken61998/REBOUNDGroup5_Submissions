@@ -15,12 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.rebound.R;
 import com.rebound.adapters.OrderAdapter;
-import com.rebound.models.Cart.ProductItem;
-import com.rebound.models.Customer.Customer;
+import com.rebound.connectors.FirebaseOrderConnector;
 import com.rebound.models.Orders.Order;
-import com.rebound.utils.CartManager;
-import com.rebound.utils.OrderManager;
-import com.rebound.utils.SharedPrefManager;
+import com.rebound.callback.OrderFetchCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,10 +45,9 @@ public class CompletedFragment extends Fragment {
                         .setMessage("Are you sure you want to delete this order?")
                         .setPositiveButton("Delete", (dialog, which) -> {
                             // Delete from Firebase
-                            com.rebound.connectors.FirebaseOrderConnector.deleteOrderById(String.valueOf(order.getOrderID()),
+                            FirebaseOrderConnector.deleteOrderById(String.valueOf(order.getOrderID()),
                                 () -> {
                                     orderList.remove(order);
-                                    OrderManager.getInstance().deleteOrder(order);
                                     adapter.notifyDataSetChanged();
                                     Toast.makeText(getContext(), "Order deleted", Toast.LENGTH_SHORT).show();
                                 },
@@ -92,9 +88,23 @@ public class CompletedFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        // Deprecated: now handled by OrdersActivity via setOrders()
-
+        loadCompletedOrders();
         return view;
+    }
+
+    private void loadCompletedOrders() {
+        FirebaseOrderConnector.getOrdersForLoggedInUser(getContext(), new OrderFetchCallback() {
+            @Override
+            public void onOrdersFetched(List<Order> orders) {
+                orderList.clear();
+                for (Order o : orders) {
+                    if ("Complete".equalsIgnoreCase(o.getStatus())) {
+                        orderList.add(o);
+                    }
+                }
+                if (adapter != null) adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     // Deprecated: now handled by OrdersActivity via setOrders()
