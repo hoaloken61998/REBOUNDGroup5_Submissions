@@ -1,6 +1,7 @@
 package com.rebound.ar
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -34,6 +35,7 @@ import com.rebound.callback.FirebaseListCallback
 import com.rebound.connectors.FirebaseProductConnector
 import com.rebound.main.NavBarActivity
 import com.rebound.models.Cart.ProductItem
+import com.rebound.utils.CartManager
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.sqrt
@@ -51,6 +53,7 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
     private var currentLensFacing = CameraSelector.LENS_FACING_FRONT
     private var currentModelName: String? = null
     private var isCameraProviderInitialized = false
+    private var isModelLoading = false
 
     // --- UI and Business Logic Variables ---
     private lateinit var recyclerProductAR: RecyclerView
@@ -58,6 +61,9 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
     private var currentProductList: MutableList<ProductItem> = ArrayList()
     private lateinit var categoryIconsLayout: LinearLayout
     private lateinit var btnSwitchCamera: ImageButton
+    private lateinit var btnAddToCart: View
+    private var selectedProduct: ProductItem? = null
+    private lateinit var cartManager: CartManager
 
     // Scaling and positioning constants
     companion object {
@@ -93,6 +99,9 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
             insets
         }
 
+        CartManager.init(applicationContext)
+        cartManager = CartManager.getInstance()
+
         initializeUI()
         initializeArComponents()
         setupListeners()
@@ -105,6 +114,7 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
         categoryIconsLayout = findViewById(R.id.categoryIconsLayout)
         recyclerProductAR = findViewById(R.id.recyclerProductAR)
         fragmentContainer = findViewById(R.id.fragment_container)
+        btnAddToCart = findViewById(R.id.btnAddCart)
         fragmentContainer.visibility = View.GONE
     }
 
@@ -133,6 +143,14 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
 
     private fun setupListeners() {
         btnSwitchCamera.setOnClickListener { switchCamera() }
+
+        btnAddToCart.setOnClickListener {
+            selectedProduct?.let { product ->
+                addToCart(product)
+            } ?: run {
+                Toast.makeText(this, "Please select a product first.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         findViewById<ImageView>(R.id.btnCloseArTop).setOnClickListener {
             val intent = Intent(this@ArCameraActivity, NavBarActivity::class.java)
@@ -185,6 +203,7 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
                 else -> null
             }
             modelName?.let {
+                selectedProduct = product
                 loadModel(it)
                 Toast.makeText(this, "Loading ${product.getProductName()}", Toast.LENGTH_SHORT).show()
             }
@@ -204,11 +223,13 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
     }
 
     private fun loadModel(modelName: String) {
+        isModelLoading = true
         currentModelName = modelName
         fragmentContainer.visibility = View.GONE
         modelDisplayFragment?.reinitializeFilamentBridgeAndLoadModel(currentModelName!!) {
             Log.d(TAG, "Filament reinitialization complete for model $currentModelName.")
             bindCameraUseCases()
+            isModelLoading = false
         }
     }
 
@@ -220,10 +241,12 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
         }
 
         currentModelName?.let { model ->
+            isModelLoading = true
             fragmentContainer.visibility = View.GONE
             modelDisplayFragment?.reinitializeFilamentBridgeAndLoadModel(model) {
                 Log.d(TAG, "Re-initialized model for camera switch.")
                 bindCameraUseCases()
+                isModelLoading = false
             }
         } ?: run {
             bindCameraUseCases()
@@ -317,30 +340,26 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
         )
     }
 
-    // --- NEW: Full implementation for model transformation ---
     override fun onResults(resultBundle: HandLandmarkerHelper.ResultBundle) {
         runOnUiThread {
-            // Only process if a model is selected and hand landmarks are available
+            if (isModelLoading) {
+                fragmentContainer.visibility = View.GONE
+                return@runOnUiThread
+            }
             if (currentModelName != null && resultBundle.results.isNotEmpty() && resultBundle.results.first().landmarks().isNotEmpty()) {
                 val handLandmarkerResult = resultBundle.results.first()
-
-                // Check for sufficient landmarks for the ring finger, including world landmarks
-                // NOTE: This assumes HandLandmarkerHelper has been modified to include MIN_WORLD_LANDMARKS_FOR_DIAMETER
                 if (handLandmarkerResult.landmarks().first().size > 15 &&
                     handLandmarkerResult.worldLandmarks().isNotEmpty() &&
-                    handLandmarkerResult.worldLandmarks().first().size >= 21) { // 21 is the number of landmarks
+                    handLandmarkerResult.worldLandmarks().first().size >= 21) {
 
                     fragmentContainer.visibility = View.VISIBLE
-
                     val landmarks = handLandmarkerResult.landmarks().first()
                     val worldLandmarks = handLandmarkerResult.worldLandmarks().first()
-
-                    val pip_screen = landmarks[14] // RING_FINGER_PIP
-                    val dip_screen = landmarks[15] // RING_FINGER_DIP
+                    val pip_screen = landmarks[14]
+                    val dip_screen = landmarks[15]
                     val anchorXNorm = (pip_screen.x() + dip_screen.x()) / 2f
                     val anchorYNorm = (pip_screen.y() + dip_screen.y()) / 2f
                     val anchorZNorm = (pip_screen.z() + dip_screen.z()) / 2f
-
                     val positionScaleFactor: Float
                     val yOffset: Float
                     val baseModelSpecificScaleFactor: Float
@@ -359,11 +378,9 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
                     val landmarkZ = anchorZNorm
                     val zModulation = 1.0f + (landmarkZ - 0.5f) * Z_MODULATION_SENSITIVITY
                     val dynamicModelSpecificScaleFactor = baseModelSpecificScaleFactor * zModulation.coerceIn(0.8f, 1.2f)
-
                     val x = (anchorXNorm - 0.5f) * positionScaleFactor * imageAspectRatio
                     val y = ((0.5f - anchorYNorm) * positionScaleFactor) + yOffset
                     val z = landmarkZ * DEPTH_SCALE_FACTOR
-
                     val pip_world = worldLandmarks[14]
                     val dip_world = worldLandmarks[15]
                     var fingerDirX = dip_world.x() - pip_world.x()
@@ -378,17 +395,11 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
                     } else {
                         fingerDirX = 0f; fingerDirY = 1f; fingerDirZ = 0f
                     }
-
-                    // NOTE: This assumes HandLandmarkerHelper has a static method 'estimateFingerDiameter'
                     val estimatedFingerDiameter = HandLandmarkerHelper.estimateFingerDiameter(worldLandmarks, RING_FINGER_DIAMETER_RATIO)
                     val dynamicScale = estimatedFingerDiameter * dynamicModelSpecificScaleFactor
-
                     val transformMatrix = calculateTransformMatrix(x, y, z, dynamicScale, fingerDirX, fingerDirY, fingerDirZ, currentModelName!!)
-                    Log.d(TAG, "Ring Finger. Est. Diameter: ${"%.4f".format(estimatedFingerDiameter)}m, Final DynScale: ${"%.4f".format(dynamicScale)}")
                     modelDisplayFragment?.updateModelTransform(transformMatrix)
-
                 } else {
-                    Log.d(TAG, "Not enough landmarks detected for ring finger, hiding model.")
                     fragmentContainer.visibility = View.GONE
                 }
             } else {
@@ -420,7 +431,30 @@ class ArCameraActivity : AppCompatActivity(), HandLandmarkerHelper.LandmarkerLis
         cameraProvider?.unbindAll()
     }
 
-    // --- NEW: Helper methods for matrix calculation and vector math ---
+    private fun addToCart(product: ProductItem) {
+        val authPrefs = getSharedPreferences("auth", Context.MODE_PRIVATE)
+        val email = authPrefs.getString("current_user", null)
+
+        if (email != null && !email.isEmpty()) {
+            cartManager.setUserEmail(email)
+
+            val itemToAdd = ProductItem()
+            itemToAdd.productID = product.productID
+            itemToAdd.productName = product.productName
+            itemToAdd.productPrice = product.productPrice
+            itemToAdd.imageLink = product.imageLink
+            itemToAdd.setCategoryID(product.getCategoryID())
+            itemToAdd.productDescription = product.productDescription
+            itemToAdd.productStockQuantity = 1L
+
+            cartManager.addToCart(itemToAdd)
+
+            Toast.makeText(this, "'${product.productName}' added to cart.", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Please log in to add items to your cart.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun calculateTransformMatrix(x: Float, y: Float, z: Float, dynamicScale: Float, fingerDirX: Float, fingerDirY: Float, fingerDirZ: Float, modelName: String): FloatArray {
         val modelY_aligned = normalize(floatArrayOf(fingerDirX, fingerDirY, fingerDirZ))
         val upVector = floatArrayOf(0f, 1f, 0f)
