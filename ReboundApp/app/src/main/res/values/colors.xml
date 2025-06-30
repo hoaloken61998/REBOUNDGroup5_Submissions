@@ -22,4 +22,8 @@
     <color name="black_26">#42000000</color>
     <color name="hint_text_color">#858585</color>
     <color name="lineColor">#D4CFA4</color>
+    <color name="gray_disabled">#DADADA</color>
+    <color name="gray_text">#999999</color>
+    <color name="outline_border">#918585</color>
+    <color name="gray_border">#BDBDBD</color>
 </resources>

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -59,12 +60,30 @@ public class OngoingFragment extends Fragment {
 
             @Override
             public void onOrderReceived(Order order) {
-//                order.setStatus("Shipped");
+                if (order == null || order.getOrderID() == null) {
+                    Log.e("OngoingFragment", "Order or OrderID is null when 'Received' is clicked");
+                    Toast.makeText(getContext(), "Error: Unable to update order", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                OrderManager.getInstance().updateOrderStatus(order); // 🔥 Lưu vào SharedPreferences
+                Log.d("OngoingFragment", "'Received' clicked for OrderID=" + order.getOrderID());
 
-                orderList.remove(order);
-                adapter.notifyDataSetChanged();
+                FirebaseOrderConnector.updateOrderStatus(String.valueOf(order.getOrderID()), "Completed",
+                        () -> {
+                            Log.d("OngoingFragment", "Firebase successfully updated status for OrderID=" + order.getOrderID());
+                            orderList.remove(order);
+                            adapter.notifyDataSetChanged();
+
+                            if (getActivity() instanceof OrdersActivity) {
+                                ((OrdersActivity) getActivity()).refreshCompletedTab();
+                            }
+
+                            Toast.makeText(getContext(), "Order marked as completed", Toast.LENGTH_SHORT).show();
+                        },
+                        () -> {
+                            Log.e("OngoingFragment", "Failed to update status for OrderID=" + order.getOrderID());
+                            Toast.makeText(getContext(), "Failed to update order status", Toast.LENGTH_SHORT).show();
+                        });
             }
         });
 

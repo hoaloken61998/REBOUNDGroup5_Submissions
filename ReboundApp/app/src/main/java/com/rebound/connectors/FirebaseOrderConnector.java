@@ -17,7 +17,9 @@ import com.rebound.models.Orders.Order;
 import com.rebound.models.Orders.OrderItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FirebaseOrderConnector {
     private static final String TAG = "FirebaseOrderConnector";
@@ -58,7 +60,7 @@ public class FirebaseOrderConnector {
 
     public static void deleteOrderById(String orderId, final Runnable onSuccess, final Runnable onFailure) {
         DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Order");
-        ordersRef.orderByChild("OrderID").equalTo(Double.valueOf(orderId))
+        ordersRef.orderByChild("OrderID").equalTo(Long.valueOf(orderId))
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -118,5 +120,41 @@ public class FirebaseOrderConnector {
                 if (onFailure != null) onFailure.run();
             }
         });
+    }
+    public static void updateOrderStatus(String orderId, String newStatus, Runnable onSuccess, Runnable onFailure) {
+        Log.d("FirebaseOrderConnector", "🔄 Updating OrderID=" + orderId + " to Status=" + newStatus);
+
+        DatabaseReference ordersRef = FirebaseDatabase.getInstance().getReference("Order");
+
+        ordersRef.orderByChild("OrderID").equalTo(Long.valueOf(orderId)) // vì OrderID là số
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            Log.e("FirebaseOrderConnector", "OrderID not found in Firebase");
+                            if (onFailure != null) onFailure.run();
+                            return;
+                        }
+
+                        for (DataSnapshot orderSnap : snapshot.getChildren()) {
+                            // ✅ Sửa đúng key là "Status" (chữ hoa)
+                            orderSnap.getRef().child("Status").setValue(newStatus)
+                                    .addOnSuccessListener(unused -> {
+                                        Log.d("FirebaseOrderConnector", "Order Status updated successfully");
+                                        if (onSuccess != null) onSuccess.run();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("FirebaseOrderConnector", "Failed to update Status", e);
+                                        if (onFailure != null) onFailure.run();
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("FirebaseOrderConnector", "Firebase query cancelled", error.toException());
+                        if (onFailure != null) onFailure.run();
+                    }
+                });
     }
 }

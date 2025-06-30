@@ -119,4 +119,16 @@ public class OrdersActivity extends AppCompatActivity {
                 .replace(R.id.fragmentContainer, fragment)
                 .commit();
     }
+    public void refreshCompletedTab() {
+        List<Order> completed = new ArrayList<>();
+        for (Order o : allOrders) {
+            if ("Completed".equalsIgnoreCase(o.getStatus())) {
+                completed.add(o);
+            }
+        }
+
+        if (completedFragment instanceof CompletedFragment) {
+            ((CompletedFragment) completedFragment).setOrders(completed);
+        }
+    }
 }

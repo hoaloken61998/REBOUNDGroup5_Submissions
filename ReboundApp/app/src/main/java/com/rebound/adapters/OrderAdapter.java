@@ -51,56 +51,42 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
-        String status = screenType.equals("ongoing") ? "To Receive" : "Shipped";
+        String status = order.getStatus() != null ? order.getStatus() : "";
 
         holder.txtStatus.setText(status);
-        // Format TotalAmount with thousands separator and VND
-        final String TOTAL_AMOUNT_LABEL = context.getString(R.string.total_amount_label); // Use string resource
         String formattedAmount = String.format("%,d", order.getTotalAmount()).replace(',', '.');
-        holder.txtTotal.setText(TOTAL_AMOUNT_LABEL+": " + formattedAmount + " đ");
+        holder.txtTotal.setText(context.getString(R.string.total_amount_label) + ": " + formattedAmount + " đ");
+
         holder.groupToReceive.setVisibility(View.GONE);
         holder.groupShipped.setVisibility(View.GONE);
         holder.layoutOrderItems.removeAllViews();
 
-        // Temporarily skip product list
-//        List<ProductItem> products = null;
-//        try {
-//            products = order.getProductList();
-//        } catch (Exception e) {
-//            // Ignore error temporarily
-//        }
-//        if (products != null) {
-//            for (ProductItem product : products) {
-//                View item = LayoutInflater.from(context).inflate(R.layout.item_product_order, holder.layoutOrderItems, false);
-//                ((TextView) item.findViewById(R.id.txtProductName)).setText(product.ProductName != null ? product.ProductName.toString() : "");
-//                ((TextView) item.findViewById(R.id.txtProductDesc)).setText(""); // Default value
-//                String priceText = product.ProductPrice != null ? product.ProductPrice.toString() : "";
-//                ((TextView) item.findViewById(R.id.txtProductPrice)).setText(priceText);
-//                // Load image from URL using Glide
-//                String imageUrl = product.ImageLink != null ? product.ImageLink.toString() : "";
-//                ImageView imgView = item.findViewById(R.id.imgProduct);
-//                if (!imageUrl.isEmpty()) {
-//                    Glide.with(context)
-//                        .load(imageUrl)
-//                        .placeholder(R.drawable.ic_placeholder)
-//                        .into(imgView);
-//                } else {
-//                    imgView.setImageResource(R.drawable.ic_placeholder);
-//                }
-//                holder.layoutOrderItems.addView(item);
-//            }
-//        }
-
-        if (screenType.equals("ongoing")) {
+        if ("ongoing".equals(screenType)) {
             holder.groupToReceive.setVisibility(View.VISIBLE);
+            holder.btnDelete.setVisibility(View.GONE);
 
-            boolean isToReceive = "To Receive".equals(order.getStatus());
+            boolean isToReceive = status.equalsIgnoreCase("To Receive") || status.equalsIgnoreCase("Pending") || status.equalsIgnoreCase("Ongoing");
+
+
             holder.btnOrderReceived.setEnabled(isToReceive);
-            holder.btnOrderReceived.setBackgroundResource(isToReceive ? R.drawable.button_outline : R.drawable.button_disabled);
-            holder.btnOrderReceived.setTextColor(ContextCompat.getColor(context, isToReceive ? R.color.outline_text : android.R.color.darker_gray));
+
+
+            holder.btnOrderReceived.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.white));
+
+
+            holder.btnOrderReceived.setTextColor(ContextCompat.getColor(context, R.color.gray_text));
+
+
+            if (holder.btnOrderReceived instanceof com.google.android.material.button.MaterialButton) {
+                com.google.android.material.button.MaterialButton btn = (com.google.android.material.button.MaterialButton) holder.btnOrderReceived;
+                btn.setStrokeColorResource(R.color.gray_border); // phải có màu này trong colors.xml
+                btn.setStrokeWidth(2); // viền mỏng đẹp
+                btn.setCornerRadius(100); // bo góc giống nút kia
+            }
             holder.btnOrderReceived.setOnClickListener(v -> {
                 if (isToReceive && listener != null) listener.onOrderReceived(order);
             });
+
 
             holder.btnTrackOrder.setEnabled(true);
             holder.btnTrackOrder.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.accent_dark));
@@ -109,19 +95,20 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 if (listener != null) listener.onTrackOrderClicked(order);
             });
 
-        } else if (screenType.equals("completed")) {
+        } else if ("completed".equals(screenType)) {
             holder.groupShipped.setVisibility(View.VISIBLE);
-
-            holder.btnDelete.setBackgroundResource(R.drawable.button_outline);
-            holder.btnDelete.setTextColor(ContextCompat.getColor(context, R.color.outline_text));
-            holder.btnDelete.setOnClickListener(v -> {
-                if (listener != null) listener.onDelete(order);
-            });
+            holder.btnDelete.setVisibility(View.GONE);
 
             holder.btnBuyAgain.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.accent_dark));
             holder.btnBuyAgain.setTextColor(ContextCompat.getColor(context, android.R.color.white));
             holder.btnBuyAgain.setOnClickListener(v -> {
                 if (listener != null) listener.onBuyAgain(order);
+            });
+
+            holder.btnTrackOrder.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.accent_dark));
+            holder.btnTrackOrder.setTextColor(ContextCompat.getColor(context, android.R.color.white));
+            holder.btnTrackOrder.setOnClickListener(v -> {
+                if (listener != null) listener.onTrackOrderClicked(order);
             });
         }
     }
