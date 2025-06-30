@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -36,6 +37,9 @@ android {
             excludes += "META-INF/LICENSE.md"
         }
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 dependencies {
@@ -45,6 +49,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.database)
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -64,4 +69,39 @@ dependencies {
     implementation ("com.google.zxing:core:3.5.2")
     implementation("com.google.firebase:firebase-auth:23.2.1")
     implementation("com.google.android.material:material:1.11.0")
+
+    // CameraX
+    implementation(libs.camera.core)
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+    implementation(libs.camera.extensions)
+    implementation(libs.camera.video)
+
+    // Navigation
+    implementation(libs.navigation.fragmentKtx)
+    implementation(libs.navigation.uiKtx)
+
+    // Fragment
+    implementation(libs.fragment.ktx)
+
+    // WindowManager
+    implementation(libs.androidx.window)
+
+    // Unit testing
+    testImplementation(libs.junit)
+
+    // Instrumented testing
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+
+    // MediaPipe Library
+    implementation(libs.mediapipe.tasksVision)
+    implementation(libs.mediapipe.tasksCore)
+
+    // Filament dependencies
+    implementation(libs.gltfio.android)
+    implementation(libs.filament.utils) // Corrected to use direct alias
+    implementation(libs.filament.android) // Corrected to use direct alias
+
 }

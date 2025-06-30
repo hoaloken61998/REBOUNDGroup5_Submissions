@@ -1,7 +1,7 @@
 package com.rebound.main;
-import com.rebound.ar.ARCameraCategoryActivity;
+import com.rebound.ar.ArCameraActivity;
 import com.rebound.login.ProfileFragment;
-import android.Manifest;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,8 +16,6 @@ import com.rebound.utils.SharedPrefManager;
 import com.rebound.utils.CartManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -78,7 +76,7 @@ public class NavBarActivity extends AppCompatActivity {
 
         // FAB mở camera
         fab.setOnClickListener(v -> {
-            Intent intent = new Intent(NavBarActivity.this, ARCameraCategoryActivity.class);
+            Intent intent = new Intent(NavBarActivity.this, ArCameraActivity.class);
             startActivity(intent);
         });
 

@@ -2,16 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
+    <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -28,6 +29,9 @@
         android:theme="@style/Theme.ReboundLogin"
         tools:targetApi="31">
         <activity
+            android:name=".ar.ArCameraActivity"
+            android:exported="false" />
+        <activity
             android:name=".checkout.PaymentSuccessActivity"
             android:exported="false" />
         <activity
@@ -38,15 +42,6 @@
             android:exported="false" />
         <activity
             android:name=".main.CategoryProductActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ar.ARCameraCategoryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ar.ARCameraProductActivity"
-            android:exported="false" />
-        <activity
-            android:name=".main.MainPageActivity"
             android:exported="false" />
         <activity
             android:name=".checkout.ShoppingCartActivity"
@@ -66,9 +61,6 @@
             android:theme="@style/Theme.ReboundLogin" />
         <activity
             android:name=".main.ProductDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".main.ScheduleServiceActivity"
             android:exported="false" />
         <activity
             android:name=".main.SearchNoResultActivity"
@@ -140,10 +132,9 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" />
     </application>
 
 </manifest>
-
-<!-- NOTE: The following activities are referenced but missing in your project:
-ProfileActivity, ARCameraProductActivity, NewsActivity, MainPageActivity, ScheduleServiceActivity, CheckoutInfoActivity.
-You should add these classes or remove their entries from the manifest. -->

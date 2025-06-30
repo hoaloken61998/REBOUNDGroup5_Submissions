@@ -150,6 +150,7 @@ public class CheckOutActivity extends AppCompatActivity {
         ));
 
         btnCheckout.setOnClickListener(v -> {
+            Log.d("CheckOutActivity", "btnCheckout clicked"); // Debug log at start of click handler
             Customer current = SharedPrefManager.getCurrentCustomer(this);
             if (current != null) {
                 List<ProductItem> cartItems = CartManager.getInstance().getCartItems();
@@ -175,6 +176,7 @@ public class CheckOutActivity extends AppCompatActivity {
                 ordersRef.orderByChild("OrderID").limitToLast(1).addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.d("CheckOutActivity", "onDataChange for OrderID called"); // Debug log at start of onDataChange
                         long latestOrderId = 0L;
                         // Find the max node key (which is a number as string)
                         long maxNodeKey = 0L;
@@ -226,8 +228,10 @@ public class CheckOutActivity extends AppCompatActivity {
                         newOrder.setOrderID(nextOrderId);
                         newOrder.setUserID(null);
                         // Retrieve userIdLong from SharedPreferences and make it final
+                        Log.d("CheckOutActivity", "Reached before user_id log");
                         final android.content.SharedPreferences userPrefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
                         final Long userIdLong = userPrefs.getLong("user_id", -1);
+                        Log.d("CheckOutActivity", "user_id from SharedPreferences: " + userIdLong); // Debug log
                         newOrder.setUserID(userIdLong);
                         newOrder.setPaymentMethodID(paymentMethodId[0]);
                         newOrder.setDeliveryFee(deliveryFee);
